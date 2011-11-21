@@ -1,0 +1,42 @@
+<!--<ul class="shortcut-buttons-set">
+				
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/pencil_48.png" alt="icon"><br>
+                Write an Article
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/paper_content_pencil_48.png" alt="icon"><br>
+                Create a New Page
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/image_add_48.png" alt="icon"><br>
+                Upload an Image
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/clock_48.png" alt="icon"><br>
+                Add an Event
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#messages" rel="modal"><span>
+                <img src="/images/comment_48.png" alt="icon"><br>
+                Open Modal
+        </span></a></li>
+
+</ul>--><!-- End .shortcut-buttons-set -->
+
+
+
+
+<?php
+//echo $this->navigation()->menu()->renderMenu(null, array('ulClass'=>'shortcut-buttons-set-rks','minDepth' => 3, 'maxDepth' => 3,'renderParents' => false, 'onlyActiveBranch' => true ));
+//http://stackoverflow.com/questions/1971600/custom-rendering-of-zend-navigation
+
+        $this->navigation()->menu()->setPartial(array('sub-menu.phtml','default'));
+	echo $this->navigation()->menu()->render();
+        
+        
+
+?>

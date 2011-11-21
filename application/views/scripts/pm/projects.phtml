@@ -1,0 +1,76 @@
+<form method="post" action="<?php echo $this->seoUrl("/pm/projects")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <select name='status'>
+        <option value=''>Status</option>
+        <option <?php if($this->status=="open"){echo "selected='selected'";}?>value="open">Open</option>
+        <option <?php if($this->status=="close"){echo "selected='selected'";}?>value="close">Close</option>
+    </select>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            
+            <td><?php echo $item->title; ?></td>
+            <td <?php if($item->status=="close"){?> style="color:red" <?php }?>    > <?php echo $item->status; ?></td>
+            <td><?php echo $item->start_date; ?></td>
+            <td><?php echo $item->end_date; ?></td>
+            <td>
+                <!-- Icons -->
+                <a title="Edit" href="<?php echo $this->seoUrl("/pm/edit-project/id/".$item->id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>

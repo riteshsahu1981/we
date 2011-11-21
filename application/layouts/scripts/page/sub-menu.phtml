@@ -1,0 +1,89 @@
+<!--<ul class="shortcut-buttons-set">
+				
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/pencil_48.png" alt="icon"><br>
+                Write an Article
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/paper_content_pencil_48.png" alt="icon"><br>
+                Create a New Page
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/image_add_48.png" alt="icon"><br>
+                Upload an Image
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#"><span>
+                <img src="/images/clock_48.png" alt="icon"><br>
+                Add an Event
+        </span></a></li>
+
+        <li><a class="shortcut-button" href="#messages" rel="modal"><span>
+                <img src="/images/comment_48.png" alt="icon"><br>
+                Open Modal
+        </span></a></li>
+
+</ul> End .shortcut-buttons-set -->
+
+<?php
+foreach ($this->container as $page)
+{
+     if ($page->isVisible() && $this->navigation()->accept($page)) 
+     {
+         foreach ($page as $p)
+         {
+             if ($p->isVisible() && $this->navigation()->accept($p)) 
+             {
+       
+                    if(count($p)>0)
+                    {
+                            foreach ($p as $_p)
+                            {
+                                if ($_p->isActive() && $_p->isVisible() && $this->navigation()->accept($_p)) 
+                                {
+                                    
+                                    
+                                    if( count($_p)>0 )
+                                    {
+                                     ?>
+                                        <ul class="shortcut-buttons-set">
+                                        <?php
+                                         foreach ($_p as $_p_last)
+                                         {
+                                            
+                                            if ( $_p_last->display_in_sub=="Yes" && $_p_last->isVisible() && $this->navigation()->accept($_p_last)) 
+                                            {
+                                                $isActive = $_p_last->isActive(true);
+                                                $activeClass = $isActive ? ' current"' : '';
+                                    
+                                                ?>  
+                                                    <li>
+                                                        <a class="shortcut-button <?php echo $activeClass?>" href="<?php echo  $this->seoUrl($_p_last->getHref())?>">
+                                                            <span>
+                                                                <img src="/images/image_add_48.png" alt="icon"><br>
+                                                                <?php echo $_p_last->getLabel()?>
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                <?php 
+                                            }
+                                        
+                                         }
+                                         ?>
+                                        </ul>        
+                                         <?php
+                                    }
+                                }//end if
+                            }
+                    }
+                  
+             }//end if
+         }
+     }//end if
+}
+
+
+?>
+

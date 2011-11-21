@@ -1,0 +1,9 @@
+<?php 
+if(count($this->albums)>0){?>
+<?php foreach($this->albums as $_album){?>
+<div class="album_thumb" >
+<a href="/employee/view-pictures/id/<?php echo $_album->getId()?>"> <img  class="album_thumb_image"  src="<?php echo $_album->getCoverImageThumb()?>" /> </a>
+<?php echo $_album->getTitle()?>
+</div>
+<?php }?>
+<?php } ?>

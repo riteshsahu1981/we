@@ -1,0 +1,95 @@
+
+<?
+$calender="";
+$prm=$this->prm;
+$chm=$this->chm;
+$m=$this->m;
+$d= $this->d;    
+$y= $this->y;
+$currentUrl=$this->currentUrl;
+
+
+$no_of_days = date('t',mktime(0,0,0,$m,1,$y)); // This is to calculate number of days in a month
+
+$mn=date('M',mktime(0,0,0,$m,1,$y)); // Month is calculated to display at the top of the calendar
+
+$yn=date('Y',mktime(0,0,0,$m,1,$y)); // Year is calculated to display at the top of the calendar
+
+$j= date('w',mktime(0,0,0,$m,1,$y)); // This will calculate the week day of the first day of the month
+$adj="";
+for($k=1; $k<=$j; $k++){ // Adjustment of date starting
+$adj .="<td>&nbsp;</td>";
+$calender.=$adj;
+}
+
+/// Starting of top line showing name of the days of the week
+
+$calender.= "<table width='80%' id='rounded-corner'><th class='rounded-q1' scope='col'> <a href='{$currentUrl}/prm/$m/chm/-1'><img align='absmiddle' alt='' src='".$this->cdnUri()."/images/left_arrow.png'></a> </th><th colspan=5 align=center class='rounded-q1' scope='col'>$mn $yn </th><th align=right class='rounded-q1' scope='col'> <a href='$currentUrl/prm/$m/chm/1'><img align='absmiddle' alt='' src='".$this->cdnUri()."/images/right_arrow.png'></a> </th></tr><tr>";
+
+$calender.= "<th class='rounded-q1' scope='col' >Sun</th><th class='rounded-q1' scope='col'>Mon</th><th class='rounded-q1' scope='col'>Tue</th><th class='rounded-q1' scope='col'>Wed</th><th class='rounded-q1' scope='col'>Thu</th><th class='rounded-q1' scope='col'>Fri</th><th class='rounded-q1' scope='col'>Sat</th></tr><tr>";
+
+////// End of the top line showing name of the days of the week//////////
+
+//////// Starting of the days//////////
+$total_present=0;
+$total_absent=0;
+$total_halfday=0;
+for($i=1;$i<=$no_of_days;$i++)
+{
+    $full_date=date('Y-m-d',mktime(0,0,0,$m,$i,$y));
+    
+    $weakday=date('w',mktime(0,0,0,$m,$i,$y));
+    
+    $cellText='<div class="present"></div>';
+    if(isset($this->attendance[$full_date]))
+    {
+        if($this->attendance[$full_date]=="Absent"){
+            $total_absent++;
+            $cellText='<div class="absent">'.$this->attendance[$full_date].'</div>';
+            
+        }
+        else if($this->attendance[$full_date]=="Half Day"){
+            $total_halfday++;
+            $cellText='<div class="halfday">'.$this->attendance[$full_date].'</div>';
+        }
+        else{
+            $total_present++;
+            $cellText='<div class="present">'.$this->attendance[$full_date].'</div>';
+        }
+            
+    }
+    
+    
+    if($weakday==0 || $weakday==6 )
+    {
+        $att="";
+       if(isset($this->attendance[$full_date]))
+               $att=$this->attendance[$full_date];
+         $calender.= $adj."<td class='weeklyoff' valign=top>$i <div class='cellText'>".$att."</div>"; // This will display the date inside the calendar cell
+        
+        
+    }
+    else
+    {
+        $calender.= $adj."<td class='bg' valign=top>$i  ".$cellText; // This will display the date inside the calendar cell
+    }
+    $calender.= " </td>";
+
+    $adj='';
+    $j ++;
+    if($j==7)
+    {
+        $calender.= "</tr><tr>";
+        $j=0;
+    }
+
+}
+$calender.= "</tr></table>";
+
+?>
+<div class='attendance-total'>Present : <?php echo $total_present?></div>
+<div class='attendance-total'>Absent : <?php echo $total_absent?></div>
+<div class='attendance-total'>Half day : <?php echo $total_halfday?></div>
+<div id="calendar"><?php echo $calender;?></div>
+
+

@@ -1,0 +1,93 @@
+<?php if($this->allowUpload==true){?>
+<?php
+$this->headScript()->appendFile('/js/uploadify/swfobject.js');
+$this->headScript()->appendFile('/js/uploadify/jquery.uploadify.v2.1.4.min.js');
+$this->headLink()->appendStylesheet('/js/uploadify/uploadify.css');
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#file_upload').uploadify({
+    'uploader'  : '/js/uploadify/uploadify.swf',
+    'script'    : '<?php echo "/image/upload-pictures/album_id/".$this->album_id; ?>',
+    'cancelImg' : '/js/uploadify/cancel.png',
+    'folder'    : '/uploads',
+    'auto'      : true,
+    'multi'     : true,
+    'onComplete': function (evt, queueID, fileObj, response, data) {
+   
+       
+        $('#picture_container').prepend(response);
+        $(".album_pic_slide").colorbox({rel:'album_pic_slide', slideshow:true});
+    }
+
+  });
+});
+
+function deletePic(pic_id)
+{
+    var params="id="+pic_id;
+    $.ajax({
+            type: "POST",
+            url: "/gallery/delete-picture/",
+            data: params,
+            dataType: "json",
+            success: function(json)
+            {
+                if(json.success==1)
+                {
+                    $("#pic_container_"+pic_id).remove();
+                }
+                else
+                {
+                     alert("Failed to delete");
+                }
+            },
+            error: function (json, status, e)
+            {
+                alert("Error: Failed to delete");
+            }
+	 });
+    
+    
+}
+</script>
+<input id="file_upload" name="file_upload" type="file" />
+<?php } ?>
+
+
+
+<?php
+$this->headScript()->appendFile('/js/colorbox/colorbox/jquery.colorbox.js');
+$this->headLink()->appendStylesheet('/js/colorbox/example5/colorbox.css');
+?>
+<script>
+$(document).ready(function(){
+    $(".album_pic_slide").colorbox({rel:'album_pic_slide', slideshow:true});
+});
+</script>
+<?php 
+
+$album=new Application_Model_Album();
+$album=$album->find($this->album_id);
+$this->pictures=$album->getAlbumPictures();
+$pageA=$this->navigation()->findActive($this->navigation()->getContainer());
+     if(isset($pageA['page']))
+           $pageA['page']->setLabel($album->getTitle());
+             
+?>
+<div id="picture_container">
+    <?php if(count($this->pictures)>0){?>
+    <?php foreach($this->pictures as $_picture){?>
+    <div class='album_pic_thumb_box' id="pic_container_<?php echo $_picture->getId()?>">
+        <a class="album_pic_slide"  href="<?php echo $_picture->getPictureSmallUrl()?>"><img class='album_pic_thumb' src="<?php echo $_picture->getPictureThumbUrl()?>"/></a>
+        <?php if($this->allowUpload==true){?>
+        <br class="clear">
+        <a href="javascript: deletePic('<?php echo $_picture->getId()?>');">
+            <img src="/images/icons/cross_circle.png" alt="Click here to delete!">
+            </a>
+        <?php }?>
+    </div>
+    <?php } } ?>
+
+</div>
+<br class="clear"/>

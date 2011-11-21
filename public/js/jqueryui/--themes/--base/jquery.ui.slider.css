@@ -1,0 +1,88 @@
+/* Slider
+----------------------------------*/
+.ui-slider {
+	position: relative;
+	text-align: left;
+}
+.ui-slider .ui-slider-handle {
+	position: absolute;
+	z-index: 2;
+	width: 7px;
+	height: 30px;
+	cursor: default;
+}
+.ui-slider .ui-slider-range {
+	position: absolute;
+	z-index: 1;
+	font-size: .7em;
+	display: block;
+	border: 0;
+	background-position: 0 0;
+}
+.ui-slider-horizontal {
+	height: 41px;
+	width:202px;
+}
+.rating-meter .ui-slider-horizontal {
+	height: 20px;
+	width:136px;
+}
+.rating-meter .cancel-rating {
+	float:left;
+	margin:3px 0 0 0;
+}
+.ui-slider-horizontal .ui-slider-handle {
+	top: -.1em;
+	margin-left:-4px;
+}
+.by-gl-meter .ui-slider-horizontal .ui-slider-handle {
+	top: -0.2em;
+	margin-left:-4px;
+}
+.by-gl-meter .cancel-rating {
+	float:left;
+	margin:5px 0 0 0;
+}
+#my_vote_guys_girls {
+	margin:5px 0 0 106px;
+	float:left;
+}
+#my_vote_guys_girls .boy {
+	color:#1559ab;
+}
+#my_vote_guys_girls .girl {
+	color:#fc8fd0;
+}
+.characters ul.actors-rating li.rating-meter .ui-slider-horizontal .ui-slider-handle {
+	top: 0em;
+	margin-left:-4px;
+}
+.ui-slider-horizontal .ui-slider-range {
+	top: 0;
+	height: 100%;
+}
+.ui-slider-horizontal .ui-slider-range-min {
+	left: 0;
+}
+.ui-slider-horizontal .ui-slider-range-max {
+	right: 10em;
+}
+.ui-slider-vertical {
+	width: .8em;
+	height: 100px;
+}
+.ui-slider-vertical .ui-slider-handle {
+	left: -.3em;
+	margin-left: 0;
+	margin-bottom: -.6em;
+}
+.ui-slider-vertical .ui-slider-range {
+	left: 0;
+	width: 100%;
+}
+.ui-slider-vertical .ui-slider-range-min {
+	bottom: 0;
+}
+.ui-slider-vertical .ui-slider-range-max {
+	top: 0;
+}

@@ -1,0 +1,52 @@
+<table>
+    <tbody>
+        <tr>
+            <td>Request Id:</td>
+            <td>#<?php echo $this->request->getId();?></td>
+        </tr>
+        <tr>
+            <td>Department:</td>
+            <td><?php echo $this->request->getDepartment();?></td>
+        </tr>
+        <tr>
+            <td>Request:</td>
+            <td><?php echo $this->request->getRequest();?></td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td><?php echo $this->request->getStatus();?></td>
+        </tr>
+        <tr>
+            <td>Requested On:</td>
+            <td>
+            <?php 
+            $date=new Base_Date();
+            echo $date->getSysDate($this->request->getAddedon());
+            
+            ?>
+        </tr>
+        
+        <?php if($this->request->getStatus()=="close"){?>
+         <tr>
+            <td>Remarks:</td>
+            <td><?php echo $this->request->getRemarks();?></td>
+        </tr>
+        
+        
+         <tr>
+            <td>Closed on:</td>
+            <td><?php 
+            $date=new Base_Date();
+            echo $date->getSysDate($this->request->getUpdatedon());
+            
+            ?></td>
+        </tr>
+        
+        <tr>
+            <td>Closed By:</td>
+            <td><?php  echo $this->request->getUser()->getFirstName() . " " . $this->request->getUser()->getLastName() . " [ Code : ".$this->request->getUser()->getEmployeeCode() .", Email: ".$this->request->getUser()->getEmail()." ]" ?></td>
+        </tr>
+        <?php }?>
+        
+    </tbody>
+</table>

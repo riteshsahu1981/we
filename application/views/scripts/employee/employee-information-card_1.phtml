@@ -1,0 +1,36 @@
+<?php
+if($this->align=="")
+    $this->align="left";
+?>
+<div class="content-box column-<?php echo  $this->align?> <?php echo  $this->box_status?> ">
+    <div class="content-box-header">
+        <h3 style="cursor: s-resize;">Employee Information Card</h3>
+    </div> <!-- End .content-box-header -->
+
+    <div class="content-box-content" style="display: block; min-height:200px">
+    <div class="tab-content default-tab" style="display: block;">
+    <div class="div-table">
+            <div class="div-row-caption">
+                <img  src="/image/thumb/size/medium/path/<?php echo base64_encode($this->user->getProfileImage())?>"/>
+            </div>
+            <div class="div-row">
+                <div class="div-cell-bold">Name :</div>
+                <div class="div-cell"><?php echo $this->user->getFirstName()." ".$this->user->getLastName();?></div>
+            </div>
+            <div class="div-row">
+                <div class="div-cell-bold">Code :</div>
+                <div class="div-cell"><?php echo $this->user->getEmployeeCode()?></div>
+            </div>
+            <div class="div-row">
+                <div class="div-cell-bold">Department :</div>
+                <div class="div-cell"><?php echo $this->user->getDepartment()?></div>
+            </div>
+            <div class="div-row">
+                <div class="div-cell-bold">Email :</div>
+                <div class="div-cell"><?php echo $this->user->getEmail()?></div>
+            </div>
+        
+            </div>
+    </div> <!-- End #tab3 -->        
+    </div> <!-- End .content-box-content -->
+</div>

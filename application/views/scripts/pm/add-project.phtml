@@ -1,0 +1,123 @@
+<form method="post" action="" enctype="application/x-www-form-urlencoded" id="frmProject">
+    <table>
+        <tbody>
+            <tr>
+                <td >
+                    <label class="required" for="title"><?php echo $this->form->title->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->title?>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <label class="required" for="description"><?php echo $this->form->description->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->description?>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <label class="required" for="clientInfo"><?php echo $this->form->clientInfo->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->clientInfo?>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <label class="required" for="startDate"><?php echo $this->form->startDate->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->startDate?>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <label class="required" for="endDate"><?php echo $this->form->endDate->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->endDate?>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <label class="required" for="status"><?php echo $this->form->status->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->status?>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <label class="required" for="endDate"><?php echo $this->form->projectManagerId->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->projectManagerId?>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <label class="required" for="endDate"><?php echo $this->form->teamLeaderId->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->teamLeaderId?>
+                    
+                </td>
+            </tr>
+            
+            <tr>
+                <td >
+                    <label class="required" for="endDate"><?php echo $this->form->resource->getLabel();?></label>
+                </td>
+                <td >
+                    <?php echo $this->form->resource?>
+                    <input type="button" class="button" onclick="addResource();" value="Add resource to project"/>
+                    <div id="resource_container">
+                        <?php 
+                        if(is_array($this->resource_value))
+                        {
+                            foreach($this->resource_value as $key=>$value)
+                            {
+                                echo "<div id='div_resource_name_".$value."' >".$this->resource_text[$key]." <input type='hidden' value='".$value."' name='resource_value[]' > <input type='hidden' value='".$this->resource_text[$key]."' name='resource_text[]' ><a href='javascript: removeResource(".$value.")'> <img src='/images/cross.png' /> </a></div>";
+                            }
+                        }?>
+                    </div>
+                </td>
+            </tr>
+            
+            
+            <tr>
+                <td></td>
+                <td class="element">
+                    <input type="submit" class="button" value="Submit" id="submit" name="submit">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+<script type="text/javascript">
+$(function() {
+    $("#startDate").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+    $("#endDate").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+});
+
+
+function addResource()
+{
+   var resource_id=$("#resource option:selected").val();
+   if(resource_id=="")
+       return false;
+   var resource_text=$("#resource option:selected").text();
+   var strNames="<div id='div_resource_name_"+resource_id+"' >"+resource_text+" <input type='hidden' value='"+resource_id+"' name='resource_value[]' > <input type='hidden' value='"+resource_text+"' name='resource_text[]' ><a href='javascript: removeResource("+resource_id+")'> <img src='/images/cross.png' /> </a></div>";
+   $('#resource_container').append(strNames);
+}
+function removeResource(resource_id)
+{
+    $("#div_resource_name_"+resource_id).remove();
+
+}
+</script>

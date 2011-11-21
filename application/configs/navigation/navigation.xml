@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<nav>
+            <home>
+            <label>Home</label>
+            <module>default</module>
+            <controller>index</controller>       
+            <action>dashboard</action>
+            <resource>default:employee</resource>
+            <privilege>dashboard</privilege>
+          
+            <pages>
+            
+            <myaccount>
+                <label>My Account</label>
+                <module>default</module>
+                <controller>employee</controller>       
+                <action>dashboard</action>
+                <resource>default:employee</resource>
+                <privilege>dashboard</privilege>
+                
+                <pages>
+                    <dashboard>
+                        <label>Dashboard</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>dashboard</action>
+                        <resource>default:employee</resource>
+                        <privilege>dashboard</privilege>
+                        <pages>
+                            <view_page>
+                                <label>View Page</label>
+                                <module>default</module>
+                                <controller>employee</controller>       
+                                <action>page</action>
+                                <resource>default:employee</resource>
+                                <privilege>page</privilege>
+                            </view_page>
+                        </pages>
+                    </dashboard>
+                    <myprofile>
+                        <label>My Profile</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>my-profile</action>
+                        <resource>default:employee</resource>
+                        <privilege>my-profile</privilege>
+                       
+                    </myprofile>
+                    <changepassword>
+                        <label>Change Password</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>change-password</action>
+                        <resource>default:employee</resource>
+                        <privilege>change-password</privilege>
+                       
+                    </changepassword>
+                    <leaves>
+                        <label>Leaves</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>leaves</action>
+                        <resource>default:employee</resource>
+                        <privilege>leaves</privilege>
+                       
+                    </leaves>
+                    <my_attendance>
+                        <label>My Attendance</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>my-attendance</action>
+                        <resource>default:employee</resource>
+                        <privilege>my-attendance</privilege>
+                       
+                    </my_attendance>
+                    <contacts>
+                        <label>Contacts</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>contacts</action>
+                        <resource>default:employee</resource>
+                        <privilege>contacts</privilege>
+                    </contacts>
+                    <notice>
+                        <label>Notices</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>notices</action>
+                        <resource>default:employee</resource>
+                        <privilege>notices</privilege>
+                        <pages>
+                            <notice_detail>
+                            <label>Notice Detail</label>
+                            <module>default</module>
+                            <controller>employee</controller>       
+                            <action>notice-detail</action>
+                            <resource>default:employee</resource>
+                            <privilege>notice-detail</privilege>
+                            </notice_detail>
+                        </pages>
+                    </notice>
+                    <photo_gallery>
+                        <label>Photo Gallery</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>gallery</action>
+                        <resource>default:employee</resource>
+                        <privilege>gallery</privilege>
+                        <pages>
+                            <view_pictures>
+                            <label>View Pictures</label>
+                            <module>default</module>
+                            <controller>employee</controller>       
+                            <action>view-pictures</action>
+                            <resource>default:employee</resource>
+                            <privilege>view-pictures</privilege>
+                            </view_pictures>
+                        </pages>
+                    </photo_gallery>
+                    
+                </pages>
+            </myaccount>
+            
+            <requests>
+                <label>Requests</label>
+                <module>default</module>
+                <controller>employee</controller>       
+                <action>create-request</action>
+                <resource>default:employee</resource>
+                <privilege>create-request</privilege>
+               
+                <pages>
+                    <my_requests>
+                        <label>My Requests</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>my-requests</action>
+                        <resource>default:employee</resource>
+                        <privilege>my-requests</privilege>
+                        <pages>
+                            <request_detail>
+                                <label>Request Detail</label>
+                                <module>default</module>
+                                <controller>employee</controller>       
+                                <action>request-detail</action>
+                                <resource>default:employee</resource>
+                                <privilege>request-detail</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </request_detail>
+                        </pages>
+                    </my_requests>
+                    
+                    <createrequest>
+                        <label>Create a new Request</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>create-request</action>
+                        <resource>default:employee</resource>
+                        <privilege>create-request</privilege>
+                    </createrequest>
+                   <request_received>
+                        <label>Request Received</label>
+                        <module>default</module>
+                        <controller>employee</controller>       
+                        <action>request-received</action>
+                        <resource>default:employee</resource>
+                        <privilege>request-received</privilege>
+                        <pages>
+                            <change_request_status>
+                                <label>Change Request Status</label>
+                                <module>default</module>
+                                <controller>employee</controller>       
+                                <action>change-request-status</action>
+                                <resource>default:employee</resource>
+                                <privilege>change-request-status</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </change_request_status>
+                        </pages>
+                    </request_received>
+                </pages>
+            </requests>
+            
+            <hr>
+                <label>HR-Section</label>
+                <module>default</module>
+                <controller>hr</controller>       
+                <action>employees</action>
+                <resource>default:hr</resource>
+                <privilege>employees</privilege>
+                
+                <pages>
+                    <employees>
+                        <label>Employees</label>
+                        <module>default</module>
+                        <controller>hr</controller>       
+                        <action>employees</action>
+                        <resource>default:hr</resource>
+                        <privilege>employees</privilege>
+                        
+                        <pages>
+                             <add_new_employee>
+                                <label>Add New Employee</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>add-new-employee</action>
+                                <resource>default:hr</resource>
+                                <privilege>add-new-employee</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_new_employee>
+                             <import_employee_sheet>
+                                <label>Import Employee Sheet</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>import-employee-sheet</action>
+                                <resource>default:hr</resource>
+                                <privilege>import-employee-sheet</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </import_employee_sheet>
+                            <edit_employee>
+                                <label>Edit Employee Profile</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>edit-employee</action>
+                                <resource>default:hr</resource>
+                                <privilege>edit-employee</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_employee>
+                            
+                            <manage_employee_leave>
+                                <label>Manage Employee Leaves</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>manage-employee-leaves</action>
+                                <resource>default:hr</resource>
+                                <privilege>manage-employee-leaves</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </manage_employee_leave>
+                            <employee_attendance>
+                                <label>Employee Attendance</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>employee-attendance</action>
+                                <resource>default:hr</resource>
+                                <privilege>employee-attendance</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </employee_attendance>
+                        </pages>
+                    </employees>
+                    <designation>
+                        <label>Designations</label>
+                        <module>default</module>
+                        <controller>hr</controller>       
+                        <action>designation</action>
+                        <resource>default:hr</resource>
+                        <privilege>designation</privilege>
+                        <pages>
+                            <add_new_designation>
+                                <label>Add New Designation</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>add-new-designation</action>
+                                <resource>default:hr</resource>
+                                <privilege>add-new-designation</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_new_designation>
+                             <edit_designation>
+                                <label>Edit Designation</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>edit-designation</action>
+                                <resource>default:hr</resource>
+                                <privilege>edit-designation</privilege>
+                                <display_in_sub>No</display_in_sub>
+                                
+                            </edit_designation>
+                        </pages>
+                    </designation>
+                    <departments>
+                        <label>Departments</label>
+                        <module>default</module>
+                        <controller>hr</controller>       
+                        <action>departments</action>
+                        <resource>default:hr</resource>
+                        <privilege>departments</privilege>
+                        <pages>
+                            <add_new_department>
+                                <label>Add New Department</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>add-new-department</action>
+                                <resource>default:hr</resource>
+                                <privilege>add-new-department</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_new_department>
+                             <edit_department>
+                                <label>Edit Department</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>edit-department</action>
+                                <resource>default:hr</resource>
+                                <privilege>edit-department</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_department>
+                        </pages>
+                    </departments>
+                    <leave_type>
+                        <label>Leave Types</label>
+                        <module>default</module>
+                        <controller>hr</controller>       
+                        <action>leave-types</action>
+                        <resource>default:hr</resource>
+                        <privilege>leave-types</privilege>
+                        
+                        <pages>
+                             <add_new_leave_type>
+                                <label>Add New Leave Type</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>add-new-leave-type</action>
+                                <resource>default:hr</resource>
+                                <privilege>add-new-leave-type</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_new_leave_type>
+                            <edit_leave_type>
+                                <label>Edit Leave Type</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>edit-leave-type</action>
+                                <resource>default:hr</resource>
+                                <privilege>edit-leave-type</privilege>
+                               <display_in_sub>No</display_in_sub>
+                            </edit_leave_type>
+                        </pages>
+                    </leave_type>
+                    <attendance>
+                        <label>Attendance</label>
+                        <module>default</module>
+                        <controller>hr</controller>       
+                        <action>attendance</action>
+                        <resource>default:hr</resource>
+                        <privilege>attendance</privilege>
+                        
+                        <pages>
+                             <import_attendance_sheet>
+                                <label>Import Attendance Sheet</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>import-attendance-sheet</action>
+                                <resource>default:hr</resource>
+                                <privilege>import-attendance-sheet</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </import_attendance_sheet>
+                        </pages>
+                    </attendance>
+                    <appriciation>
+                        <label>Appreciations</label>
+                        <module>default</module>
+                        <controller>hr</controller>       
+                        <action>appriciations</action>
+                        <resource>default:hr</resource>
+                        <privilege>appriciations</privilege>
+                        <pages>
+                           <add_appriciation>
+                                <label>Add Appreciation</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>add-appriciation</action>
+                                <resource>default:hr</resource>
+                                <privilege>add-appriciation</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_appriciation>
+                           <edit_appriciation>
+                                <label>Edit Appreciation</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>edit-appriciation</action>
+                                <resource>default:hr</resource>
+                                <privilege>edit-appriciation</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_appriciation>
+                            </pages>
+                    </appriciation>
+                    
+                    <appriciation_type>
+                        <label>Appreciation Types</label>
+                        <module>default</module>
+                        <controller>hr</controller>       
+                        <action>appriciation-type</action>
+                        <resource>default:hr</resource>
+                        <privilege>appriciation-type</privilege>
+                        <pages>
+                            <add_new_appriciation_type>
+                                <label>Add New Appreciation Type</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>add-new-appriciation-type</action>
+                                <resource>default:hr</resource>
+                                <privilege>add-new-appriciation-type</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_new_appriciation_type>
+                             <edit_appriciation_type>
+                                <label>Edit Appreciation Type</label>
+                                <module>default</module>
+                                <controller>hr</controller>       
+                                <action>edit-appriciation-type</action>
+                                <resource>default:hr</resource>
+                                <privilege>edit-appriciation-type</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_appriciation_type>
+                        </pages>
+                    </appriciation_type>
+                </pages>
+            </hr>
+            <gallery>
+                <label>Photo Gallery</label>
+                <module>default</module>
+                <controller>gallery</controller>       
+                <action>index</action>
+                <resource>default:gallery</resource>
+                <privilege>index</privilege>
+                <pages>
+                    <albums>
+                        <label>Albums</label>
+                        <module>default</module>
+                        <controller>gallery</controller>       
+                        <action>albums</action>
+                        <resource>default:gallery</resource>
+                        <privilege>albums</privilege>
+                        <pages>
+                            <add_album>
+                                <label>Add Album</label>
+                                <module>default</module>
+                                <controller>gallery</controller>       
+                                <action>add-album</action>
+                                <resource>default:gallery</resource>
+                                <privilege>add-album</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_album>
+                             <edit_album>
+                                <label>Edit Album</label>
+                                <module>default</module>
+                                <controller>gallery</controller>       
+                                <action>edit-album</action>
+                                <resource>default:gallery</resource>
+                                <privilege>edit-album</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_album>
+                            <add_pictures>
+                                <label>Add Pictures</label>
+                                <module>default</module>
+                                <controller>gallery</controller>       
+                                <action>add-pictures</action>
+                                <resource>default:gallery</resource>
+                                <privilege>add-pictures</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </add_pictures>
+                        </pages>
+                    </albums>
+                </pages>
+            </gallery>
+            
+             <pm>
+                <label>Project Management</label>
+                <module>default</module>
+                <controller>pm</controller>       
+                <action>projects</action>
+                <resource>default:pm</resource>
+                <privilege>projects</privilege>
+                <pages>
+                    <projects>
+                        <label>Projects</label>
+                        <module>default</module>
+                        <controller>pm</controller>       
+                        <action>projects</action>
+                        <resource>default:pm</resource>
+                        <privilege>projects</privilege>
+                        <pages>
+                            <add_project>
+                                <label>Add Project</label>
+                                <module>default</module>
+                                <controller>pm</controller>       
+                                <action>add-project</action>
+                                <resource>default:pm</resource>
+                                <privilege>add-project</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_project>
+                            <edit_project>
+                                <label>Edit Project</label>
+                                <module>default</module>
+                                <controller>pm</controller>       
+                                <action>edit-project</action>
+                                <resource>default:pm</resource>
+                                <privilege>edit-project</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_project>
+                        </pages>
+                    </projects>
+                   
+                </pages>
+            </pm>
+            
+            <cms>
+                <label>CMS</label>
+                <module>default</module>
+                <controller>cms</controller>       
+                <action>pages</action>
+                <resource>default:cms</resource>
+                <privilege>pages</privilege>
+                <pages>
+                    <cms_pages>
+                        <label>Pages</label>
+                        <module>default</module>
+                        <controller>cms</controller>       
+                        <action>pages</action>
+                        <resource>default:cms</resource>
+                        <privilege>pages</privilege>
+                        <pages>
+                            <add_page>
+                                <label>Add New Page</label>
+                                <module>default</module>
+                                <controller>cms</controller>       
+                                <action>add-page</action>
+                                <resource>default:cms</resource>
+                                <privilege>add-page</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_page>
+                            <edit_page>
+                                <label>Edit Page</label>
+                                <module>default</module>
+                                <controller>cms</controller>       
+                                <action>edit-page</action>
+                                <resource>default:cms</resource>
+                                <privilege>edit-page</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_page>
+                        </pages>
+                    </cms_pages>
+                    <notice>
+                        <label>Notices</label>
+                        <module>default</module>
+                        <controller>cms</controller>       
+                        <action>notices</action>
+                        <resource>default:cms</resource>
+                        <privilege>notices</privilege>
+                        <pages>
+                            <add_notice>
+                                <label>Add Notice</label>
+                                <module>default</module>
+                                <controller>cms</controller>       
+                                <action>add-notice</action>
+                                <resource>default:cms</resource>
+                                <privilege>add-notice</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_notice>
+                            <edit_notice>
+                                <label>Edit Notice</label>
+                                <module>default</module>
+                                <controller>cms</controller>       
+                                <action>edit-notice</action>
+                                <resource>default:cms</resource>
+                                <privilege>edit-notice</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_notice>
+                        </pages>
+                    </notice>
+                </pages>
+            </cms>
+            
+            </pages>
+             </home>
+	</nav>
+</configdata>

@@ -1,0 +1,22 @@
+<!--<table>
+    <tbody>
+        <tr>
+            <td><img src="<?php echo $this->profile_image?>" /></td>
+           
+        </tr>
+    </tbody>
+</table>
+-->
+
+<span id="profile-image" ><img src="<?php echo $this->profile_image?>" /></span>
+<div id="profile-div">
+<?php echo $this->form;?>
+</div>
+<script type="text/javascript">
+$(function() {
+    $("#dob").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+    $("#doj").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+    $("#marriageAnniversary").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+});
+
+</script>

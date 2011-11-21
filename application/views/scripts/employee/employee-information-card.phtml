@@ -1,0 +1,37 @@
+<?php
+if($this->align=="")
+    $this->align="left";
+if($this->label=="")
+    $this->label="Employee Information Card";
+
+?>
+<div class="content-box column-<?php echo  $this->align?> <?php echo  $this->box_status?> ">
+    <div class="content-box-header">
+        <h3 style="cursor: s-resize;"><?php echo $this->label?></h3>
+    </div> <!-- End .content-box-header -->
+
+    <div class="content-box-content" style="display: block; min-height:140px">
+    <div class="tab-content default-tab" style="display: block;">
+    
+           
+            
+        <div class="profileImage">
+            <img  src="/image/thumb/size/large/path/<?php echo base64_encode($this->user->getProfileImage())?>" />
+        </div>
+            <div class="empinfo" >
+                <p>Name: <?php echo $this->user->getFirstName()." ".$this->user->getLastName();?></p>
+               
+               <p>Code: <?php echo $this->user->getEmployeeCode()?></p>
+               
+               <p>Department: <?php echo $this->user->getDepartment()?></p>
+               
+               <p>Designation: <?php echo $this->user->getDesignation()?></p>
+              
+               <p>Email: <?php echo $this->user->getEmail()?></p>
+            </div>
+           
+        
+            
+    </div> <!-- End #tab3 -->        
+    </div> <!-- End .content-box-content -->
+</div>

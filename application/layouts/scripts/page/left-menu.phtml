@@ -1,0 +1,49 @@
+<ul id="main-nav"> 
+<?php
+foreach ($this->container as $page)
+{
+     if ($page->isVisible() && $this->navigation()->accept($page)) 
+     {
+         foreach ($page as $p)
+         {
+             if ($p->isVisible() && $this->navigation()->accept($p)) 
+             {
+                 $isActive = $p->isActive(true);
+                 $activeClass = $isActive ? ' current"' : '';
+                ?>
+                <li>
+                    <a style="padding-right: 15px;" href="#" class="nav-top-item<?php if(count($p)==0){?>no-submenu<?php }?> <?php echo $activeClass?>"><?php echo $p->getLabel()?></a>
+
+                    <?php  
+                    if(count($p)>0)
+                    {
+                        ?>
+                        <ul >
+                        <?php
+                        
+                            foreach ($p as $_p)
+                            {
+                                if ($_p->isVisible() && $this->navigation()->accept($_p)) 
+                                {
+                                    $isActive = $_p->isActive(true);
+                                    $activeClass = $isActive ? ' current"' : '';
+                                ?>  
+                                    <li><a class="<?php echo $activeClass?>" href="<?php echo  $this->seoUrl($_p->getHref())?>"><?php echo $_p->getLabel()?></a></li>
+                                <?php 
+                                }//end if
+                            }
+                        
+                        ?>
+                        </ul>
+                        <?php
+                    }
+                    ?>
+                </li>
+
+                <?php
+             }//end if
+         }
+     }//end if
+}
+?>
+</ul>

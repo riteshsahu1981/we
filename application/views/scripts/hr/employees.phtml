@@ -1,0 +1,85 @@
+<form method="post" action="<?php echo $this->seoUrl("/hr/employees")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Name</th>
+            <th>Emp. Code</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Status</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            <td><?php echo $item->first_name." ".$item->middle_name." ".$item->last_name; ?></td>
+            <td><?php echo $item->employee_code; ?></td>
+            <td><?php echo $item->email; ?></td>
+            <td><?php echo $item->department_name; ?></td>
+            <td><?php echo $item->status; ?></td>
+            <td>
+                <!-- Icons -->
+                <a title="Edit" href="<?php echo $this->seoUrl("/hr/edit-employee/id/".$item->id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                <?php if( $item->status=="active") {
+                    $title="Click here to make employee inactive!";
+                    $image="/images/icons/tick_circle.png";
+                }else{
+                    $image="/images/icons/cross_circle.png";
+                    $title="Click here to make employee active!";
+                }?>
+                
+                &nbsp;&nbsp;
+                <a title="<?php echo $title?>" href="<?php echo $this->seoUrl("/hr/change-employee-status/id/".$item->id)?>"><img alt="<?php echo $title?>"  src="<?php echo $image?>"></a> 
+                &nbsp;&nbsp;
+                <a  href="<?php echo $this->seoUrl("/hr/manage-employee-leaves/id/".$item->id)?>">Leaves</a> 
+                &nbsp;&nbsp;
+                <a href="<?php echo $this->seoUrl("/hr/employee-attendance/id/".$item->id)?>">Attendance</a> 
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
