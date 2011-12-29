@@ -5,6 +5,22 @@
         <option <?php if($this->status=="open"){echo "selected='selected'";}?>value="open">Open</option>
         <option <?php if($this->status=="close"){echo "selected='selected'";}?>value="close">Close</option>
     </select>
+    <?php if(count($this->projectManagers)>0){?>
+    <select name='project_manager_id'>
+        <option value=''>Project Manager</option>
+        <?php foreach($this->projectManagers as $pm){?>
+        <option <?php if($this->project_manager_id==$pm->project_manager_id){echo "selected='selected'";}?>value="<?php echo $pm->project_manager_id?>"><?php echo $pm->first_name." ".$pm->last_name?></option>
+        <?php }?>
+    </select>
+    <?php }?>
+    <?php if(count($this->teamLeaders)>0){?>
+    <select name='team_leader_id'>
+        <option value=''>Team Leader</option>
+        <?php foreach($this->teamLeaders as $tl){?>
+        <option <?php if($this->team_leader_id==$tl->team_leader_id){echo "selected='selected'";}?>value="<?php echo $tl->team_leader_id?>"><?php echo $tl->first_name." ".$tl->last_name?></option>
+        <?php }?>
+    </select>
+    <?php }?>
     <input type="submit" value="Search" name="submit" class="button"/>
 </form>
 <?php if (count($this->paginator)): ?>
@@ -26,7 +42,7 @@ if($page>1)
         <?php if($this->paginator->count()>1):?>
         
             <tr>
-                <td colspan="6">
+                <td colspan="7">
                          <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
                         <div class="clear"></div>
                 </td>
@@ -37,6 +53,8 @@ if($page>1)
             <th>S.No.</th>
             <th>Title</th>
             <th>Status</th>
+            <th>Project Manager</th>
+            <th>Team Leader</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Action</th>
@@ -51,6 +69,9 @@ if($page>1)
             
             <td><?php echo $item->title; ?></td>
             <td <?php if($item->status=="close"){?> style="color:red" <?php }?>    > <?php echo $item->status; ?></td>
+            
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->pm_id?>','<?php echo $item->pm_first_name." ".$item->pm_last_name; ?>')"><?php echo $item->pm_first_name." ".$item->pm_last_name; ?></a></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->tl_id?>','<?php echo $item->tl_first_name." ".$item->tl_last_name; ?>')"><?php echo $item->tl_first_name." ".$item->tl_last_name; ?></a></td>
             <td><?php echo $item->start_date; ?></td>
             <td><?php echo $item->end_date; ?></td>
             <td>
@@ -63,8 +84,8 @@ if($page>1)
         <?php if($this->paginator->count()>1):?>
         <tfoot>
             <tr>
-                <td colspan="6">
-                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                <td colspan="7">
+                        <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
                         <div class="clear"></div>
                 </td>
             </tr>
@@ -74,3 +95,47 @@ if($page>1)
     </tbody>
 </table>
 <?php endif; ?>
+<script>
+    
+    function openD(user_id,user_full_name)
+    {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+         $("#userInfo").html("");
+        $( "#dialog-modal" ).dialog({
+                height: 460,
+                width: 420,
+                modal: true,
+                title: user_full_name
+        });
+        $("#imgLoading").show();
+        var params='id='+user_id;
+        $.ajax({
+                   type: "POST",
+                   url: "/employee/employee-info",
+                   data: params,
+                   dataType: "html",
+                   success: function(html)
+                   {
+                       $("#imgLoading").hide();
+                        $("#userInfo").html(html);
+                    
+                        
+                   },
+                   error: function (json, status, e)
+                   {
+                      $("#userInfo").html("Error");
+                       $("#imgLoading").hide();
+                   }
+               });
+
+
+       
+    }
+
+</script>
+
+<div id="dialog-modal" title="User Information" style="display:none">
+    <img style="display:none" id="imgLoading" src="/images/loading.gif"/>
+	<div id="userInfo"></div>
+        
+</div>

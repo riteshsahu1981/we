@@ -3,7 +3,12 @@ class Base_Date extends Zend_Date
 {
 
 	protected $_sysDateFormat;
-	
+	public function __construct($date = null, $part = null, $locale = null)
+        {
+            
+            parent::__construct($date = null, $part = null, $locale = null);
+            $this->setTimezone('Asia/Calcutta');
+        }
 	public function getSysDate($timestamp, $full=true)
 	{
 		$timestamp=(int)$timestamp;

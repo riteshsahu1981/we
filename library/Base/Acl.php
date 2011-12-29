@@ -28,7 +28,9 @@ class Base_Acl  extends Zend_Acl{
               ->add(new Zend_Acl_Resource('default:image','default'))
               ->add(new Zend_Acl_Resource('default:cms','default'))
               ->add(new Zend_Acl_Resource('default:pm','default'))
-                ->add(new Zend_Acl_Resource('default:gallery','default'))
+              ->add(new Zend_Acl_Resource('default:job','default'))
+              ->add(new Zend_Acl_Resource('default:gallery','default'))
+              ->add(new Zend_Acl_Resource('default:library','default'))
               ->add(new Zend_Acl_Resource('default:index','default'));
                       
     }
@@ -39,12 +41,16 @@ class Base_Acl  extends Zend_Acl{
 	$this->allow('guest',array('default:index', 'default:error', 'default:image'));
         
         /* employee */
-	$this->allow('employee',array('default:employee'));
-        //$this->deny('employee',array('default:employee'), array('create-request'));
-      //$this->allow('employee',array('default:hr'));
-        /* human_resource */
-        $this->allow('human_resource',array('default:hr','default:cms','default:gallery'));
+	$this->allow('employee',array('default:employee','default:job', "default:library"));
+        $this->deny('employee','default:job',array('jobs','add-job-opening', 'edit-job-opening'));
+        $this->deny('employee','default:library',array('issue-book','return-book', 'history','manage-books','add-book','edit-book'));
+
         
+        
+        //$this->allow('employee',array('default:job'), array('current-job-openings'));
+        /* human_resource */
+        $this->allow('human_resource',array('default:hr','default:cms','default:gallery', 'default:library','default:job'));
+        //$this->deny('human_resource','default:job',array('current-job-openings'));
         /* project manager */
         $this->allow('project_manager',array('default:pm'));
         

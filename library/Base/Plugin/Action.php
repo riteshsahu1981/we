@@ -57,55 +57,46 @@ class Base_Plugin_Action extends Zend_Controller_Plugin_Abstract{
 
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-		/*$frontendOptions = array(
-				'lifeTime' => 30,
-				'debug_header' => true,
-				'regexps' => array(
-					'^/' => array(
-						'cache' => true,
-						'cache_with_cookie_variables' => true,
-					)
-				)
-			);
-		 
-			$backendOptions = array(
-				'cache_dir' => PUBLIC_PATH.'/cache/'
-			);
-		 
-			$cache = Zend_Cache::factory(
-				'Page',
-				'File',
-				$frontendOptions,
-				$backendOptions
-			);
-		 
-			$cache->start();
-*/
-		/*
-		$cookie=new Base_Http_Cookie();
-		if(!$cookie->isExpired('rememberMe'))
-		{
-            if(Zend_Auth::getInstance()->hasIdentity()!=true )
-            {
-				//print_r($cookie->getCookie('rememberMe'));							  
-				$params=unserialize(base64_decode($cookie->getCookie('rememberMe')));
-				$Auth = new Base_Auth_Auth();
-				$Auth ->doLogout();
-				$loginStatusEmail=true;
-				$loginStatusUsername=true;
-				
-				$loginStatusEmail=$Auth->doLogin($params, 'email');
-				if($loginStatusEmail==false){
-					$loginStatusUsername=$Auth->doLogin($params, 'username');
-				}
-            }
-		}
-		*/
-		if(Zend_Auth::getInstance()->hasIdentity()!=true )
-		{
-			//$user=new Application_Model_User();
-			//$result=$user->doFacebookLogin();
-		}//end of has identity
+        if(Zend_Auth::getInstance()->hasIdentity()==true )
+        {
+            $username=Zend_Auth::getInstance()->getIdentity();
+                
+             $request_uri=$request->getRequestUri();
+             $params="username={$username}";
+             
+             foreach($request->getParams() as $k=>$v)
+             {
+               if($request->getControllerName()!="error")
+                $params.="&{$k}={$v}"; 
+             }
+
+             $usersNs = new Zend_Session_Namespace("members");
+             $user_id=$usersNs->userId;
+             $date=date("Y-m-d H:i:s");
+             $remote_addr=$_SERVER['REMOTE_ADDR'];
+             $table_name="log_".date("Y_m");
+           $INSERT="INSERT INTO {$table_name} SET 
+             request_uri='{$request_uri}',
+             params='{$params}',
+             remote_addr='{$remote_addr}',
+             user_id='{$user_id}',
+             addedon='{$date}';  
+             ";
+
+           $CREATE=" CREATE TABLE IF NOT EXISTS `{$table_name}` (
+              `id` int(14) NOT NULL auto_increment,
+              `request_uri` tinytext NOT NULL,
+              `params` text NOT NULL,
+              `remote_addr` varchar(255) NOT NULL,
+              `user_id` int(11) NOT NULL,
+              `addedon` datetime NOT NULL,
+              PRIMARY KEY  (`id`)
+            ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+             
+              $db=Zend_Registry::get('db');
+              $db->query($CREATE.$INSERT);
+              
+        }
     } 
 
     public function postDispatch(Zend_Controller_Request_Abstract $request)

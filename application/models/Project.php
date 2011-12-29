@@ -323,6 +323,32 @@ class Application_Model_Project {
         }
         return $arrUserLevel;	
     }
+    
+    
+    public function getActiveProjectManagers()
+    {
+        $table=$this->getMapper()->getDbTable();
+        $PM = $table->select()
+                    ->distinct()
+                    ->setIntegrityCheck(false)
+                    ->from(array("p"=>'project'),'project_manager_id')
+                    ->join(array("u"=>"user"),'u.id=p.project_manager_id', array("first_name", 'last_name'))
+                    ->order('u.first_name asc');
+        $res=$table->fetchAll($PM);
+        return $res;
+    }
+    public function getActiveTeamLeaders()
+    {
+        $table=$this->getMapper()->getDbTable();
+        $PM = $table->select()
+                    ->distinct()
+                    ->setIntegrityCheck(false)
+                    ->from(array("p"=>'project'),'team_leader_id')
+                    ->join(array("u"=>"user"),'u.id=p.team_leader_id', array("first_name", 'last_name'))
+                    ->order('u.first_name asc');
+        $res=$table->fetchAll($PM);
+        return $res;
+    }
     /*------Data utility functions------*/
     
     

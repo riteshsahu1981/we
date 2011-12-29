@@ -23,19 +23,19 @@ class ErrorController extends Base_Controller_Action
             	
          //var_dump($this->_getParam('controller'));
         
-                    $userM=new Application_Model_User();
-                    $user=$userM->fetchRow("username='{$this->_getParam('controller')}'");
-
-                    if($user!==false)
-                    {
-                        $flag=false;
-                        //Forward to the controller
-                       $this->_forward('index','profile','default',
-                                                array(
-                                                     'id' => $user->getId()
-                                                ));
-  
-                    } 
+//                    $userM=new Application_Model_User();
+//                    $user=$userM->fetchRow("username='{$this->_getParam('controller')}'");
+//
+//                    if($user!==false)
+//                    {
+//                        $flag=false;
+//                        //Forward to the controller
+//                       $this->_forward('index','profile','default',
+//                                                array(
+//                                                     'id' => $user->getId()
+//                                                ));
+//  
+//                    } 
                     
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
 

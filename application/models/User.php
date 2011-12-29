@@ -781,7 +781,7 @@ class Application_Model_User {
                        $options['employeeCode']=$worksheet->getCell("A".$row->getRowIndex())->getCalculatedValue();
                        $options['email']=$worksheet->getCell("B".$row->getRowIndex())->getCalculatedValue();
                        $options['username']=$worksheet->getCell("C".$row->getRowIndex())->getCalculatedValue();
-                       $options['password']=$worksheet->getCell("D".$row->getRowIndex())->getCalculatedValue();
+                       //$options['password']=$worksheet->getCell("D".$row->getRowIndex())->getCalculatedValue();
                        $options['firstName']=$worksheet->getCell("E".$row->getRowIndex())->getCalculatedValue();
                        $options['middleName']=$worksheet->getCell("F".$row->getRowIndex())->getCalculatedValue();
                        $options['lastName']=$worksheet->getCell("G".$row->getRowIndex())->getCalculatedValue();

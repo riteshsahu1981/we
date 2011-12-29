@@ -1,0 +1,134 @@
+<form method="post" action="<?php echo $this->seoUrl("/library/".$this->actionName)?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <select name='status'>
+        <option value=''>Status</option>
+        <option <?php if($this->status=="available"){echo "selected='selected'";}?>value="available">Available</option>
+        <option <?php if($this->status=="issued"){echo "selected='selected'";}?>value="issued">Issued</option>
+    </select>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Author</th>
+            <th>Status</th>
+            
+            <th> <?php if($this->actionName=="manage-books"){?>Action<?php }?></th>
+            
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            
+            <td><a href="javascript:#" onclick="bookDetail('<?php echo $item->id; ?>','<?php echo $item->title; ?>')"><?php echo $item->title; ?></a></td>
+            <td><a href="javascript:#" onclick="bookDetail('<?php echo $item->id; ?>','<?php echo $item->title; ?>')"><?php echo $item->isbn; ?></a></td>
+            <td> <?php echo $item->author; ?></td>
+             <td> <?php if(is_null($item->issue_date)){echo "Available";}else{echo "Issued";} ?></td>
+            <td>
+                <!-- Icons -->
+               <?php if($this->actionName=="manage-books"){?>
+                <a title="Edit" href="<?php echo $this->seoUrl("/library/edit-book/id/".$item->id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                &nbsp;
+                 <?php if(is_null($item->issue_date)){?>
+                <a title="Issue" href="<?php echo $this->seoUrl("/library/issue-book/id/".$item->id)?>">Issue</a>
+                <?php }else{ ?>
+                <a title="Return" href="<?php echo $this->seoUrl("/library/return-book/id/".$item->id)?>">Return</a>
+                <?php } ?>
+                &nbsp;
+                <a title="History" href="<?php echo $this->seoUrl("/library/history/id/".$item->id)?>">History  </a>
+                <?php }?>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="6">
+                        <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+
+
+<script>
+    
+    function bookDetail(book_id,book_title)
+    {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+         $("#userInfo").html("");
+        $( "#dialog-modal" ).dialog({
+                height: 460,
+                width: 420,
+                modal: true,
+                title: book_title
+        });
+        $("#imgLoading").show();
+        var params='id='+book_id;
+        $.ajax({
+                   type: "POST",
+                   url: "/library/book-detail",
+                   data: params,
+                   dataType: "html",
+                   success: function(html)
+                   {
+                       $("#imgLoading").hide();
+                        $("#userInfo").html(html);
+                    
+                        
+                   },
+                   error: function (json, status, e)
+                   {
+                      $("#userInfo").html("Error");
+                       $("#imgLoading").hide();
+                   }
+               });
+
+
+       
+    }
+
+</script>
+
+<div id="dialog-modal" title="User Information" style="display:none">
+    <img style="display:none" id="imgLoading" src="/images/loading.gif"/>
+	<div id="userInfo"></div>
+        
+</div>
+

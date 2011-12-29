@@ -65,6 +65,8 @@
                                     $page = $this->navigation()->findActive($this->navigation()->getContainer());
                                     if(isset($page['page']))
                                     echo $page['page']->getLabel();
+                                    if($this->totalItems!="")
+                                    echo " - Total ".$this->totalItems."(s) records found!";
                                 ?></h3>
                                 <div class="clear"></div>
                             </div> <!-- End .content-box-header -->

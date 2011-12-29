@@ -25,6 +25,7 @@ class CmsController extends Base_Controller_Action
             $paginator =  Base_Paginator::factory($select);
             $paginator->setItemCountPerPage($page_size);
             $paginator->setCurrentPageNumber($page);
+        $this->view->totalItems= $paginator->getTotalItemCount();
 
             $this->view->paginator=$paginator;
         }
@@ -236,7 +237,8 @@ class CmsController extends Base_Controller_Action
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
+
         $this->view->paginator=$paginator;
     }
 	

@@ -383,7 +383,8 @@ ul.content-box-tabs li a.current {
                 padding: 4px;
 				border: 1px solid #ccc;
                 }      
-				
+
+                
 /*************** Pagination ***************/
 
 #main-content .pagination {
@@ -1031,14 +1032,14 @@ font-weight: bold;
     padding:5px;
     border: 1px solid #459300 ;
     margin-left:43px;
-    width:80px;
+    width:85px;
 }
 
 .album_pic_thumb{
     float:left;
     padding:2px;
-    max-width:120px;
-    min-height:120px;
+    width:120px;
+    height:120px;
      margin:5px;
     
     
@@ -1065,3 +1066,44 @@ font-weight: bold;
     max-width:100px;
     min-height:100px;
 }
+
+/************ Table employee-info-content  ************/
+#employee-info-content {
+    
+}
+#employee-info-content table {
+                width: 100%;
+                border-collapse: collapse;
+                }
+                
+#employee-info-content table thead th {
+                font-weight: bold;
+                font-size: 15px;
+/*                border-bottom: 1px solid #ddd;*/
+                }
+                
+
+                
+#employee-info-content tbody tr {
+/*                background: #fff;*/
+/*                vertical-align: baseline;*/
+                }
+              
+#employee-info-content tbody tr.alt-row {
+                background: #f3f3f3;
+                }
+                
+#employee-info-content table td,
+#employee-info-content table th {
+                padding: 5px;
+                line-height: 1.3em;
+                }        
+				
+#employee-info-content table tfoot td .bulk-actions {
+                padding:5px 0 5px 0;
+                } 
+				
+#employee-info-content table tfoot td .bulk-actions select {
+                padding: 4px;
+/*                border: 1px solid #ccc;*/
+                } 

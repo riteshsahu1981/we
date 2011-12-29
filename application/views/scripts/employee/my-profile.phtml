@@ -4,7 +4,7 @@
 ?>
 <table>
     <tbody>
-        <tr ><td colspan="2"><img src="<?php echo $this->user->getProfileImage()?>"></img></td></tr>
+        <tr ><td colspan="2"><img src="<?php echo $this->user->getProfileImage()?>"></img> <?php //echo $this->form ?></td></tr>
         <tr ><td>Employee Code :</td><td><?php echo $this->user->getEmployeeCode()?></td></tr>
         <tr ><td>Name : </td><td><?php echo $this->user->getFirstName()." ".$this->user->getLastName() ?></td></tr>
         <tr ><td>Designation : </td><td><?php echo $this->user->getDesignation() ?></td></tr>
@@ -21,5 +21,6 @@
         <tr ><td>Date of Joining:</td><td><?php echo $this->formatDate(strtotime($this->user->getDoj()), false)?></td></tr>
         <tr ><td>Marriage Aniversary :</td><td><?php echo $this->formatDate(strtotime($this->user->getMarriageAnniversary()), false)?></td></tr>
         <tr ><td>Gender :</td><td><?php echo ucfirst( $this->user->getSex())?></td></tr>
+        <tr ><td>Correspondence Address :</td><td><?php echo  $this->user->getCorrespondenceAddress()?></td></tr>
     </tbody>
 </table>

@@ -87,9 +87,9 @@ for($i=1;$i<=$no_of_days;$i++)
 $calender.= "</tr></table>";
 
 ?>
-<div class='attendance-total'>Present : <?php echo $total_present?></div>
+<div class='attendance-total'>Present : <?php echo ($total_present + ($total_halfday/2)) ?></div>
 <div class='attendance-total'>Absent : <?php echo $total_absent?></div>
 <div class='attendance-total'>Half day : <?php echo $total_halfday?></div>
-<div id="calendar"><?php echo $calender;?></div>
+<br class="clear"/><div id="calendar"><?php echo $calender;?></div>
 
 

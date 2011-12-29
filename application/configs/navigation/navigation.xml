@@ -56,7 +56,7 @@
                         <privilege>change-password</privilege>
                        
                     </changepassword>
-                    <leaves>
+<!--                    <leaves>
                         <label>Leaves</label>
                         <module>default</module>
                         <controller>employee</controller>       
@@ -64,7 +64,7 @@
                         <resource>default:employee</resource>
                         <privilege>leaves</privilege>
                        
-                    </leaves>
+                    </leaves>-->
                     <my_attendance>
                         <label>My Attendance</label>
                         <module>default</module>
@@ -412,6 +412,135 @@
                     </appriciation_type>
                 </pages>
             </hr>
+            <job>
+                <label>Job</label>
+                <module>default</module>
+                <controller>job</controller>       
+                <action>index</action>
+                <resource>default:job</resource>
+                <privilege>index</privilege>
+               
+                <pages>
+                    <jobs>
+                        <label>Jobs</label>
+                        <module>default</module>
+                        <controller>job</controller>       
+                        <action>jobs</action>
+                        <resource>default:job</resource>
+                        <privilege>jobs</privilege>
+                        <pages>
+                            <add_job_opening>
+                                <label>Add Job Opening</label>
+                                <module>default</module>
+                                <controller>job</controller>       
+                                <action>add-job-opening</action>
+                                <resource>default:job</resource>
+                                <privilege>add-job-opening</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_job_opening>
+                            <edit_job_opening>
+                                <label>Edit Job Opening</label>
+                                <module>default</module>
+                                <controller>job</controller>       
+                                <action>edit-job-opening</action>
+                                <resource>default:job</resource>
+                                <privilege>edit-job-opening</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_job_opening>
+                        </pages>
+                       
+                    </jobs>
+                    
+                    <current_job_openings>
+                        <label>Current Job Openings</label>
+                        <module>default</module>
+                        <controller>job</controller>       
+                        <action>current-job-openings</action>
+                        <resource>default:job</resource>
+                        <privilege>current-job-openings</privilege>
+                    </current_job_openings>
+                   
+                  
+                </pages>
+            </job>
+          <library>
+                <label>Library</label>
+                <module>default</module>
+                <controller>library</controller>       
+                <action>search-books</action>
+                <resource>default:library</resource>
+                <privilege>search-books</privilege>
+               
+                <pages>
+                    <search_books>
+                        <label>Search Books</label>
+                        <module>default</module>
+                        <controller>library</controller>       
+                        <action>search-books</action>
+                        <resource>default:library</resource>
+                        <privilege>search-books</privilege>
+                       
+                    </search_books>
+                    
+                   
+                   <manage_books>
+                        <label>Manage Books</label>
+                        <module>default</module>
+                        <controller>library</controller>       
+                        <action>manage-books</action>
+                        <resource>default:library</resource>
+                        <privilege>manage-books</privilege>
+                        <pages>
+                            <add_book>
+                                <label>Add Book</label>
+                                <module>default</module>
+                                <controller>library</controller>       
+                                <action>add-book</action>
+                                <resource>default:library</resource>
+                                <privilege>add-book</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_book>
+                            <edit_book>
+                                <label>Edit Book</label>
+                                <module>default</module>
+                                <controller>library</controller>       
+                                <action>edit-book</action>
+                                <resource>default:library</resource>
+                                <privilege>edit-book</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_book>
+                            <issue_book>
+                                <label>Issue Book</label>
+                                <module>default</module>
+                                <controller>library</controller>       
+                                <action>issue-book</action>
+                                <resource>default:library</resource>
+                                <privilege>issue-book</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </issue_book>
+                            <return_book>
+                                <label>Return Book</label>
+                                <module>default</module>
+                                <controller>library</controller>       
+                                <action>return-book</action>
+                                <resource>default:library</resource>
+                                <privilege>return-book</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </return_book>
+                            <history>
+                                <label>Book History</label>
+                                <module>default</module>
+                                <controller>library</controller>       
+                                <action>history</action>
+                                <resource>default:library</resource>
+                                <privilege>history</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </history>
+                        </pages>
+                    </manage_books>
+                </pages>
+            </library>
+            
             <gallery>
                 <label>Photo Gallery</label>
                 <module>default</module>

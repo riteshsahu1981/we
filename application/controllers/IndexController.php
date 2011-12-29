@@ -87,6 +87,49 @@ class IndexController extends Base_Controller_Action
       
     }
     
+    public function forgotPasswordAction()
+    {
+        $this->view->pageHeading="Forgot Password";
+            $request = $this->getRequest();
+            
+            $this->view->form=$form=new Application_Form_Login();
+            $elements=$form->getElements();
+            $form->clearDecorators();
+
+            foreach($elements as $element)
+            {
+                $element->removeDecorator('label');
+                $element->removeDecorator('Errors');
+            }   
+            $form->removeElement('password');
+            if ($request->isPost())
+            {
+                if($form->isValid($request->getPost()))
+                {
+                    $params=$request->getParams();
+                    $user=new Application_Model_User();
+                    $user=$user->fetchRow("email='{$params['email']}'");
+                    if($user)
+                    {
+                        $auth=new Base_Auth_Auth();
+                        $auth->recoverPassword($user);
+                        $this->_flashMessenger->addMessage(array('success'=>'Your password has been reset. Please check your email.'));
+                        $this->_helper->_redirector->gotoUrl($this->view->seoUrl('/index/login'));
+                    }
+                    else
+                    {
+                        $this->_flashMessenger->addMessage(array('error'=>"Invalid email address!"));
+                        $this->_helper->_redirector->gotoUrl($this->view->seoUrl('/index/forgot-password'));
+                    }
+                    
+                }
+                else
+                {
+                    $this->view->email_msg=array_pop($form->getMessages('email'));
+                }
+            }
+    }
+    
     
 
 }//end of class

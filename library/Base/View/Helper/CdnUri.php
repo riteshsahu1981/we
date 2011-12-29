@@ -8,7 +8,6 @@ class Base_View_Helper_CdnUri extends Zend_View_Helper_Abstract
 		{
 			$uri=Zend_Registry::get('cdn_uri');
 		}
-                
 		return $uri;
 	}
 }

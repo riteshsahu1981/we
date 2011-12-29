@@ -55,7 +55,7 @@ class Application_Form_Login extends Zend_Form
            
              
             'label'      => 'Email/Username',
-            'autocomplete'=>"off",
+            
             'decorators' => $this->elementDecorators,
         ));
 
@@ -70,7 +70,7 @@ class Application_Form_Login extends Zend_Form
            
             'label'      => 'Password',
             "class"	=> "text-input small-input",
-            'autocomplete'=>"off",
+            
             'decorators' => $this->elementDecorators,
         ));
         

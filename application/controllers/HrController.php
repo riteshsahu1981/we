@@ -29,7 +29,7 @@ class HrController extends Base_Controller_Action
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
         $this->view->paginator=$paginator;
     }
     
@@ -154,6 +154,9 @@ class HrController extends Base_Controller_Action
     { 
         /*--search---*/
         $search = trim($this->_getParam('search'));
+        $status = trim($this->_getParam('status'));
+        $department_id = trim($this->_getParam('department_id'));
+        $designation_id = trim($this->_getParam('designation_id'));
         $where="status!='deleted'";
         $this->view->linkArray=array();
         $this->view->search="Search...";
@@ -162,6 +165,33 @@ class HrController extends Base_Controller_Action
             $where="(first_name like '%{$search}%' or last_name like '%{$search}%' or email like '%{$search}%' or skype like '%{$search}%' or d.title like '%{$search}%' or  username like '%{$search}%' or  employee_code like '%{$search}%') and status!='deleted'";
             $this->view->linkArray=array('search'=>$search);
             $this->view->search=$search;
+        }
+        if($status<>"")
+        {
+            if(is_null($where))
+                $where.=" status='$status'";
+            else
+                $where.=" and status='$status'";
+            $linkArray['status']=$status;
+            $this->view->status=$status;
+        }
+        if($department_id<>"")
+        {
+            if(is_null($where))
+                $where.=" department_id='$department_id'";
+            else
+                $where.=" and department_id='$department_id'";
+            $linkArray['department_id']=$department_id;
+            $this->view->department_id=$department_id;
+        }
+        if($designation_id<>"")
+        {
+            if(is_null($where))
+                $where.=" designation_id='$designation_id'";
+            else
+                $where.=" and designation_id='$designation_id'";
+            $linkArray['designation_id']=$designation_id;
+            $this->view->designation_id=$designation_id;
         }
         
         $this->view->page_size=$page_size= $this->_getParam('page_size',25);
@@ -174,8 +204,12 @@ class HrController extends Base_Controller_Action
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
         $this->view->paginator=$paginator;
+        $department=new Application_Model_Department();
+        $this->view->departments=$department->getDepartment();
+        $designation=new Application_Model_Designation();
+        $this->view->designations=$designation->getDesignation();
     }
     
     public function addNewEmployeeAction()
@@ -253,8 +287,9 @@ class HrController extends Base_Controller_Action
         $options['designationId'] = $model->getDesignationId();
         $options['departmentId'] = $model->getDepartmentId();
         $options['userLevelId'] = $model->getUserLevelId();
+        $options['correspondenceAddress'] = $model->getCorrespondenceAddress();
         $this->view->username = $model->getUsername();
-		
+		 	
         $request = $this->getRequest();
         $form    = new Application_Form_User();
         //remove fields do not need to display in Edit
@@ -360,7 +395,7 @@ class HrController extends Base_Controller_Action
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
         $this->view->paginator=$paginator;
     }
     
@@ -472,7 +507,7 @@ class HrController extends Base_Controller_Action
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
         $this->view->paginator=$paginator;
     }
     
@@ -895,7 +930,7 @@ class HrController extends Base_Controller_Action
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
         $this->view->paginator=$paginator;
     }
     

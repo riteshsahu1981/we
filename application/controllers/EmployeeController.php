@@ -33,6 +33,31 @@ class EmployeeController extends Base_Controller_Action
             $this->_flashMessenger->addMessage(array('error'=>'Invalid request!'));
             $this->_helper->_redirector->gotoUrl($this->view->seoUrl('/employee/dashboard'));  
         }
+        $form    = new Application_Form_User();
+        $elements=$form->getElements();
+        foreach($elements as $element)
+        {
+           if($element->getId()!="profilePicture" && $element->getId()!="submit" )
+            $form->removeElement($element->getId());
+        }
+        
+        $this->view->form=$form;
+        $request = $this->getRequest();
+        if ($request->isPost()) 
+        {
+             $options=$request->getPost();
+             if ($form->isValid($options))
+             {
+                $user->uploadProfilePicture($usersNs->userId,$options);
+                $this->_flashMessenger->addMessage(array('success'=>'Profile picture has been uploaded successfully!'));
+                $this->_helper->_redirector->gotoUrl($this->view->seoUrl('/employee/my-profile'));  
+             }
+             else
+             {
+                $this->_flashMessenger->addMessage(array('error'=>'Unable to upload the profile picture!'));
+                $form->reset();
+             } 
+        }
         
         $this->view->user=$user;
     }
@@ -397,12 +422,12 @@ class EmployeeController extends Base_Controller_Action
 
         $model=new Application_Model_User();
         $table=$model->getMapper()->getDbTable();
-        $select = $table->select()->setIntegrityCheck(false)->from(array("u"=>'user'))->join(array("d"=>'department'),'u.department_id=d.id',array('department_name'=>'title'))->order('addedon DESC')->where($where);
+        $select = $table->select()->setIntegrityCheck(false)->from(array("u"=>'user'))->join(array("d"=>'department'),'u.department_id=d.id',array('department_name'=>'title'))->order('first_name ASC')->where($where);
         //echo $sql = $select->__toString(); 
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
         $this->view->paginator=$paginator;
     }
     
@@ -468,7 +493,7 @@ class EmployeeController extends Base_Controller_Action
         $paginator =  Base_Paginator::factory($select);
         $paginator->setItemCountPerPage($page_size);
         $paginator->setCurrentPageNumber($page);
-        
+        $this->view->totalItems= $paginator->getTotalItemCount();
         $this->view->paginator=$paginator;
     }
     
@@ -491,6 +516,7 @@ class EmployeeController extends Base_Controller_Action
     {
         $album=new Application_Model_Album();
         $this->view->albums=$album->fetchAll("status='publish'", 'addedon desc');
+        $this->view->totalItems= count($this->view->albums);
     }
     
     
@@ -500,4 +526,18 @@ class EmployeeController extends Base_Controller_Action
         $this->view->album_id=$this->_getParam('id');
     }
     
+    
+    
+    public function employeeInfoAction()
+    {
+        $this->view->layout()->disableLayout();
+        $userId=$this->_getParam("id");
+        $model=new Application_Model_User();
+        $user=$model->find( $userId);
+        if(false===$user)
+        {
+            exit("Operation failed!");
+        }
+        $this->view->user=$user;
+    }
 }//end of class

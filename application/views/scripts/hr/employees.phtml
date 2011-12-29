@@ -1,5 +1,29 @@
+<?php //echo $this->totalItemCount; ?>
+
 <form method="post" action="<?php echo $this->seoUrl("/hr/employees")?>">
     <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <select name='status'>
+        <option value=''>Status</option>
+        <option <?php if($this->status=="active"){echo "selected='selected'";}?>value="active">Active</option>
+        <option <?php if($this->status=="inactive"){echo "selected='selected'";}?>value="inactive">Inactive</option>
+    </select>
+    
+    <?php if(count($this->departments)>0){?>
+    <select name='department_id'>
+        <option value=''>Department</option>
+        <?php foreach($this->departments as $department_id=>$title){?>
+        <option <?php if($this->department_id==$department_id){echo "selected='selected'";}?>value="<?php echo $department_id?>"><?php echo $title?></option>
+        <?php }?>
+    </select>
+    <?php }?>
+    <?php if(count($this->designations)>0){?>
+    <select name='designation_id'>
+        <option value=''>Designation</option>
+        <?php foreach($this->designations as $designation_id=>$title){?>
+        <option <?php if($this->designation_id==$designation_id){echo "selected='selected'";}?>value="<?php echo $designation_id?>"><?php echo $title?></option>
+        <?php }?>
+    </select>
+    <?php }?>
     <input type="submit" value="Search" name="submit" class="button"/>
 </form>
 <?php if (count($this->paginator)): ?>
@@ -44,9 +68,9 @@ if($page>1)
         <?php $sno++?>
         <tr>
             <td><?php echo $sno?></td>
-            <td><?php echo $item->first_name." ".$item->middle_name." ".$item->last_name; ?></td>
-            <td><?php echo $item->employee_code; ?></td>
-            <td><?php echo $item->email; ?></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"><?php echo $item->first_name." ".$item->last_name; ?></a></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"><?php echo $item->employee_code; ?></a></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"><?php echo $item->email; ?></a></td>
             <td><?php echo $item->department_name; ?></td>
             <td><?php echo $item->status; ?></td>
             <td>
@@ -83,3 +107,47 @@ if($page>1)
     </tbody>
 </table>
 <?php endif; ?>
+<script>
+    
+    function openD(user_id,user_full_name)
+    {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+        $("#userInfo").html("");
+        $( "#dialog-modal" ).dialog({
+                height: 460,
+                width: 420,
+                modal: true,
+                title: user_full_name
+        });
+        $("#imgLoading").show();
+        var params='id='+user_id;
+        $.ajax({
+                   type: "POST",
+                   url: "/employee/employee-info",
+                   data: params,
+                   dataType: "html",
+                   success: function(html)
+                   {
+                       $("#imgLoading").hide();
+                        $("#userInfo").html(html);
+                    
+                        
+                   },
+                   error: function (json, status, e)
+                   {
+                      $("#userInfo").html("Error");
+                       $("#imgLoading").hide();
+                   }
+               });
+
+
+       
+    }
+
+</script>
+
+<div id="dialog-modal" title="User Information" style="display:none">
+    <img style="display:none" id="imgLoading" src="/images/loading.gif"/>
+	<div id="userInfo"></div>
+        
+</div>

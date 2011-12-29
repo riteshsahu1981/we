@@ -309,21 +309,27 @@ class Application_Model_Attendance {
                                             if(false===$attendance)
                                             {
                                                //do insert
-                                                $attendance=new Application_Model_Attendance();
-                                                $attendance->setEmpCode($empCode);
-                                                $attendance->setAttendance($cell->getCalculatedValue());
-                                                $attendance->setAttendanceDate($columns[$cellctr]);
-                                                $attendance->setUserId($user->getId());
-                                                $attendance->save();
+                                                if(trim($cell->getCalculatedValue())!="")
+                                                {
+                                                    $attendance=new Application_Model_Attendance();
+                                                    $attendance->setEmpCode($empCode);
+                                                    $attendance->setAttendance($cell->getCalculatedValue());
+                                                    $attendance->setAttendanceDate($columns[$cellctr]);
+                                                    $attendance->setUserId($user->getId());
+                                                    $attendance->save();
+                                                }
                                             }
                                             else
                                             {
                                                 //do update
-                                                $attendance->setEmpCode($empCode);
-                                                $attendance->setAttendance($cell->getCalculatedValue());
-                                                $attendance->setAttendanceDate($columns[$cellctr]);
-                                                $attendance->setUserId($user->getId());
-                                                $attendance->save();
+                                                if(trim($cell->getCalculatedValue())!="")
+                                                {
+                                                    $attendance->setEmpCode($empCode);
+                                                    $attendance->setAttendance($cell->getCalculatedValue());
+                                                    $attendance->setAttendanceDate($columns[$cellctr]);
+                                                    $attendance->setUserId($user->getId());
+                                                    $attendance->save();
+                                                }
                                             }
                                         }
                                     }

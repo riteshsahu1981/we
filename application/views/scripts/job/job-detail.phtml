@@ -1,0 +1,13 @@
+<?php $date=new Base_Date();?>
+<div id="employee-info-content">
+<table>
+    <tbody>
+        <tr ><td width="30%">Job Title :</td><td><?php echo $this->job->getTitle()?></td></tr>
+        <tr ><td >Department :</td><td><?php echo $this->department?></td></tr>
+        <tr ><td>No of Openings : </td><td><?php echo $this->job->getNoOfOpenings() ?></td></tr>
+        <tr ><td>Job Description : </td><td><?php echo $this->job->getDescription() ?></td></tr>
+
+        <tr ><td>Posted On :</td><td><?php echo $date->getSysDate($this->job->getAddedon(), false) ?></td></tr>
+    </tbody>
+</table>
+</div>
