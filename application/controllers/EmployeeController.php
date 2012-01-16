@@ -7,7 +7,9 @@ class EmployeeController extends Base_Controller_Action
     }
     
     public function dashboardAction()
-    {
+    {    
+
+
         $usersNs = new Zend_Session_Namespace("members");
         $model=new Application_Model_User();
         $user=$model->find($usersNs->userId);

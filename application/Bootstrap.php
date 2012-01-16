@@ -18,6 +18,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     protected function _initRegistry()
     {
+        
         $this->bootstrap('db');
         $db = $this->getResource('db');
         $db->setFetchMode(Zend_Db::FETCH_OBJ);
@@ -33,6 +34,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         
     }
+    
+   
+
 	
     protected function _initViewHelpers()
     {
@@ -125,5 +129,29 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $view->headLink()->appendStylesheet('/style/reset.css');    
         $view->headLink()->appendStylesheet('/style/style.css'); 
         $view->headLink()->appendStylesheet('/style/invalid.css');
+    }
+    
+    protected function _initMonitor()
+    {
+        
+        
+        $config = new Zend_Config_Ini(APPLICATION_PATH.'/configs/application.ini', APPLICATION_ENV);
+        $monitorDb = Zend_Db::factory($config->resources->db->adapter, $config->resources->db->params);
+        $monitor = new Base_Monitorix_Monitor(new Zend_Log_Writer_Db($monitorDb, 'logentries'), "yourProjectName");
+
+        //if you want to monitor php errors
+        $monitor->registerErrorHandler();
+
+        //if you want to log exceptions
+        $monitor->logExceptions();
+
+        //if you want to monitor javascript errors
+        $monitor->logJavascriptErrors();
+        $dbAdapter=$this->getResource('db');
+        //if you want to log slow database queries
+        $monitor->logSlowQueries(array($dbAdapter));
+        
+        
+        
     }
 }

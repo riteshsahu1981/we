@@ -18,10 +18,10 @@ class Base_View_Helper_Metas extends Zend_View_Helper_Abstract
 		/*-----------------------------------*/
 
 		
-                $this->view->headTitle("ONSIS-We");
+                $this->view->headTitle("Admin Panel");
                 $this->view->headMeta()->appendName("ROBOTS","NOINDEX, NOFOLLOW");
-                $this->view->headMeta()->appendName("description","ONSIS-We");
-                $this->view->headMeta()->appendName("keywords","ONSIS-We");
+                $this->view->headMeta()->appendName("description","xyz");
+                $this->view->headMeta()->appendName("keywords","xyz");
 
 		
 	}//end of function

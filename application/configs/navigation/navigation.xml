@@ -665,6 +665,7 @@
                             </edit_page>
                         </pages>
                     </cms_pages>
+                    
                     <notice>
                         <label>Notices</label>
                         <module>default</module>
@@ -693,6 +694,34 @@
                             </edit_notice>
                         </pages>
                     </notice>
+                    <seourl>
+                        <label>Seo Url</label>
+                        <module>default</module>
+                        <controller>seo-url</controller>       
+                        <action>index</action>
+                        <resource>default:seo-url</resource>
+                        <privilege>index</privilege>
+                        <pages>
+                            <add_notice>
+                                <label>Add Seo Url</label>
+                                <module>default</module>
+                                <controller>seo-url</controller>       
+                                <action>add</action>
+                                <resource>default:seo-url</resource>
+                                <privilege>add</privilege>
+                                <display_in_sub>Yes</display_in_sub>
+                            </add_notice>
+                            <edit_notice>
+                                <label>Edit Seo Url</label>
+                                <module>default</module>
+                                <controller>seo-url</controller>       
+                                <action>edit</action>
+                                <resource>default:seo-url</resource>
+                                <privilege>edit</privilege>
+                                <display_in_sub>No</display_in_sub>
+                            </edit_notice>
+                        </pages>
+                    </seourl>
                 </pages>
             </cms>
             

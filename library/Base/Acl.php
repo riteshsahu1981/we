@@ -31,6 +31,7 @@ class Base_Acl  extends Zend_Acl{
               ->add(new Zend_Acl_Resource('default:job','default'))
               ->add(new Zend_Acl_Resource('default:gallery','default'))
               ->add(new Zend_Acl_Resource('default:library','default'))
+                ->add(new Zend_Acl_Resource('default:seo-url','default'))
               ->add(new Zend_Acl_Resource('default:index','default'));
                       
     }

@@ -294,11 +294,12 @@ class Application_Model_Page {
         $links="";
         $pages=$this->fetchAll("status='1'");
         $seoUrl=new Base_View_Helper_SeoUrl();
-      
+        $site_url=Zend_Registry::get('siteurl');
+        
         foreach($pages as $p)
         {
             
-            $links.="<a href='". $seoUrl->seoUrl("/employee/page/identifire/".$p->getIdentifire())."'>";
+            $links.="<a href='". $site_url.$seoUrl->seoUrl("/employee/page/identifire/".$p->getIdentifire())."'>";
             $links.=$p->getTitle();
             $links.="</a> | ";
         }
