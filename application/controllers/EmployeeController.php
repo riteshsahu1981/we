@@ -9,7 +9,19 @@ class EmployeeController extends Base_Controller_Action
     public function dashboardAction()
     {    
 
-
+        /*mail writer*/
+        $mail = new Base_Mail();
+        $mail->setFrom('riteshsahu1981@gmail.com')
+                ->addTo('ritesh.sahu@compunnel.com');
+ 
+        $writer = new Zend_Log_Writer_Mail($mail);
+        $writer->setSubjectPrependText('Errors with script foo.php');
+        
+        $log=new Zend_Log();
+        $log->addWriter($writer);
+        $log->ERR('unable to connect to database');
+        /*mail writer*/
+        
         $usersNs = new Zend_Session_Namespace("members");
         $model=new Application_Model_User();
         $user=$model->find($usersNs->userId);

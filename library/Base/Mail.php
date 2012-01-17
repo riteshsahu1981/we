@@ -4,7 +4,7 @@ class Base_Mail extends Zend_Mail
     public function send($transport = null)
     {
         //return parent::send($transport);
-        /*if ($transport === null) {
+        if ($transport === null) {
 
             $config = array('auth' => 'login',
             'username' => 'donotreply@GapDaemon.com',
@@ -14,7 +14,7 @@ class Base_Mail extends Zend_Mail
 
                 );
             $transport = new Zend_Mail_Transport_Smtp('smtp.gmail.com', $config);
-        }*/
+        }
         //$this->clearRecipients();
 //         $config = array('auth' => 'login',
 //            'username' => 'ritesh@profitbyoutsourcing.om',

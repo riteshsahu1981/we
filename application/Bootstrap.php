@@ -134,11 +134,46 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initMonitor()
     {
         
-        
+        /*
+         CREATE TABLE IF NOT EXISTS `logentries` (
+            `entryID` int(11) NOT NULL AUTO_INCREMENT,
+            `logType` varchar(50) NOT NULL DEFAULT 'default',
+            `projectName` varchar(20) NOT NULL DEFAULT 'not available',
+            `environment` varchar(15) NOT NULL DEFAULT 'not available',
+            `priority` int(11) NOT NULL,
+            `errorNumber` int(11) DEFAULT NULL,
+            `message` text NOT NULL,
+            `file` varchar(255) DEFAULT NULL,
+            `line` int(11) DEFAULT NULL,
+            `context` longtext,
+            `stacktrace` longtext,
+            `timestamp` varchar(30) NOT NULL,
+            `priorityName` varchar(15) NOT NULL,
+            PRIMARY KEY (`entryID`)
+            ) 
+         */
+
         $config = new Zend_Config_Ini(APPLICATION_PATH.'/configs/application.ini', APPLICATION_ENV);
         $monitorDb = Zend_Db::factory($config->resources->db->adapter, $config->resources->db->params);
         $monitor = new Base_Monitorix_Monitor(new Zend_Log_Writer_Db($monitorDb, 'logentries'), "yourProjectName");
-
+        
+        
+        
+        
+        /*mail writer*/
+//        $mail = new Base_Mail();
+//        $mail->setFrom('riteshsahu1981@gmail.com')
+//                ->addTo('ritesh.sahu@compunnel.com');
+// 
+//        $writer = new Zend_Log_Writer_Mail($mail);
+//        
+//        $monitor->addWriter($writer);
+        /*mail writer*/
+        
+        
+        
+        
+        
         //if you want to monitor php errors
         $monitor->registerErrorHandler();
 
@@ -150,8 +185,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $dbAdapter=$this->getResource('db');
         //if you want to log slow database queries
         $monitor->logSlowQueries(array($dbAdapter));
+        $monitor->registerShutdown();
         
-        
-        
+    
     }
 }

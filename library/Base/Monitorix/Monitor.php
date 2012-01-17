@@ -485,4 +485,15 @@ class Base_Monitorix_Monitor extends Zend_Log
     	return $lowestFreeIndex;
     	
     }
+    
+    
+    public function registerShutdown()
+    {
+        register_shutdown_function(array($this, 'callRegisteredShutdown'));
+    }
+    
+    public function callRegisteredShutdown() {
+        $e=error_get_last();
+        $this->errorHandler($e['type'], $e['message'], $e['file'],$e['line'], null);
+    }
 }
