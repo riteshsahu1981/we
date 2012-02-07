@@ -1,0 +1,56 @@
+<?php
+if($this->msg<>"s")
+{
+    echo $this->msg;
+    if(count($this->friends)>0)
+    {
+        ?>
+    <form id="frmFacebook" name ="frmFacebook" method="post">
+
+        <div class="contacts_div" id="contacts-container">
+            <input type="checkbox" name="contacts_all" id="contacts_all" value="contacts_all" style="width: 20px;" onchange="toggleAll(this)">
+            <strong>Check All</strong><br class="clear">
+        <?
+        foreach($this->friends as $_friend)
+        {
+
+
+            ?>
+            <input name="facebook_contacts[]" type="checkbox" value="<?php echo $_friend['id']?>">
+            <img src="https://graph.facebook.com/<?php echo $_friend['id']?>/picture"/>
+
+            <?php echo $_friend['name']?><br class="clear">
+            <?
+        }
+        ?>
+
+        </div>
+            <input type="submit" value="send invitation" name="submit">
+             </form>
+        <?
+    }
+    else
+    {
+        echo "You have no friends.";
+    }
+}
+else
+{
+
+    echo "Thanks for inviting your friends to Gap Daemon!";
+
+}
+?>
+<div class="f-right"><a class="button-link" href="javascript://" onclick="window.close();">Close This Window</a></div>
+
+<script language="javascript">
+function toggleAll(element)
+{
+	var form = document.forms.frmFacebook, z = 0;
+	for(z=0; z<form.length;z++)
+	{
+		if(form[z].type == 'checkbox')
+			form[z].checked = element.checked;
+	}
+}
+</script>

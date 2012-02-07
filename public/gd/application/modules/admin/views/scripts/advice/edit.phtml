@@ -1,0 +1,53 @@
+<?php
+$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded .
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;"><a href="/admin/advice/index" class="add">Back</a></span>
+	Edit Article</div>
+ <div id="rightsidecontentpart">
+  <span class='red'><? echo $this->msg;?></span>
+		<form method="post" action="" enctype="multipart/form-data">
+		<table align="center" cellspacing="5" cellpadding="5" border="0" width="100%">
+		<tr><td><?php echo $this->form->userId->getLabel();?></td><td><?php echo $this->form->userId;?></td></tr>
+		<tr><td><?php echo $this->form->categoryId->getLabel();?></td><td><?php echo $this->form->categoryId;?></td></tr>
+		<tr><td><?php echo $this->form->title->getLabel();?></td><td><?php echo $this->form->title;?></td></tr>
+		<tr><td><?php echo $this->form->identifire->getLabel();?></td><td><?php echo $this->form->identifire;?></td></tr>
+		<tr><td><?php echo $this->form->content->getLabel();?></td><td><?php echo $this->form->content;?></td></tr>
+		<tr><td><?php echo $this->form->synopsis->getLabel();?></td><td><?php echo $this->form->synopsis;?></td></tr>
+		<tr><td><?php echo $this->form->metaTitle->getLabel();?></td><td><?php echo $this->form->metaTitle;?></td></tr>
+		<tr><td><?php echo $this->form->metaKeyword->getLabel();?></td><td><?php echo $this->form->metaKeyword;?></td></tr>
+		<tr><td><?php echo $this->form->metaDescription->getLabel();?></td><td><?php echo $this->form->metaDescription;?></td></tr>
+		<tr>
+			<td valign="top"><?php echo $this->form->name->getLabel();?></td>
+			<td>
+			<?php
+			if($this->imgName!="" && file_exists("images/advice/".$this->imgName))
+			{
+			?>
+			<img src='/images/advice/<?php echo $this->imgName ?>' width='128' height='84'>
+			<!--<img src="<?echo $this->cdnUri();?>/image?src=<?echo $this->cdnUri();?>/images/advice/<?php echo $this->imgName;?>&w=128&h=84" />-->
+			<?php }?><br />
+			<?php echo $this->form->name;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td>&nbsp;</td><td><?php echo $this->form->savePublish;?> <?php echo $this->form->saveUnpublish;?> <?php echo $this->form->previewPage;?></td></tr>
+		</table>
+		</form>
+  </div>
+	</div>
+</div>
+<?php echo $this->setupEditor( 'content' ); ?>
+
+<?php
+if($this->preview==true)
+{
+	$preview_url = $this->cdnUri()."/advice/detail/id/".$this->id."/preview/true";
+	
+?>
+<script language="javascript" type="text/javascript">
+window.open ('<?=$preview_url?>','advice');
+</script>
+<?php }?>

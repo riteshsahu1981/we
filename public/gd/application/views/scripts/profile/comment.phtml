@@ -1,0 +1,47 @@
+<div class="like-dislike">
+<div class="comment-on-comment">
+<?php 
+if($this->comment)
+{
+	$date=new Base_Date();
+	$objModelUser = new Application_Model_User();
+	$objComment = $this->comment;  
+	foreach($objComment as $comment)
+	{
+		$objUser	=	$objModelUser->find($comment->userId);
+		$username	=	$objUser->getUsername();
+        $firstname	=	$objUser->getFirstName();
+        $lastname	=	$objUser->getLastName();
+        $image		=	$objUser->getThumbnail();
+		//$image		=	$objUser->getImage();
+?>
+		<!--<div style="border:1px blue solid; padding:5px 10px 20px 10px">	
+		    <div style='float;left; padding-left:10px;'>Comment: <?php //echo $comment->comment;?> </div>
+		    <div style='float:right; padding-right:10px' >Added By :<?php //echo $objUser->getFirstName(); ?> </div>
+		</div>-->
+		<div class="act-comm-feed">
+			<div class="act-comm-feed-img">
+			<a href="/<?php echo $username;?>">
+			<!--<img src="<?php echo $image;?>" width="37px" height="43px" border="0" alt="<?php echo $username;?>" />-->
+			<img src="/image?src=<?php echo $image;?>&size=comment" border="0" alt="<?php echo $username;?>" />
+			</a>
+			</div>
+			<div class="act-comm-feed-txt" style="width:415px; text-align:justify;">
+					<div class="userntxt-sml"><a href="/<?php echo $username;?>" style="color:#348698;"><?php echo $firstname.' '.$lastname;?> </a> <?php //echo $comment->comment;?> <?php echo $this->textModifier($comment->comment);?></div>
+					<div class="feed-posted">Posted <?php echo $date->timeAgo($comment->addedon)?></div>
+			</div>
+		</div>
+<?php
+	}//foreach	   
+}//end of if
+else
+{
+?>
+<div style="padding:5px 10px 20px 10px">	
+	<div style='float;left; padding-left:10px;'>No Comments found.</div>
+</div>	  
+<?php
+}
+?>
+</div>
+</div>

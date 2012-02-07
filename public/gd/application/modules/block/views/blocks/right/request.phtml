@@ -1,0 +1,144 @@
+<script>
+function changeRequest(val,id,userid,friendid, status)
+{
+	$("div#response-"+id).html("<img src='/images/ajax-loader.gif'>");
+	var params="mode=ajax&ctype="+val+"&id="+id+"&userid="+userid+"&friendid="+friendid+"&status="+status;
+	$.ajax({
+		   type: "POST",
+		   url: "/index/change-request/",
+		   data: params,
+		   dataType: "html",
+		   success: function(responseData)
+		   {
+				$("div#response-"+id).html(responseData);
+				$("div#friendsProfile-"+id).hide();
+				
+				//hide My requests section DIV
+				$("div#friendsProfile_"+id).hide();
+				
+				//now descrease top counter
+				if(val=="friend")
+				{
+					var friend = parseInt($('#friend_counter').html());
+					friend = friend-1;
+					$('#friend_counter').html(friend);
+				}
+				else if(val=="family")
+				{
+					var family = parseInt($('#family_counter').html());
+					family = family-1;
+					$('#family_counter').html(family);
+				}
+				else
+				{
+					//var travel = parseInt($('#travel_counter').html());
+					//travel = travel-1;
+					//$('#travel_counter').html(family);
+				}
+				
+				//append friend to My Friend list if request is accepted
+				if(status=='accept')
+				{
+					appendFriendToMyFiendsList(userid);
+				}
+		   },
+		   error: function (json, status, e)
+		   {
+			   $("div#resp").html("Exception : "+e+json);
+		   }
+	 });
+}
+//this function is used to append friend to my friend list if friend request is accepted
+function appendFriendToMyFiendsList(user_id)
+{
+	var postData		= '';
+    postData += "page=1&append_friend_id="+user_id;
+    $.ajax({
+               type: "POST",
+               url: "/gapper/show-morefriends/",
+               data: postData,
+               dataType: "html",
+               success: function(html)
+			   {
+					$('#friends_listings').prepend(html);
+					
+					//increase counter
+					var my_friends_counter = parseInt($("#my-friends-counter").html());
+					var myFriendCounter = 0;
+					
+					if(isNaN(my_friends_counter))
+					{
+						myFriendCounter = 1;
+					}
+					else
+					{
+						myFriendCounter = my_friends_counter + 1;
+					}
+					$("#my-friends-counter").html(myFriendCounter);
+					$("#my-friends-counterTxt").html("friend(s) found");
+			   },
+               error: function (json, status, e)
+			   {
+                     alert(e+json+status);
+               }
+     });
+}
+</script>
+<?php 
+$userNs			= new Zend_Session_Namespace("members");
+$friendM		= new Application_Model_Friend();
+$requestWhere	= "friend_id='{$userNs->userId}' and status='pending'";
+$requests		= $friendM->fetchAll($requestWhere, "addedon DESC");
+$total_req		= count($requests);
+
+$dbObj			= new Base_Db();
+$countFriend	= $dbObj->getTotalRecords('friend',"friend_id='{$userNs->userId}'".' and connection_type = \'friend\' and status=\'pending\'');
+$countTravel	= $dbObj->getTotalRecords('friend',"friend_id='{$userNs->userId}'".' and connection_type = \'travelmate\' and status=\'pending\'');
+$countFamily	= $dbObj->getTotalRecords('friend',"friend_id='{$userNs->userId}'".' and connection_type = \'family\' and status=\'pending\'');
+?>		
+		
+<div class="right-box">
+	<h2 class="box-head">REQUESTS</h2>
+	<p>You have <span id="friend_counter"><?php echo $countFriend;?></span> friend(s) and <span id="family_counter"><?php echo $countFamily; ?></span> family requests waiting for approval.</p>
+	<ul class="requests">
+<?php 
+foreach ($requests as $row)
+{
+	$friendObj  = new Application_Model_Friend();
+	$friendRow  = $friendObj->find($row->id);
+	$userObj    = $friendRow->getUserObj();
+	$conntype   = $friendRow->getConnectionType();
+	$friendObj  = $friendRow->getFriendObj();
+	
+	$thumb = "";
+	//$thumb		= $friendRow->getThumbnail();
+	//echo "<br>img=>".$userObj->image." fac=>".$userObj->facebook_id." user id=>".$userObj->id;
+	$thumb		= $friendRow->getThumbnail($userObj->image, $userObj->facebook_id, $userObj->sex);
+?>
+	<li>
+		<div id="friendsProfile-<?php echo  $row->id; ?>">
+			<div class="request-img">
+				<a href="/<?php echo $userObj->username?>"><img src="/image?src=<?php echo $thumb;?>&size=comment" border="0" /></a>
+			</div>
+			<div class="request-txt">
+				<div class="request-name">
+					<a href="/<?php echo $userObj->username?>"><?php echo $userObj->first_name.' '.$userObj->last_name;?></a>
+				</div>
+				<div class="request-group"><?php echo ucfirst($conntype); ?></div>
+				<div class="request-action"><a href="javascript://" onclick="changeRequest('<?php echo $conntype; ?>','<?=$row->id?>','<?=$userObj->id?>','<?=$friendObj->id?>', 'accept')">Accept</a>  |  <a href="javascript://" onclick="changeRequest('<?php echo $conntype; ?>','<?=$row->id?>','<?=$userObj->id?>','<?=$friendObj->id?>', 'decline')">Decline</a></div>
+			</div>
+		</div>
+		<div id="response-<?php echo  $row->id; ?>"></div>
+	</li>
+<?php 
+} //end of foreach
+?>
+</ul>
+<?php 
+//display view all link if total request is greater then 5
+if($total_req > 5 )
+{
+?>
+<div class="view-all-link"><a href="/gapper/requests" class="">View All</a></div>
+<?php } ?>
+</div>

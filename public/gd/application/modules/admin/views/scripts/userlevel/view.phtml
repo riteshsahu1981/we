@@ -1,0 +1,92 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+
+	<div id="rightsideheading">
+	<img src="/images/admin-images/bl-tl.gif" align="left" /><img src="/images/admin-images/bl-tr.gif" align="right" />
+	<span style='float: right; margin: 0 15px 0 0;'>
+	
+	<img src='/images/admin-images/newobject.png' width='20px' vspace="5" hspace="5" align="left"><a href='/admin/userlevel/adduserlevel' class="add f-right">Add user level</a></span>User Management - <span class='msg'>Total <?php echo $this->total_users?> user level(s) found! </span></div>
+	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total_users>0)
+{
+	
+?>
+<br />
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+<br />
+
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>Identifire</th>
+    <th>Label</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+  
+	<?
+	$usersNs = new Zend_Session_Namespace("members");
+	
+	$logged_in_user_type=$usersNs ->userType;
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $user)
+	{
+		$sno++;
+		$status_image='false.gif';
+		$status="active";
+		$status_popup='activate';
+		if($user['status']=="active")
+		{
+			$status_image='true.gif';
+			$status="inactive";
+			$status_popup='deactivate';
+		}
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$user['identifire']?></td>
+    		<td><?=$user['label']?></td>
+    		<td>
+    		<?php if($logged_in_user_type==$user['identifire']){?>
+    		<a href='#' onclick='alert("You cannot disable this user level.")'><img src='/images/admin-images/<?=$status_image?>' border='0' title='<? echo "Click here to $status_popup the user level."?> '/></a>
+    		<?php }else{?>
+    		<a href='/admin/userlevel/changestatus/id/<?=$user['id']?>/page/<?=$page?>/status/<?=$status?>' onclick='return confirm("Are sure you want to <?=$status_popup?> the user level ?")'><img src='/images/admin-images/<?=$status_image?>' border='0' title='<? echo "Click here to $status_popup the user level."?> '/></a>
+    		<?php }?>
+    		</td>
+    		
+    		<td>
+    		
+    		<a href='/admin/userlevel/edituserlevel/id/<?=$user['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;
+    		
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+	<div class="btm-curve"><img src="/images/admin-images/btm-r-l.gif" align="left" /><img src="/images/admin-images/btm-r-r.gif" align="right" /></div>
+</div>

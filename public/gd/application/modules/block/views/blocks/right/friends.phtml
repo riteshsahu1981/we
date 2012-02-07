@@ -1,0 +1,64 @@
+<?php
+
+    $userNs=new Zend_Session_Namespace('members');
+    $userId=$userNs->userId;
+    
+
+$friendUrl="#";
+if($this->otherUserId!="")
+{
+	$userId=$this->otherUserId;
+	
+	$userM=new Application_Model_User();
+	$user=$userM->find($userId);
+	if(false!==$user)
+		$friendUrl="/profile/friends/username/".$user->getUsername();
+}
+else
+{
+	$friendUrl="/gapper/my-friends";
+}
+
+
+$friendM=new Application_Model_Friend();
+$friends=$friendM->fetchAll("user_id='{$userId}' and status='accept'", 6);
+
+ if(count($friends)>0){
+shuffle($friends);
+
+?>
+
+<div class="where-i-am">
+				<?php if($this->otherUserId==""){?>
+                <h2 class="box-head">MY FRIENDS</h2>
+                <?php }else{?>
+                <h2 class="box-head">FRIENDS</h2>
+                <?php }?>
+                <ul class="people-here">
+                <?php 
+                foreach($friends as $friend)
+                {
+          			$userM=new Application_Model_User();
+          			$user=$userM->find($friend->getFriendId());
+          			if(false!==$user){
+                 ?>
+
+                <li>
+                        <div class="people-img">
+                          <a href="/<?php echo $user->getUsername()?> ">
+                                <img  src="/image?src=<?php echo $user->getThumbnail();?>&size=journal" alt="<?php echo $user->getFirstName()?> <?php echo $user->getLastName()?>" />
+                            </a>
+                        </div>
+                        <a href="/<?php echo $user->getUsername()?> "> <?php echo $user->getFirstName()?> </a>
+                </li>
+                <? 
+          			}
+                 
+                }//end of foreach
+                
+                ?>
+                </ul>
+       
+                <a href="<?php echo $this->seoUrl($friendUrl)?>" class="view-link-all f-right">VIEW MORE</a>
+        </div>
+<?php } ?>

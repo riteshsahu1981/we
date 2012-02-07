@@ -1,0 +1,86 @@
+<?php
+$userNs=new Zend_Session_Namespace('members');
+$userId=$userNs->userId;
+$journalUrl="#";
+if($this->otherUserId!="")
+{
+	$userId=$this->otherUserId;
+
+//	$userM=new Application_Model_User();
+//	$user=$userM->find($userId);
+//	if(false!==$user)
+//		$journalUrl="/journal/".$user->getUsername();
+}
+else
+{
+	//$journalUrl="/journal/my-journals";
+}
+
+$date		=	new Base_Date();
+$blogM		=	new Application_Model_Blog();
+
+//$blogs		=	$blogM->getRecentBlogsByUserId($userId,5);
+
+//$journalUrl =	"/journal/".$user->getUsername(); //user journals
+//if(count($blogs)==0)
+//{
+//	$blogs		=	$blogM->getRecentBlogs(5);
+//	$journalUrl =	"/journal";
+//}
+
+$blogs		=	$blogM->getRecentBlogs(5);
+$journalUrl =	"/journal";
+?>
+<div class="right-box">
+	<h2 class="box-head">RECENT JOURNALS</h2>
+	<?php
+	if(count($blogs)>0)
+	{
+		foreach($blogs as $_blog)
+		{
+			$userM			=	new Application_Model_User();
+			$userM			=	$userM->find($_blog->user_id);
+			$thumbNail		=	$userM->getThumbnail();
+			$username		=	$userM->getUsername();
+			$first_name		=	$userM->getFirstname();
+			$last_name		=	$userM->getLastname();
+			$strTime		=	$date->timeAgo($_blog->addedon);
+
+			$total_likes	=	0;
+			/*
+			$voteM			=	new Application_Model_Vote();
+			$total_likes	=	$voteM->getTotalVotes($_blog->id,"blog", 1,null);
+
+			$textPrint		=	$this->language("like_singular");
+			if($total_likes > 1)
+			{
+				$textPrint	=	$this->language("like_plural");
+			}*/
+			$blog_seo_url = $this->seoUrl("/journal/view-post/blog_id/{$_blog->id}");
+	?>
+	<div class="recently-added-narrow">
+		<div class="recently-added-img">
+		<a href="javascript://" onclick="commonUserLogin('/<?php echo $username;?>',<?php echo $_blog->user_id;?>);">
+		<img border="0" src="/image?src=<?php echo $thumbNail;?>&size=comment" alt="" />
+		</a>
+		</div>
+		<div class="recently-added-txt">
+			<div class="recently-added-title"><a href="<?php echo $blog_seo_url;?>"><?php echo $_blog->title;?></a></div>
+			<div class="recently-added-posted">Posted By <a href="javascript://" onclick="commonUserLogin('/<?php echo $username;?>',<?php echo $_blog->user_id;?>);"><?php echo $first_name;?></a>   <br /><?php echo $strTime;?></div>
+			<div class="recently-added-like">
+			<?php if($total_likes > 0){?>
+			<!--<a href="<?php echo $this->seoUrl('/journal/user-like-this/type/blog/item_id/'.$_blog->id);?>"><span id="total_likes_left_<?php echo $_blog->id;?>"><?php echo $textPrint;?></span></a>-->
+			<?php }?>
+			</div>
+		</div>
+	</div>
+	<?php }//end of foreach ?>
+	<a href="<?php echo $this->seoUrl($journalUrl)?>" class="view-link-all f-right">VIEW MORE</a>
+	<?php
+	}//end of if
+	else
+	{
+		echo "<div class='recently-added-narrow'>No journal posts available.</div>";
+	}
+	?>
+</div>

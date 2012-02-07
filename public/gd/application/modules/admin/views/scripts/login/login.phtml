@@ -1,0 +1,48 @@
+<?php
+$cookie	=	new Base_Http_Cookie();
+$cookieUserInfo		=	array();
+$cookieUserInfo		=	unserialize(base64_decode($cookie->getCookie('rememberMe')));
+$this->cookie_username	= "Enter your username or email";
+$this->cookie_password	= "";
+$this->cookie_remember	= "";
+if(count($cookieUserInfo)>1)
+{
+	$this->cookie_username = $cookieUserInfo["email"];
+	$this->cookie_password = $cookieUserInfo["password"];
+	$this->cookie_remember = "checked='checked'";
+	//echo "user=>".$this->cookie_username." pass=>".$this->cookie_password;
+}
+?>
+<div id="loginpanelmain">
+    <div id="loginpanelheadermain">
+      <div class="loginheaderleft"></div>
+      <span class="loginheadertext">Enter Your Login Details :</span><div class="loginheaderright"></div>
+    </div>
+	
+    <div id="loginbodybg">
+      <div class="pagetextbold" id="loginbodycontent">
+      
+      	<div class='error' ><?php echo $this->form->getDescription()?></div>
+        <?php //echo $this->form ?>
+		<form method="post" action="" enctype="application/x-www-form-urlencoded">
+		<table>
+		<tbody>
+		<tr><td id="email-label"><label class="required" for="email">Username/Email:</label></td>
+		<td class="element">
+		<input type="text" autocomplete="off" onfocus="clearText(this);" onblur="replaceText(this);" class="inpu2" value="<?php echo $this->cookie_username;?>" id="email" name="email"></td></tr>
+		<tr><td id="password-label"><label class="required" for="password">Password:</label></td>
+		<td class="element">
+		<input type="password" class="inpu2" value="<?php echo $this->cookie_password;?>" id="password" name="password">
+		</td></tr>
+		<tr><td id="rememberMe-label">&nbsp;</td>
+		<td class="element">
+		<input type="checkbox" class="form" value="1" id="rememberMe" <?php echo $this->cookie_remember;?> name="rememberMe"><label class="optional" for="rememberMe">Remember me</label></td></tr>
+		<tr><td></td><td class="element">
+		<input type="submit" value="Login" id="login" name="login"></td></tr>
+		</tbody>
+		</table>
+		</form>
+      </div>
+    </div>
+	<img src="/images/admin-images/login-btm.png" align="left" />
+  </div>

@@ -1,0 +1,55 @@
+<div class="right-box-wide search-dest">
+	<h2 class="box-heading">SEARCH ADVICE</h2>
+	<form name="adviceSearch" id="adviceSearch" method="post" action="/advice/search">
+		<input type="text" id="search-strg"  name="search-strg" class="search-strg" value="<?php echo $this->searchstr!=''?$this->searchstr:'Search by Keyword'; ?>" onfocus="if(this.value=='Search by Keyword'){this.value=''}" onblur="if(this.value==''){this.value='Search by Keyword'}"  />
+		<input type="hidden" name="search-filtr" value=""></input>
+		<span class="in">IN</span><select class="search-filtr2" name="category_id" id="category_id">
+				<option value=''>All Categories</option>
+				<?php
+				$categoryM		=	new Application_Model_Category();
+				$adviceCategory	=	$categoryM->getCategory(null,'advice');
+				if(count($adviceCategory)>0)
+				{
+					foreach($adviceCategory as $id=> $_category)
+					{
+						$selected = "";
+						if($this->category_id==$id)
+						{
+							$selected = "selected='selected'";
+						}
+						echo "<option value='".$id."'".$selected.">".$_category."</option>";
+					}
+				}	
+				?>
+		</select>
+		<div class="clear"></div>
+		<input type="submit" name="" value="SEARCH"  onclick="return validateForm();" class="submit-btn"  />
+		<input type="button" name="Reset" value="Reset" id="reset-advice-box" class="submit-btn"  />
+	</form>	
+</div>
+<script language="javascript" type="text/javascript">
+function validateForm()
+{
+	var str=$("#search-strg").val();
+	if(str=="" || str=="Search by Keyword")
+	{
+		var title="Warning !";
+		var msg ="Please enter a keyword and then press Search button.";
+		alertBox(title,msg); // for more details, please look into lib.js
+		return false;
+	} 
+	return true;
+}
+		
+$('#reset-advice-box').click(function() {
+	
+	$("input#search-strg").val('Search by Keyword');
+	//$("input#search-filtr").val('');
+	$("#category_id").val('');
+	/*
+	if($('#search-strg').val() != 'Search by Keyword')
+	{
+		$('#search-strg').val('');	   
+	}*/	
+});
+</script>

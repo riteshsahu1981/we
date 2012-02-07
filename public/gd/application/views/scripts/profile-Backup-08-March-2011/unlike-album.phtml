@@ -1,0 +1,28 @@
+<a href="javascript:void(0);" id="like-album" onclick="javascript:likeAlbum('<?php print $this->album_id;?>');">Like</a>
+<script>
+function likeAlbum(album_id)
+{
+        var item_type	=	'album';
+        var requesturl	=	"/profile/like-album";
+        var container = "like-album-container_"+album_id;
+
+                $.post(requesturl, {album_id:album_id,item_type:item_type },
+                                   function(html){
+                                        countTotalLike(album_id)
+                                        $("#"+container).html(html);
+                                });
+}
+
+function countTotalLike(album_id)
+{
+    var item_type = 'album';
+    var requesturl = "/profile/count-total-like";
+    var container = "total_likes_"+album_id;
+
+    $.post(requesturl, {album_id:album_id, item_type:item_type },
+                               function(html){
+                                    $("#"+container).html(html);
+
+                            });
+}
+</script>

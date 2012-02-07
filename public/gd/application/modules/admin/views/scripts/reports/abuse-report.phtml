@@ -1,0 +1,103 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+			Report Abuse - <span class='msg'>Total <?php echo $this->total?> report(s) found! </span></div>	
+<div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml');?>
+
+<span class='red'><? echo $this->msg;?></span>
+<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+<?php }?>
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th width="5%">S. No.</th>
+    <th width="10%">Type</th>
+	<th width="45%">Wall/Blog/Photo</th>
+    <th width="15%">Reporter Name</th>
+	<th width="15%">Reporter Email</th>
+	<th width="10%">Repoted On</th>
+  </tr>  
+	<?php	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+		{
+			$rowClass='trbg';
+		}	
+		else
+		{
+			$rowClass='trbg1';
+		}
+		$itemTitle = "NA";
+		//select wall or blog information
+		if($row->item_type == "blog")
+		{
+			$blogM		=	new Application_Model_Blog();
+			$blogRes	=	$blogM->find($row->item_id);
+			if(false!==$blogRes)
+			{
+				$itemTitle  = 	$blogRes->getTitle();
+				//$authorId	=	$blogRes->getUserId();
+			
+				$blog_url = Zend_Registry::get('siteurl')."/journal/view-post/blog_id/".$row->item_id;
+				$itemTitle = "<a href='".$blog_url."' target='_blank'>".$itemTitle."</a>";
+			}	
+		}
+		else if($row->item_type == "wall")
+		{
+			$wallM		=	new Application_Model_Wall();
+			$wallRes	=	$wallM->find($row->item_id);
+			if(false!==$wallRes)
+			{
+				$itemTitle  = 	$wallRes->getStatus();
+			}	
+			//$itemTitle  = 	substr($wallRes->getStatus(),0,60)."...";
+			//$authorId	=	$wallRes->getUserId();
+		}
+		else if($row->item_type=='photo')
+		{
+			$objModelAlbumPhoto		=	new Album_Model_AlbumPhoto();
+			$albumPhotoRes	=	$objModelAlbumPhoto->find($row->item_id);
+			if(false!==$albumPhotoRes)
+			{
+				$itemTitle  	= 	"<a rel='facebox' href='/media/album/custom/{$albumPhotoRes->getName()}'>".$albumPhotoRes->getName()."</a>";
+				//$authorId		=	$albumPhotoRes->getUserId();
+			}	
+		}
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td valign="top"><?=$sno?></td>
+    		<td valign="top"><?php echo ucfirst($row->item_type);?></td>
+			<td valign="top"><?php echo $itemTitle;?></td>
+			<td valign="top"><?php echo $row->first_name." ".$row->last_name." (".$row->username.")";?></td>
+			<td valign="top"><?php echo $row->email;?></td>
+			<td valign="top"><?php echo date("M j, Y", $row->addedon);?></td>
+  		</tr>
+	<? 	
+	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml'); ?><br />
+<?	
+}
+?>
+</div>
+</div>
+</div>

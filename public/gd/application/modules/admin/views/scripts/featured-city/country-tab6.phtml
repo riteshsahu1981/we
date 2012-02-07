@@ -1,0 +1,72 @@
+<?php
+$id = $this->countryId;
+
+$destination			= array();
+$lonelyPlanetCountry	= array();
+$knowledgeArr			= array();
+$destination_id			= 0;
+
+//select details from lonely_planet_country table
+$lonelyPlanetCountryM	=	new Application_Model_LonelyPlanetCountry();
+$lonelyPlanetCountryM	=	$lonelyPlanetCountryM->fetchRow("country_id={$id}");
+	
+if(false!==$lonelyPlanetCountryM)
+{
+	$lonelyPlanetCountry = $lonelyPlanetCountryM;
+	
+	//select Destinations details
+	$destinationId = "";
+	$destinationM	=	new Application_Model_Destination();
+	$destinationM	=	$destinationM->fetchRow("location_id={$id} AND location_type='country'");
+	if(false!==$destinationM)
+	{		
+		$destination = $destinationM;		
+		$bankBreaker	=	unserialize($destination->getBankBreaker());
+		$knowledgeArr	=	unserialize($destination->getKnowledge());
+		$destination_id = $destination->getId();
+	}
+}
+?>
+<?php if($destination_id>0){?>
+	<form name="frmTheknowledge" id="frmTheknowledge" enctype="multipart/form-data" method="post">
+	<input type="hidden" name="update_action" value="the_knowledge">
+	<input type="hidden" name="destination_id" value="<?php echo $destination_id;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" id="table_the_knowledge">
+	<tr><td colspan="2"><div class="form-sub-head">The Knowledge</div><span class="orange" id="tab6_msg"></span></td></tr>
+	<?php
+	if(is_array($knowledgeArr) && count($knowledgeArr)>0)
+	{
+		for($cntK=0; $cntK<count($knowledgeArr); $cntK++)
+		{
+			$countQus = $cntK+1;	
+	?>
+		<tr><td valign="top">Question <?php //echo $countQus;?></td><td valign="top"><input type="text" name="question[]" class="title-input-box" value="<?php echo $knowledgeArr[$cntK]['title'];?>"></td></tr>
+		<tr><td valign="top">Answer <?php //echo $countQus;?></td><td valign="top"><textarea cols="40" rows="5" name="answer[]" class="title-input-box"><?php echo $knowledgeArr[$cntK]['copy'];?></textarea></td></tr>
+		<tr><td colspan="2" class="button_right_know"><input type="button" value="Remove" onclick="deleteKnowledgeRow(this);"></td></tr>
+	<?php
+		}//end for
+	}//end if
+	else
+	{	
+	?>
+	<tr><td valign="top">Question <?php //echo $countQus;?></td><td valign="top"><input type="text" name="question[]" class="title-input-box" value=""></td></tr>
+	<tr><td valign="top">Answer <?php //echo $countQus;?></td><td valign="top"><textarea cols="40" rows="5" name="answer[]" class="title-input-box"></textarea></td></tr>
+	<!--<tr><td colspan="2" class="button_right"><input type="button" value="Remove" onclick="deleteKnowledgeRow(this);"></td></tr>-->
+	<?php }?>
+	</table>
+	<table align="center" cellspacing="0" cellpadding="2" border="0" width="100%">
+		<tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" value="Save" name="btnSave" id="btnSaveTab6"></td>
+			<td><input type="button" value="Add New Item" onclick="addMoreRowsKnowledge();"></td>
+			<!--<td><input type="button" value="Remove Item" onclick="removeMoreRowsKnowledge();" id="remove_button_tab6" style="display:block;"></td>-->
+		</tr>
+	</table>
+</form>
+<?php
+}
+else
+{
+	echo "No data available.";
+}
+?>

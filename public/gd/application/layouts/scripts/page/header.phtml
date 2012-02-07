@@ -1,0 +1,392 @@
+<?php
+$cookie	=	new Base_Http_Cookie();
+$cookieUserInfo		=	array();
+$cookieUserInfo		=	unserialize(base64_decode($cookie->getCookie('rememberMe')));
+$this->cookie_username	= "Username or Email";
+$this->cookie_password	= "";
+$this->cookie_remember	= "";
+if(count($cookieUserInfo)>1)
+{
+	$this->cookie_username = $cookieUserInfo["email"];
+	$this->cookie_password = $cookieUserInfo["password"];
+	$this->cookie_remember = "checked='checked'";
+}
+?>
+<div class="header-main">
+<div class="header">
+<div id="header"> 
+	<a href="/" class="logo"></a>        
+	<div class="top_rgt_ban2">
+	<?php
+	$bannerHeader = new Cms_Model_Banner();
+	$bannerHeader->showBanner("top", "600", "120");
+	?>
+    </div>
+	<br class="clear">
+	<!-- Top Navigation-->
+	<!-- old hover effect drop downs -->
+	<!--<div class="topnav">
+		<?php //$this->navigation()->menu()->setPartial(array('topnav.phtml','default'));
+			//echo $this->navigation()->menu()->render();
+		?>
+	</div>-->
+	
+	<?php
+	 //old dropdown from Lonely JS script
+	 //echo $this->pageElement('top_navigations');
+	 
+	 //new static dropdowns
+	//echo $this->pageElement('navigations');
+	
+	//new dynamic dropdowns
+	$this->navigation()->menu()->setPartial(array('mainnav.phtml','default'));
+	echo $this->navigation()->menu()->render();
+	?>
+	<!-- Top Navigation-->
+</div>
+<!-- Breadcrumbs -->
+<div class="breadcrumbs">
+<?php
+//display welcome message
+if (Zend_Auth::getInstance()->hasIdentity() && $this->controllerName=='index' && $this->actionName=='index' ){
+$userNs	=	new Zend_Session_Namespace("members");
+$userUsername = $userNs->userUsername;
+?>
+Welcome, <a href="/gapper/my-profile"><?php echo $userUsername;?></a>
+<?php }else{?>
+&nbsp;
+<?php }?>
+
+<?php
+$params=$this->params;
+if($this->controllerName=="advice" && $this->actionName=="detail"){
+
+ $adviceM	= new Application_Model_Advice();
+ $adviceM	= $adviceM->find($params['id']);
+ $title		= "Detail";
+ if(false!==$adviceM)
+ {
+    $title = $adviceM->getTitle();
+	$categoryM = new Application_Model_Category();
+    $categoryM = $categoryM->find($adviceM->getCategoryId());
+	
+	$advice_cat_name = "";
+	$advice_cat_id = "";
+	if($categoryM!==false)
+	{
+		$advice_cat_name	= $categoryM->getName();
+		$advice_cat_id		= $categoryM->getId();
+	}
+ }  
+ ?>
+<a href="/">Home</a> &gt; <a href="/advice">Advice</a> &gt; <a href="<?php echo $this->seoUrl("/advice/category/id/".$advice_cat_id)?>"><?php echo $advice_cat_name;?></a> &gt; <? echo $title?>
+
+<?php  }elseif($this->controllerName=="advice" && $this->actionName=="category"){
+$categoryM	= new Application_Model_Category();
+$categoryM	= $categoryM->find($params['id']);
+$cat_name	= "";
+if(false!==$categoryM)
+{
+	$cat_name	= $categoryM->getName();
+}
+?>
+<a href="/">Home</a> &gt; <a href="/advice">Advice</a> &gt; <? echo $cat_name;?>
+
+<?php  }elseif($this->controllerName=="advice" && $this->actionName=="search"){?>
+<a href="/">Home</a> &gt; <a href="/work-study-volunteer">Advice</a> &gt; Search Results
+
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="search"){?>
+<a href="/">Home</a> &gt; <a href="/work-study-volunteer">Work Study Volunteer</a> &gt; Search Results
+
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="category-detail"){?>
+<a href="/">Home</a> &gt; <a href="/work-study-volunteer">Work Study Volunteer</a> &gt; <? echo ucfirst($params['category'])?>
+
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="category"){
+$categoryM	= new Application_Model_Category();
+$categoryM	= $categoryM->find($params['id']);
+$title		= "Detail";
+if(false!==$categoryM)
+{
+	$title = $categoryM->getName();
+}
+?>
+<a href="/">Home</a> &gt; <a href="/work-study-volunteer">Work Study Volunteer</a> &gt; <? echo $title;?>
+				
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="detail"){
+    $categoryM = new Application_Model_Category();
+    $categoryM=$categoryM->find($params['id']);
+    $title="Detail";
+    if(false!==$categoryM)
+        $title=$categoryM->getName();
+    ?>
+<a href="/">Home</a> &gt; <a href="/work-study-volunteer">Work Study Volunteer</a> &gt; <? echo $title?>
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="article-detail"){
+    $articleM=new Application_Model_Articles();
+    $articleM=$articleM->find($params['id']);
+    $title="Detail";
+    if(false!==$articleM)
+        $title=$articleM->getTitle();
+    ?>
+<a href="/">Home</a> &gt; <a href="/work-study-volunteer">Work Study Volunteer</a> &gt; <? echo $title?>
+<?php  }elseif($this->controllerName=="journal" && $this->actionName=="view-post"){
+    $blogM=new Application_Model_Blog();
+    $blogM=$blogM->find($params['blog_id']);
+    $title="Detail";
+    if(false!==$blogM)
+        $title=$blogM->getTitle();
+
+    if(strlen($title)>50)
+    {
+        $title=substr($title,0, 50). "...";
+    }
+    ?>
+<a href="/">Home</a> &gt; <a href="/journal">Journals</a> &gt; <? echo $title?>
+ <?php  }elseif($this->controllerName=="destination" && $this->actionName=="country"){
+    $countryM=new Application_Model_Country();
+    $countryM=$countryM->find($params['id']);
+    $title="Detail";
+    if(false!==$countryM)
+        $title=$countryM->getName();
+    ?>
+<a href="/">Gap Daemon</a> &gt; <a href="<?php echo $this->seoUrl("/destination/index")?>">Travel Guides</a>&gt; <a href="#"><?php echo $countryM->getContinentName()?></a> &gt; <? echo $title?>
+<?php  }elseif($this->controllerName=="destination" && $this->actionName=="city"){
+    $cityM=new Application_Model_City();
+    $city=$cityM->find($params['id']);
+    $title="Detail";
+    if(false!==$city)
+    {
+        $title=$city->getName();
+
+         //---country name
+        $countryM=new Application_Model_Country();
+        $country=$countryM->find($city->getCountryId());
+        $country_name="-";
+        if(false!==$country)
+        {
+            $country_name=$country->getName();
+        }
+        //--------
+
+
+        //--- continent name
+        $continentM=new Application_Model_Continent();
+        $continent=$continentM->find($country->getContinentId());
+        $continent_name="-";
+        if(false!==$continent)
+        {
+            $continent_name=$continent->getName();
+        }
+        //-------------
+    }
+?>
+<a href="/">Gap Daemon</a> &gt; <a href="<?php echo $this->seoUrl("/destination/index")?>">Travel Guides</a>&gt; <a href="#"><?php echo $continent_name?></a>&gt; <a href="<?php echo $this->seoUrl('/destination/country/id/'.$country->getId())?>"><?php echo $country_name?></a> &gt; <? echo $title?>
+<?php }else{
+    echo $this->navigation()
+		->breadcrumbs()
+		->setLinkLast(false);
+		;
+}?>
+</div>
+<!-- Breadcrumbs -->
+<?php
+if(isset($this->searchtext) && $this->searchtext!="")
+{
+	$default_search_txt = $this->searchtext;
+}
+else
+{
+	$default_search_txt = "Search Gap Daemon";
+}
+?>
+<div id="search">
+<form name="frmseach" id="frmseach" action="/search" method="get">
+	<input name="q" type="text" class="search-input" value="<?php echo $default_search_txt;?>" id="keywords" onblur="replaceText(this);" onfocus="clearText(this);" /><input name="btnSearch" type="button" class="search-button" onclick="document.frmseach.submit();" />
+</form>
+
+	<?php
+	 if (Zend_Auth::getInstance()->hasIdentity()){ 
+	?>
+                <a href="<?php echo $this->seoUrl("/gapper/my-profile");?>" class="register" id="btn-slideprof"><?=$this->puts("My Profile")?></a>
+		<span class="logout"><a href="/index/logout/"><?=$this->puts("LOG OUT")?></a></span>
+	<?php 
+	}else{?>
+		<a href="<?php echo $this->seoUrl("/index/register");?>" class="register" id="btn-slidereg"><?=$this->puts("Register")?></a>
+
+<script type="text/javascript">
+
+ $(document).ready(function(){
+	 
+	$("#btn-slide").click(function(event) {
+		event.preventDefault();
+		$("#login_box").slideToggle();
+	  });
+	  
+	  $("#login_box").blur(function() {
+	  }); 
+ });	
+
+function submitenter(myfield,e)
+{
+	var keycode;
+	if (window.event) keycode = window.event.keyCode;
+	else if (e) keycode = e.which;
+	else return true;
+
+	if (keycode == 13)
+	{
+		myfield.form.submit();
+		return false;
+	}
+	else
+	return true;
+}
+
+</script>
+
+<a href="javascript://" class="login" id="btn-slide">
+	<?=$this->puts("LOG IN")?><img src="<?echo $this->cdnUri()?>/images/login.jpg" alt=""  />
+</a>
+<?php
+    /*------facebook------*/
+    $facebook = $this->facebook();
+    //$return_url=Zend_Registry::get('siteurl')."/index/do-fb-return/";
+	$return_url=Zend_Registry::get('siteurl')."/index/facebook-connect/";
+    $cancel_url=Zend_Registry::get('siteurl')."/index/cancel-facebook";
+    //$this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location", "display"=>"popup"));
+    $this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("cancel_url"=>$cancel_url,"next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location","display"=>"popup"));
+    //$this->view->loginUrl="https://graph.facebook.com/oauth/authorize?redirect_uri=$return_url&scope=offline_access,publish_stream,read_stream&client_id=102609193129645";
+    
+	$this->Lform=new Admin_Form_Login();
+?>
+<div id="login_box"  <?php if($this->lmsg <> ""){ echo ' style="display:block"'; }?>>
+	<div class="topbg"></div>
+	<div class="content_box">
+		<form id="frmLogin" name="frmLogin" method="post" action="/index">
+		<div class="div2 aqua_green"><strong>Sign into Gap Daemon</strong></div>
+		<div id="hd_signinAll_err_msg" class="div2 clear mart5 orange" style="display:none;"></div>
+		<?php if (isset($this->lmsg) && $this->lmsg!=""){?>
+		<div class="div2 clear mart5 orange"><?php echo $this->lmsg;?></div>
+		<?php }?>
+		<div class="input-field">
+		<!-- <label class="required" for="email">Username/Email:</label> -->
+		<input type="text" autocomplete="off" onfocus="clearText(this);" onblur="replaceText(this);" class="inpu2" value="<?php echo $this->cookie_username;?>" id="email_sh" name="email">
+		</div>
+		<div class="input-field">
+		<!-- <label class="required" for="password">Password:</label> -->
+		<?php if($this->cookie_password != ""){?>
+		<input type="password" class="inpu2" value="<?php echo $this->cookie_password;?>" id="password" name="password" onblur="restoreTextPwdField(this.value);">
+		<?php }else{?>
+		<input type="password" id="password" name="password" class="inpu2" value="<?php echo $this->cookie_password;?>" style="display:none;" onblur="restoreTextPwdField(this.value);">
+		<input type="text" id="password-close" name="password-close" class="inpu2"  value="Password" autocomplete="off" />		
+		<?php }?>
+		</div>
+		<!--<div class="div2 mart5"><a href="javascript://" onclick="document.frmLogin.submit();" class="cmn_register marl">SIGN IN</a>-->
+		<div class="div2 mart5"><a href="javascript: fnc_SignInTop();" class="cmn_register marl">SIGN IN</a> 
+		<div class="rememberme"><?php //echo $this->Lform->rememberMe?>
+		<label class="optional" for="rememberMe"><input type="checkbox" class="form" value="1" <?php echo $this->cookie_remember;?> id="rememberMe" name="rememberMe"> Remember me</label>
+		</div>
+		</div>
+		<div class="div2 padb"><a href="/index/username/" class="orange">Forgot username?</a>  <a href="/index/forgot/" class="orange">Forgot password?</a></div>
+		<div class="div3 aqua_green"><strong>Sign in with Facebook</strong></div>
+		<div class="f_connect"><a href="javascript://" onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" class="connect-log"><img src="<?echo $this->cdnUri()?>/images/f_connect.gif" alt="" /></a></div>	
+		<div class="div3 aqua_green"><span class="f-left not-a-mem"><strong>Not a Member?</strong></span><a href="<?php echo $this->seoUrl("/index/register");?>" class="cmn_register marl">REGISTER</a></div>
+		</form>		
+	</div>
+</div>
+<?php }?>
+</div>
+
+<!-- Modal Login form -->
+<style type="text/css">
+input.text { margin-bottom:12px; width:95%; padding: .4em; }
+fieldset { padding:0; border:0; margin-top:25px; }
+h1 { font-size: 1.2em; margin: .6em 0; }
+div#users-contain { width: 350px; margin: 20px 0; }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+.ui-dialog .ui-state-error { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+</style>
+<div id="dialog" style='display:none' >
+<div id="login_box1" >
+  <div class="topbg"></div>
+  <div class="content_box">
+	<form id="frmLoginR"  action="/index/login/" method="post"> 
+    <div class="div2 aqua_green"><strong>Sign into Gap Daemon</strong></div>
+      <div id="hd_signin_err_msg" class="div2 clear mart5 orange" style="display:none;"></div>
+      <div class="input-field">
+         <input type="text" name="email_m" id="email_m" value="<?php echo $this->cookie_username;?>" class="inpu2" onblur="replaceText(this);" onfocus="clearText(this);" />
+      </div> 
+      <div class="input-field">
+       <?php if($this->cookie_password != ""){?>
+        <input type="password" name="password_m" id="password_m" value="<?php echo $this->cookie_password;?>" class="inpu2" onblur="restoreTextPwdFieldCommon(this.value);" />
+		<?php }else{ ?>
+		<input type="password" class="inpu2" id="password_m" name="password_m" value="<?php echo $this->cookie_password;?>" style="display:none;" onblur="restoreTextPwdFieldCommon(this.value);">
+		<input type="text" class="inpu2" id="password-close-new" name="password-close-new" value="Password" autocomplete="off" />	
+		<?php }?>
+      </div>
+      <div class="div2 mart5">
+	  <a class="cmn_register marl" href="javascript: loginModal();">SIGN IN</a>
+        <div class="rememberme">
+         <input type="checkbox" class="form"  value="1" id="rememberMe_m" <?php echo $this->cookie_remember;?> name="rememberMe_m">
+		  <span>Remember me</span>
+        </div>
+      </div>
+      <div class="div2 padb"><a href="/index/username/" class="orange">Forgot username?</a> <a href="/index/forgot/" class="orange">Forgot password?</a></div>
+      <div class="div3 aqua_green"><strong>Sign in with Facebook</strong></div>
+      <div class="f_connect"><a href="javascript://" onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" class="connect-log"><img src="<?echo $this->cdnUri()?>/images/f_connect.gif" alt="" /></a></div>
+	  <div class="div3 aqua_green"><span class="f-left not-a-mem"><strong>Not a Member?</strong></span><a class="cmn_register marl"  href="<?php echo $this->seoUrl("/index/register");?>">REGISTER</a></div>
+    </form>
+  </div>
+</div>
+</div>
+<!-- Modal Login form end -->
+
+
+<!-- Modal alert box start -->
+<div id="alert-box"   style='display:none' >
+	<div class="login_box1" >
+		<div class="topbg"></div>
+		<div class="content_box"><div class="content-box-inner">
+		<div class="div2 aqua_green stro" id="alert-title"><strong>Warning!</strong></div>
+			<span id="alert-msg">Please enter a keyword and proceed.</span><br class="clear" /><br class="clear" />
+			<a class="cmn_register marl" href="javascript: alertClose();">OK</a>
+		</div></div>
+	</div>
+</div>
+<!-- Modal alert box end -->
+
+<div id="confirm-box" title="Warning!" style="display:none">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+		<span id="confirm-msg">Please enter a keyword and proceed.</span>
+        </p>
+</div></div></div>
+
+<script language="javascript" type="text/javascript">
+	$('#password-close').focus(function() {
+	    $('#password-close').hide();
+	    $('#password').show();
+	    $('#password').focus();
+	});
+	
+	$('#password').blur(function() {
+	    if($('#password').val() == '') {
+        $('#password-close').show();
+	        $('#password').hide();
+	    }
+	});
+	
+	$('#password-close-new').focus(function() {
+	    $('#password-close-new').hide();
+	    $('#password_m').show();
+	    $('#password_m').focus();
+	});
+	
+	$('#password_m').blur(function() {
+	    if($('#password_m').val() == '') {
+        $('#password-close-new').show();
+	        $('#password_m').hide();
+	    }
+	});
+</script>

@@ -1,0 +1,169 @@
+<div style="border:0px solid #ffcc00;" id="user_travel_wall_wallupdates">
+<?php
+if(count($this->data)>0)
+{
+    echo "<br/>";
+	foreach($this->data as $row)
+	{
+	  $userM=new Application_Model_User();
+	  $user=$userM->find($row->getUserId());
+	  if(false!==$user)
+	  {
+	  
+		  $commentedPersonId = $user->getId();
+		  $username=$user->getUsername();
+		  $firstname=$user->getFirstName();
+		  $lastname=$user->getLastName();
+		  $image=$user->getThumbnail();
+		  
+		  $strFullName = $firstname." ".$lastname;  
+	  }
+	  // $strFullName = $user->getFirstName()." ".$user->getLastName();
+	  $date=new Base_Date();
+
+	  $voteM=new Application_Model_Vote();
+	  $total_likes=$voteM->getTotalVotes($row->getId(),"status", 1,null);
+	  ?>
+      <div class="feed-box">
+            <div class="feed-by-img">
+                <a href="<?php echo $this->seoUrl("/$username"); ?>">
+                    <img border="0" src="/image?src=<?php echo $image;?>&size=journal" alt="" />
+				</a>
+			</div>
+            <div class="feed-content">
+                    <div class="userntxt"><a href="<?php echo $this->seoUrl("/$username"); ?>"><b><?php echo $firstname ?> <?php echo $lastname ?></b></a> <?php echo $this->textModifier($row->getStatus());?></div>
+                    <div class="feed-posted">Posted <?php echo  $date->timeAgo($row->getAddedon());?> |
+                                                                                                                    <?php if($this->userId==""){?>
+                                                                                                                            <a href="javascript: loginPopUp('Please login to comment');">Comment</a>
+                                                                                                                    <?php }else{  ?>
+                                                                                                                             <a href="javascript: showCommentBox(<?php echo $row->getId()?>);">Comment</a>
+                                                                                                                    <?php } ?>
+                                                                                                                  |
+
+                
+                <?php 
+				$likeStyle="";
+                $unlikeStyle="display:none";
+				if($this->userId==""){?>
+                 <a href="javascript: loginPopUp('Please login to like');">Like</a>
+                <?php 
+				}
+				else
+				{ 
+                    $userVote=$voteM->getTotalVotes($row->getId(),"status", 1,$this->userId);
+                    if($userVote>0)
+					{
+                       $likeStyle="display:none";
+                       $unlikeStyle="";
+                    }
+                    ?>
+                        <span style="display: none;" id="loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                        <span style="<?php echo $unlikeStyle?>" id="unlike_<?php echo $row->getId();?>">
+                        <a href="javascript: like(<?php echo $row->getId();?>, -1);">Unlike</a>
+                        </span>
+
+                        <span style="<?php echo $likeStyle?>"  id="like_<?php echo $row->getId();?>">
+                        <a href="javascript: like(<?php echo $row->getId();?>, 1);">Like</a>
+                        </span>
+                    <?php }//end of else?>
+					</div>
+
+                    <?php
+                            $item_id = $row->getId();
+                            $commentM=new Application_Model_Comment();
+                            $where="item_id='{$item_id}' and publish='1' and item_type='status'";
+                            $order="addedon ASC";
+                            $comments=$commentM->fetchAll($where,$order,10);
+                            $styleComment="";
+                            if(count($comments)==0){
+                                $styleComment="display:none";
+                            }
+							//added by mahipal on 25-Feb-2011, to display 'yuo like this' if comment is 0 and Like is greater than 0
+							if($total_likes>0)
+							{
+								$styleComment="";
+							}
+                     ?>
+                    <div class="feed-comment" id="comment-main-<?php echo $row->getId();?>" style="<?php echo $styleComment?>">
+                    
+					<!-- Tags and likes DIV starts here -->
+					<?php
+					//set total likes text
+					$textPrint	=	$this->language("like_singular");
+					if($total_likes > 1)
+					{
+						$textPrint	=	$this->language("like_plural");
+					}
+
+					//set main DIV style
+					$mainDivStyle	= "display: none;";			
+					if($total_likes > 0)
+					{
+						$mainDivStyle	= "display: block;";
+					}
+					?>
+					<div style="<?php echo $mainDivStyle;?> border-bottom: 1px solid #FFFFFF; height: 30px;" id="travel_tag_div_<?php echo $row->getId();?>">
+					 <?php if ($total_likes>0){$totalLikeDisplay="";}else{$totalLikeDisplay="display:none";}?>
+						<span class="like-dislike-l f-left">
+						<span id="you-like-this-thumb-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>">
+						<img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like" class="f-left" />
+						<span id="you-like-this-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>"><?php echo $this->language("like_you");?></span>
+						</span>
+						<a href="<?php echo $this->seoUrl('/journal/user-like-this/type/status/item_id/'.$row->getId());?>" class="like-this-l-link">
+						<span id="total_likes_<?php echo $row->getId();?>" style="<?php echo $totalLikeDisplay?> padding-left:5px !important;">
+						<?php echo $total_likes.' '.$textPrint;?>
+						</span>
+						</a>
+						</span>
+					</div>
+					<div class="clear"></div>
+					<!-- Tags and likes DIV ends here -->
+                    <div id="comment-list-<?php echo $row->getId();?>">
+					<?php
+
+                            if(count($comments)>0){
+                                foreach($comments as $_comment)
+                                    echo $this->partial('comment/comment.phtml', array('comment'=>$_comment, 'type'=>'status_comment', 'userId'=>$this->userId, 'item_id'=>$item_id));
+                            }
+                         ?>
+                        </div>
+                    <div class="commet-frm-feed" id="comment-form-<?php echo $row->getId();?>">
+                    <form action="">
+
+                            <input type="text" id   ="status-comment-<?php echo $row->getId();?>"  name="status-comment-<?php echo $row->getId();?>" class="feed-comment-txt" value="Comment..." onfocus="if(this.value=='Comment...'){this.value=''}" onblur="if(this.value==''){this.value='Comment...'}"  />
+
+                            <?php if($this->userId==""){?>
+                                      <input type="button" value="share" class="feed-comment-btn" onclick="javascript: loginPopUp('Please login to comment');"/>
+                            <?php }else{  ?>
+                                      <input id="saveComment_<?php echo $row->getId();?>" name="saveComment_<?php echo $row->getId();?>" type="button" value="share" class="feed-comment-btn" onclick="statusComment('<?php echo $row->getId();?>','<?php echo $commentedPersonId ?>')"/>
+                            <?php } ?>
+
+                            <span style="display: none;" id="comment_loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                    </form>
+
+                    </div>
+
+                    </div>
+            </div>
+        </div>
+    <?
+    }//end of foreach
+?>
+</div>
+
+<!-- View More DIV START -->
+<div class="feed-box" id="travel_wall_showmore_div" style="border-top:none;">
+	<span style="display: none;" id="travel_wall_loading_img">
+		<img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+	</span>	
+	<div class="view-link">
+		<a id="show_more_travelwall_link" href="javascript: moreTravelWall(<?php echo $this->user_profile_id;?>)">VIEW MORE</a>
+	</div>
+</div>
+<!-- View More DIV END -->
+<?php
+}
+else
+{
+    echo "This member has not updated their travel wall yet.";
+}

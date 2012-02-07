@@ -1,0 +1,57 @@
+<div id="main-center">
+<h2 class="main-heading">My Journals</h2>
+<input type=text name=ss></input>  <a href="/gapper/my-account">My Account</a>  <a href="">Logout</a><br/>
+<a href="/gapper/create-blog/">Create Blog</a><br/>
+Create a Journal of all your your activities during your travel<br/>
+<input type=text name=aa></input><a href="/gapper/search">search</a><br/>
+<br class="clear">
+<br class="clear">
+
+ <?php 
+if(count($this->data)>0)
+{ 
+	$date=new Base_Date();
+	$date->setSysDateFormat("dS F Y");
+	foreach($this->data as $row)
+	{
+		$tagsM=new Application_Model_Tags();
+		$tagStr=$tagsM->getBlogTags($row->getId());
+		
+		$user=$row->getUserObj();
+		
+		?>
+		
+		<div class="journal-box">
+			<h3 class="main-heading2"><?php echo $row->getTitle();?></h3>
+			<div class="post-by">Posted by <b><?php echo  $user->first_name?></b>
+		<span><?php echo $date->getSysDate($row->getAddedon());?></span>
+		| <span>150 comments</span> | Like</div>
+			<p>View Comment</p>
+			<div class="like-dislike"><span class="f-left"><img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like"/></span><span class="f-left"><a href="#"><span>35 members like this</span></a>  |  Tags: <?php echo $tagStr?></span></div>
+			<div class="clear"></div>
+			<a href="#" class="button-link">VIEW POST</a><a href="#" class="button-link">SHARE</a>
+		</div>
+
+		
+		
+		
+		
+		
+		
+		<!--<span><?php //echo $row->getTitle();?></span><br class="clear">
+		Posted by <b><?php //echo  $user->first_name?></b>
+		<span><?php //echo $date->getSysDate($row->getAddedon());?></span>
+		| <span>150 comments</span> | <span>35 members like this</span><br/> View Comment
+		<br class="clear">
+		<br class="clear">-->
+		<?php 
+	}
+}
+else{
+	echo "No blogs found. Please add new blog.";
+}
+?>
+<div class="clear"></div>
+<a href="#" class="button-link">Show More</a> 
+
+</div>

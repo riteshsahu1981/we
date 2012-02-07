@@ -1,0 +1,35 @@
+<div id="main-left">
+<h2 class="main-heading">Search Results for "<?php echo $this->searchstr;?>" in "<?php echo $this->categoryName!=''?$this->categoryName:'all categories';?>"</h2>
+<br />
+<?php 
+if($this->total>0){
+$i=0;
+$j=1;
+foreach($this->articles as $article)
+{
+	$categoryData = $this->categoryM->find($article->getCategoryId());
+	$seo_url = "/work-study-volunteer/category/id/".$article->getCategoryId();
+	$seo_url_learn = "/work-study-volunteer/article-detail/id/".$article->getId();
+	?>
+	<div class="work-stydy-cat" >
+		<!--<div class="work-study-cat-img">
+			<img alt="" src="/media/picture/category/volunteer/<?php //echo 'thumb_'.$categoryData->getImage();?>">
+		</div>-->
+	<div class="work-study-cat-right" style="width:95%;">
+	<h3><?php echo $article->getTitle();?></h3>
+	<p><?php echo substr(stripslashes($article->getSynopsis()),0,220);?>...</p>
+	
+	<div class="search-category-cat"><b>Category:</b> <a href="<?php echo $this->seoUrl($seo_url);?>"><?php echo $categoryData->getName();?></a></div>
+	<a href="<?php echo $this->seoUrl($seo_url_learn);?>" class="learn-more">Learn More</a>
+	</div>
+	</div>	
+	<?php 
+}
+ //echo  "<div class='clear'></div>".$this->paginationControl($this->articles, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param));
+}
+else
+{
+	echo "<b>Sorry no result found.</b>";
+}
+?>  
+</div> 

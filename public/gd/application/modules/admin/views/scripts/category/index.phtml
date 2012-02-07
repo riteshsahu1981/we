@@ -1,0 +1,92 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+		<img src="/images/admin-images/bl-tl.gif" align="left" /><img src="/images/admin-images/bl-tr.gif" align="right" />
+		<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+		<img width="20" src="/images/admin-images/newobject.png" align="left" vspace="5" hspace="5" /><a href="/admin/category/add/type/<?php echo $this->type?>" class="add f-right">Add Category</a></span>	
+		<?php echo $this->title ?> - <span class='msg'>Total <?php echo $this->total?> category(s) found! </span>
+	</div>	
+<div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+?>
+<span class='red'>
+<? echo $this->msg;?>
+</span>
+<br>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+<br />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+    <th>Category</th>
+	<th>Description</th>
+	<?php if($this->type=="advice" || $this->type=="wsv"){?>
+	<th>Order</th>
+	<?php }?>
+	<th>Status</th>
+    <th>Action</th>
+  </tr>
+	<?php
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+		if($rowClass=="trbg1")
+		{
+			$rowClass='trbg';
+		}	
+		else
+		{
+			$rowClass='trbg1';
+		}
+		
+		$status	=	$row['status'];
+		$printImage	=	"/images/admin-images/false.gif";
+		$published_title="Click here to publish.";
+		$publish = "publish";
+		$publishMsg = "published";
+		if($status == "published")
+		{
+			$printImage	=	"/images/admin-images/true.gif";
+			$published_title="Click here to unpublish.";
+			$publish = "unpublish";
+			$publishMsg = "unpublished";
+		}
+				
+		$DATE = new Base_Date();
+	?>
+	<tr class='<?php echo $rowClass?>'>
+    	<td><?php echo $sno?></td>
+    	<td><?php echo $row['name']?></td>
+		<td><?php echo ($row['description']!="")?substr($row['description'],0,50)."..." : "N/A";?></td>
+		<?php if($this->type=="advice" || $this->type=="wsv"){?>
+		<td><?php echo $row['weight']?></td>
+		<?php }?>
+		<td><a href='/admin/category/status/id/<?php echo $row['id'];?>/type/<?php echo $this->type;?>' title="<?php echo $published_title;?>" onclick="return confirm('Are you sure to <?php echo $publish;?> this category?\nAll the data associated with this category will be <?php echo $publishMsg;?>.');"><img src="<?php print $printImage;?>" /></a></td>
+		<td>
+		<a href='/admin/category/edit/type/<?php echo $this->type?>/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;&nbsp;
+		<a href="/admin/category/delete/id/<?=$row['id']?>/type/<?php print $this->type;?>" onclick="return confirm('Are you sure to delete this category?\nAll the data associated with this category will be deleted.');"><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+    	</td>
+    	</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+	<div class="btm-curve"><img src="/images/admin-images/btm-r-l.gif" align="left" /><img src="/images/admin-images/btm-r-r.gif" align="right" /></div>
+</div>

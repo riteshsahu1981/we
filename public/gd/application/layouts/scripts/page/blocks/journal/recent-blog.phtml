@@ -1,0 +1,32 @@
+<?php 
+
+$date=new Base_Date();
+$blogM=new Application_Model_Blog();
+$blogs=$blogM->fetchAll(null,"addedon desc",10);
+
+?>
+
+<div class="right-box-wide" >
+	<h2 class="box-heading">RECENTLY ADDED</h2>
+	<a href="#" class="button-link">VIEW ALL</a> <a href="#" class="button-link">VIEW PHOTOS</a> <a href="#" class="button-link">VIEW BLOGS</a>
+	<div class="clear"></div>
+	<br />
+	<?php foreach($blogs as $_blog){
+	$user=$_blog->getUserObj();
+	
+	
+	$strTime=$date->timeAgo($_blog->getAddedon());
+        $voteM=new Application_Model_Vote();
+        $total_likes=$voteM->getTotalVotes($_blog->getId(),"blog", 1,null);
+		?>
+	<div class="recently-added">
+		<div class="recently-added-img"><a href="#"><img src="<?echo $this->cdnUri()?>/images/img3-sml.jpg" alt="" /></a></div>
+		<div class="recently-added-txt">
+			<div class="recently-mood"><a href="/journal/view-post/blog_id/<?php echo $_blog->getId()?>"><?php echo $_blog->getTitle();?></a></div>
+			<div class="recently-posted">Posted by <a href="/<?php echo $user->username?> "><?php echo $user->first_name?> <?php echo $user->last_name?></a> | <?php echo $strTime?> </div>
+			<div class="recently-like"><a href="/journal/user-like-this/blog_id/<?php echo $_blog->getId()?>"><span id="total_likes_left_<?php echo $_blog->getId();?>"><?php echo $total_likes ?></span> Users Like This</a></div>
+		</div>
+	</div>
+	<?php } ?>
+	
+</div>

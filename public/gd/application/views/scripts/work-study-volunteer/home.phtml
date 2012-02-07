@@ -1,0 +1,65 @@
+<div id="main-left">
+<h2 class="main-heading"><?php echo $this->title;?></h2>
+<div class="work-sdudy-home"><?php echo $this->content;?></div>
+<?php 
+if(count($this->categories)>0)
+{
+	foreach($this->categories AS $category)
+	{
+		$image = "/media/picture/city/no-image.jpg";
+		if($category->image!="" && file_exists("media/picture/category/wsv/".$category->image))
+		{
+			$image = "/media/picture/category/wsv/".$category->image;
+		}
+		$catUrlLink = "/work-study-volunteer/category/id/".$category->id;
+		$catUrlText = "Learn More";
+		if($category->urlLink!="")
+		{
+			$catUrlLink = $category->urlLink;
+		}
+		if($category->urlText!="")
+		{
+			$catUrlText = $category->urlText;
+		}
+?>
+<div class="work-stydy-box"><a href="<?php echo $this->seoUrl("/work-study-volunteer/category/id/$category->id");?>" class="learn-more" title="Learn More"><h3><?php echo $category->name;?></h3></a>
+	<div class="work-study-box-img">
+		<a href="<?php echo $this->seoUrl("/work-study-volunteer/category/id/$category->id");?>" class="learn-more" title="Learn More">
+		<img src='<?php echo $image;?>' width='128' height='84' align='left' class='left-img' border='0'>
+		</a>
+	</div>
+	<div class="work-study-box-left">
+            <p><?php echo stripslashes($category->description);?></p>
+		<a href="<?php echo $this->seoUrl($catUrlLink);?>" class="learn-more" title="<?php echo $catUrlText;?>"><?php echo $catUrlText;?></a>
+	</div>
+	<div class="work-study-box-right">
+		<?php
+		//get Articles added to category
+		$articlesM	=	new Application_Model_Articles();
+		$where		= 	"category_id={$category->id} AND status='1'";
+		$orderBy	=	"addedon DESC";
+		$limit		=	3;
+		$articlesRes = $articlesM->fetchAll($where, $orderBy, $limit);
+		if(false!==$articlesRes)
+		{
+			foreach($articlesRes AS $article)
+			{
+				$seo_url = '/work-study-volunteer/article-detail/id/'.$article->id;
+		?>
+		<a href="<?php echo $this->seoUrl($seo_url);?>"><?php echo $article->title;?></a>
+		<br class="clear" />
+		<?php 
+			}//end foreach
+		}//end of if	
+		?>
+	</div>
+</div>
+<?php 
+	}//end foreach
+}//end if
+else
+{
+	echo "<H2>Sorry no result found.</H2>";
+}	
+?>
+</div> 

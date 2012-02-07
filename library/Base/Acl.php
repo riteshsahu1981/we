@@ -33,7 +33,17 @@ class Base_Acl  extends Zend_Acl{
               ->add(new Zend_Acl_Resource('default:library','default'))
                 ->add(new Zend_Acl_Resource('default:seo-url','default'))
               ->add(new Zend_Acl_Resource('default:index','default'));
+        
+        
+        
+        /// demomodle module
+        $this->add(new Zend_Acl_Resource('demomodule'))
+                ->add(new Zend_Acl_Resource('demomodule:index', 'index'));
                       
+        
+         /// demomodle module
+        $this->add(new Zend_Acl_Resource('admin'))
+                ->add(new Zend_Acl_Resource('admin:index', 'index'));
     }
 
     public function setPrivilages()

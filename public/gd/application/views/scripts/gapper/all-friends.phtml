@@ -1,0 +1,121 @@
+<script language="javascript">
+function addFriend(id)
+{
+	//$("#friend"+id).html('processing...');
+	$("div#friend"+id).html("<img src='/images/ajax-loader.gif'>");
+	var ftype = $('#ctype'+id).val();
+
+	var params=	'';
+	params+="id="+id+"&ftype="+ftype;
+	$.ajax({
+		   type: "POST",
+		   url: "/gapper/add-friend/",
+		   data: params,
+		   dataType: "json",
+		   success: function(res)
+		   {
+		        if(res.error==1)
+				{
+					$("#friend"+id).html("");
+					loginPopUpExt(res.response, res.profileUrl);//open login Pop Up
+				}
+				else
+				{
+					$("#friend"+id).html(res.response);
+					$("#add_another_friend_link").show();
+				}
+				//$("#friend"+id).html(res);
+				//$("#add_another_friend_link").show();
+		   },
+		   error: function (res, status, e)
+		   {
+			   $("#friend"+id).html('response=>'+res+" status=>"+status+" error=>"+e);
+			}
+	 });
+	return false;	
+}	            
+</script>
+<div id="main-left" style="width:610px;">
+<h2 class="main-heading">Members</h2>
+<?php 
+if($this->total>0)
+{
+$i = 1;
+foreach($this->paginator as $member)
+{
+	$_friend	= new Application_Model_Friend();
+	$thumb		= $_friend->getThumbnail($member->image, $member->facebook_id, $member->sex);
+?>
+	<div class="advice-box" style="width:170px;">
+	<h3>
+            <a href ="/<?php echo $member->username;?>">
+			<?php echo ucfirst($member->first_name); ?> <?php echo ucfirst($member->last_name); ?>
+			</a>
+        </h3>
+		<div class="avatar">
+        <a href ="/<?php echo $member->username;?>">
+		<?php //if($member->image!=''){?>
+              <!--<img src="/media/picture/profile/<?php echo $member->image;?>" border="0" style="margin-left:0px;" />-->
+		<?php //}else{ ?>
+	    <!--<img src="/images/no-image.jpg" border="0" style="margin-left:0px;" />-->
+         <?php //} ?>
+		 <img border="0" src="/image?src=<?php echo $thumb;?>&size=friends" style="margin-left:0px;" alt="<?php echo $member->username;?>" />
+		 </a>
+		 </div>
+	    <select id="ctype<?php echo $member->id;?>">
+                 <option value="friend" >Friends</option>
+                 <option value="family" >Family </option>
+                 <!--<option value="travelmate" >Travel Mates </option>-->
+         </select>
+		<div id="friend<?php echo $member->id;?>">
+		<a href='javascript:void(0);' onclick="addFriend('<?php echo $member->id;?>');" class="learn-more">Add as a friend</a>		
+		</div>
+	</div>
+	<?php 
+	if($i%3==0){
+		echo '<div class="clear"></div><hr class="hr" />';
+	}
+	$i++;
+}//end foreach
+echo  "<div class='clear'>".$this->paginationControl($this->advices, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param))."</div>";
+?>
+<div id="add_another_friend_link" style="display:none;">
+<a href="javascript://" onclick="addAnotherFriend();"><b>Add Another Friend</b></a>
+</div>
+<script type="text/javascript">
+function addAnotherFriend()
+{
+	$("#add_another_friend_div").slideToggle();
+}
+
+var params="mode=ajax";
+$(function() 
+{
+	$("#name").autocomplete(
+	{
+		source: "/gapper/auto-name/",
+		minLength: 1,
+		select: function(event, ui) 
+		{
+			$("#firstName").val(ui.item.id);
+		}
+	});
+});
+</script>
+<div class="cmn_center" id="add_another_friend_div" style="display:none;">
+	<h2 class="topHeadh2">Add Another Friend</h2>
+	<div class="search-other-gappers">
+		<form action="/gapper/all-friends" method="post">
+		<h3>SEARCH FOR OTHER GAP DAEMON MEMBERS</h3><br/>
+		<b>Search Name</b> &nbsp;<input type="text" id="name" name="nickname" class="inviteSearchText" />&nbsp;&nbsp;<input type="submit" value="FIND" />
+		</form>
+	</div>
+</div>
+<?php
+}//end if
+else
+{
+	echo "<b>Sorry no result found</b>";
+}
+?>
+</div>

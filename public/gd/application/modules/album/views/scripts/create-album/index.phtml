@@ -1,0 +1,408 @@
+<div id="center" class="my-photo">
+<h2>CREATE ALBUM</h2>
+
+<!-- Start Btns Area -->
+<div class="btns"><img class="f-left" alt="" src="<?php print $this->capacityImage;?>" /> <dd class="f-left">&nbsp;&nbsp;<?php print $this->capacityPercent;?>% Photo Capacity</dd></div>
+<!-- End Btns Area -->
+
+<!-- Start Create Album Form -->
+
+<div class="create-album">
+<?php echo $this->msg;?>
+<form id="album" method="post" name="createAlbum" action="" enctype="multipart/form-data" onsubmit="return checkForm();">
+
+<label><span class="lab"><?php echo $this->form->name->getLabel()?> </span><?php echo $this->form->name?></label>
+<label><span class="lab"><?php echo $this->form->description->getLabel()?></span> <?php echo $this->form->description?></label>
+
+<label><span class="lab"><?php echo $this->form->address->getLabel()?> </span>  </label><div id="map_canvas" class="map1"></div>
+
+<label><span class="lab"><?php echo $this->form->address?> </span><?php echo $this->form->latlang?> <input type="button" class="button4" onclick="searchAddress()" value="Search"> <!-- <input type="button" class="button5" onclick="searchAddress()" value="Find"> --> </label>
+
+<label><span class="lab">Permissions</span><?php //echo $this->form->permissions->getLabel()?> <?php echo $this->form->permissions?></label>
+
+<label><span class="lab"><?php echo $this->form->tags->getLabel();?></span>
+  <?php echo $this->form->tags;?></label>
+
+
+<div><?php echo $this->form->my_file;?></div>
+
+<label><span class="lab">Create Album <?php //echo $this->form->upload;?></span>
+    <input name="create" type="button" id="create-album-and-upload-photos" value="Create Album and Upload Photos" class="button" />
+    <a href="" id="upload-form" rel="facebox" ></a>
+</label>
+
+<div class="thanks-album">No Thanks,<?php echo $this->form->save;?> I'll add them later </div>
+</form>
+</div>
+
+<!-- End Create Album Form -->
+
+</div>	
+
+<?php 
+	//$this->mapLib(null, "true")->setGear();
+        $this->mapLib(null, "false");
+    $userNs=new Zend_Session_Namespace("members");
+    $this->userId=$userNs->userId;
+?>
+<!-- 	<div id="right" class="pad-top">
+		<div class="inex-add-space">
+			Internal or External <br />Ad space
+		</div>
+	</div> -->
+	
+<script>
+ $("input#address").keypress(function(e) {
+    if(e.keyCode == 13) {
+        searchAddress();
+        return false;
+    }
+    
+});
+
+function checkForm()
+{
+	var description		=	$("#description").val();
+	var name_of_album	=	$("#name_of_album").val();
+
+	if(name_of_album	==	"Title of Album" || name_of_album	==	"")
+	{
+		alert("Please enter valid title.");
+		return false;
+	}
+	
+	if(description	==	"")
+	{
+		alert("Please enter description.");
+		return false;
+	}
+}
+/*--------- ON FOCUS CLEAR DEFAULT VALUE OF FIELD ------------*/
+$('.form').each(function() {
+    var default_value = this.value;
+    $(this).focus(function() {
+        if(this.value == default_value) {
+            this.value = '';
+        }
+    });
+    $(this).blur(function() {
+        if(this.value == '') {
+            this.value = default_value;
+        }
+    });
+});
+
+$(document).ready(function(){
+    $("#create-album-and-upload-photos").click(function(){
+        var name        =   $("#name_of_album").val();
+        var description =   $("#description").val();
+        var address     =   $("#address").val();        
+        var latlang     =   $("#latlang").val();       
+        var permissions =   $("#permissions").val();
+        var album_tags  =   $("#album_tags").val();
+
+        if(name == "" || name == 'Title of Album')
+        {
+            alert("Please enter valid title.");
+            return false;
+        }
+
+        var requesturl	=	"/album/create-album/album-submit";
+
+        $.post(requesturl, {name:name,description:description,address:address,latlang:latlang,permissions:permissions,album_tags:album_tags},
+                       function(html){
+                           var newurl="/image/album-upload-photo/review_edit/review/album_id/"+html;
+
+                           $("#upload-form").attr('href', newurl);
+
+                           $("#upload-form").trigger('click');
+                                       
+	});
+
+                                 
+                               
+       
+    });
+});
+
+</script>
+
+<script type="text/javascript">
+var user_login_id='<?php echo $this->userId?>';
+
+
+function updateGapperLocation(latLng){
+if(user_login_id=="")
+    {
+        loginPopUp('Please Login to check in.');
+        return false;
+    }
+    $("#dialog-confirm").dialog({
+			resizable: false,
+
+			modal: false
+			
+		});
+}
+function doUpdate()
+{
+    var latLng=marker.getPosition();
+      saveLocationInDatabase(latLng.lat(),latLng.lng());
+}
+function doCancel()
+{
+    $("#dialog-confirm").dialog('close');
+}
+
+//* Global variable declaration
+var geocoder = new google.maps.Geocoder();
+var marker=null;
+var map =null;
+var point="/images/point-blue.png";
+var infoWindow = new google.maps.InfoWindow();
+var siberia = new google.maps.LatLng(60, 105);
+var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
+var initialLocation;
+
+function buildMap(latLng)
+{
+     map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 8,
+    center: latLng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+
+
+  marker = new google.maps.Marker({
+    position: latLng,
+    title: 'Double Click to set your current location here.',
+    map: map,
+    icon : point,
+    draggable: true
+  });
+    geocodePosition(latLng);
+    addingEventListnerToMaker(marker);
+    var content="<div><img src='<?php echo $this->userThumb;?>' /> <?php echo $this->fullName?></div>";
+    smartInfo(content, marker,'click');
+}
+
+function smartInfo(content, marker, eventName)
+{
+
+    google.maps.event.addListener(map, 'click', function(){infoWindow.close();});
+    google.maps.event.addListener(marker, eventName, function(e) {
+
+
+
+    infoWindow.setContent(content);
+    infoWindow.close();
+
+    infoWindow.open(map, marker);
+
+    });
+
+    google.maps.event.addListener(map, 'click', function(e) {
+
+    infoWindow.close();
+
+    });
+}
+function expandMap()
+{
+    $("#show-map").hide();
+    $("#close-map").show();
+    $("#map_canvas").css("height", "500px");
+    var latLng=marker.getPosition();
+    buildMap(latLng);
+}
+
+function shrinkMap()
+{
+    $("#show-map").show();
+    $("#close-map").hide();
+    $("#map_canvas").css("height", "243px");
+    var latLng=marker.getPosition();
+    buildMap(latLng);
+}
+
+
+
+function locateMe()
+{
+           
+
+	  // Try W3C Geolocation method (Preferred)
+	  if(navigator.geolocation)
+          {
+              
+	    browserSupportFlag = true;
+	    navigator.geolocation.getCurrentPosition(function(position) {
+	      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+	      contentString = "Location found using W3C standard";
+	      //map.setCenter(initialLocation);
+             
+	      buildMap(initialLocation);
+	    }, function() {
+              
+	      handleNoGeolocation(browserSupportFlag);
+	    });
+	  } 
+          else if (google.gears)
+          {
+         
+	    // Try Google Gears Geolocation
+	    browserSupportFlag = true;
+	    var geo = google.gears.factory.create('beta.geolocation');
+	    geo.getCurrentPosition(function(position) {
+	      initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
+	      contentString = "Location found using Google Gears";
+	      //map.setCenter(initialLocation);
+	      buildMap(initialLocation);
+
+	    }, function() {
+                
+	      handleNoGeolocation(browserSupportFlag);
+	    });
+	  } 
+          else
+          {
+         
+	    // Browser doesn't support Geolocation
+	    browserSupportFlag = false;
+	    handleNoGeolocation(browserSupportFlag);
+	  }
+         
+}
+
+function handleNoGeolocation(errorFlag) {
+
+	  if (errorFlag == true) {
+	    initialLocation = newyork;
+	    contentString = "Error: The Geolocation service failed.";
+	  } else {
+	    initialLocation = siberia;
+	    contentString = "Error: Your browser doesn't support geolocation. Are you in Siberia?";
+	  }
+            contentString="We are unable to locate you on map. You are being located to the London, England";
+            alert(contentString);
+          
+            var latLng = new google.maps.LatLng("51.5001524", "-0.1262362");
+            buildMap(latLng);
+           // buildMap(latLng);
+          ///alert(initialLocation);
+         // map.setCenter(initialLocation);
+
+          
+
+	}
+
+function geocodePosition(pos) {
+  geocoder.geocode({
+    latLng: pos
+  }, function(responses) {
+    if (responses && responses.length > 0) {
+      updateMarkerAddress(responses[0].formatted_address, responses[0].geometry.location);
+    } else {
+      updateMarkerAddress('Cannot determine address at this location.');
+    }
+  });
+}
+
+
+function updateMarkerAddress(str, latlang) {
+
+  document.getElementById('address').value = str;
+  $('#latlang').val(latlang);
+}
+
+function searchAddress()
+{
+    var query = document.getElementById('address').value;
+    var request={ 'address': query };
+
+    geocoder.geocode(request, locateDestination);
+   
+}
+
+function locateDestination(results, status) {
+     if (status == google.maps.GeocoderStatus.OK){
+
+     //buildMap(results[0].geometry.location);
+     
+     shrinkMap()
+     resetMap();
+    marker = new google.maps.Marker({
+    position: results[0].geometry.location,
+    title: 'Double Click here to set your current location.',
+    map: map,
+    draggable: true
+  });
+ 
+    //map.panTo(marker.getPosition());
+    buildMap(results[0].geometry.location);
+   // addingEventListnerToMaker(marker);
+    //alert(status);
+    //updateMarkerAddress(results[0].formatted_address);;
+     //alert(results[0].formatted_address);
+     }else{
+         alert("Unable to locate. Please try some other keyword.");
+     }
+     
+}
+
+function resetMap() {
+
+  if (marker != null) {
+    marker.setMap(null);
+    marker= null;
+  }
+
+
+}
+
+function initialize()
+{
+	var myLatitude='<?php echo $this->myLatitude?>';
+	var myLongitude='<?php echo $this->myLongitude?>';
+	if(myLatitude=="" || myLongitude=="")
+	{
+			myLatitude="51.5001524";
+                        myLongitude="-0.1262362";
+		//locateMe();
+		//return false;
+	}
+
+  	var latLng = new google.maps.LatLng(myLatitude, myLongitude);
+    buildMap(latLng);
+    geocodePosition(latLng);
+    addingEventListnerToMaker(marker);
+}
+
+function addingEventListnerToMaker(marker)
+{
+     // Add dragging event listeners.
+  	google.maps.event.addListener(marker, 'dragstart', function() {
+
+    updateMarkerAddress('Wait...');
+
+
+  });
+
+  google.maps.event.addListener(marker, 'dragend', function() {
+
+    geocodePosition(marker.getPosition());
+
+  });
+
+  google.maps.event.addListener(marker, 'dblclick', function() {
+    updateGapperLocation(marker.getPosition());
+  });
+  
+}
+// Onload handler to fire off the app.
+//
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+
+

@@ -1,0 +1,64 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading"><img src="/images/admin-images/bl-tl.gif" align="left" /><img src="/images/admin-images/bl-tr.gif" align="right" />Global Settings- <span class='msg'>Total <?php echo $this->total_settings?> settings(s) found! </span></div>	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total_settings>0)
+{
+	
+?>
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+
+<br />
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+
+<br />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>Setting Name</th>
+    <th>Setting Identifire</th>
+    <th style='width:500px'>Setting Value</th>
+    <th>Action</th>
+  </tr>
+  
+	<?php	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $setting)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$setting['label']?></td>
+    		<td><?=$setting['identifire']?></td>
+    		<td><?php echo substr($setting['value'],0, 100);?></td>    	
+    		<td><a href='/admin/global-settings/edit/id/<?=$setting['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a></td>
+    	</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+	<div class="btm-curve"><img src="/images/admin-images/btm-r-l.gif" align="left" /><img src="/images/admin-images/btm-r-r.gif" align="right" /></div>
+</div>

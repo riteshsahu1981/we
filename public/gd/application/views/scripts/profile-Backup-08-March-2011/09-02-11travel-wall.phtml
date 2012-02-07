@@ -1,0 +1,400 @@
+<style type="text/css">
+label {
+	width: 10em;
+	float: left;
+}
+label.error {
+	float: none;
+	color: red;
+	padding-left: .5em;
+	vertical-align: top;
+}
+p {
+	clear: both;
+}
+.submit {
+	margin-left: 12em;
+}
+em {
+	font-weight: bold;
+	padding-right: 1em;
+	vertical-align: top;
+}
+</style>
+<?php
+$user	= 	$this->userObject;
+$userNs	=	new Zend_Session_Namespace("members");
+?>
+<script language="javascript" type="text/javascript">
+	var user_id_login='<? echo $userNs->userId?>';
+	$(document).ready(function(){
+	$("#status").focus(function(){$("span#msg").hide();});
+
+    $("#commentForm").validate({
+ 	   submitHandler: function(form) {
+			if(user_id_login=="")
+			{
+				loginPopUp('Please login to post a message.');
+				return false;
+			}
+            var params=$(form).serialize();
+			$("span#loading").show();
+	    	$("span#msg").hide();
+	    	$("#share").hide();
+               
+	    	$.ajax({
+	    		   type: "POST",
+	    		   url: "/profile/travel-wall/username/<?php echo $userNs->userUsername; ?>",
+	    		   data: params,
+	    		   dataType: "json",
+	    		   success: function(json){
+
+	    				$("span#loading").hide();
+	    				$("#share").show();
+	    				$("span#msg").show();
+
+	    				if(json.error==0)
+		    			{
+	    					$("#status").val("");
+							$("span#msg").html("Wall post submitted successfully");
+	    					$(reloadWall);
+
+	    				}
+	    				else
+	    				{
+	    					$("span#msg").html("Error");
+	    				}
+
+	    		   },
+	    		   error: function (json, status, e){
+	    			   $("span#msg").show();
+	    			   $("span#msg").html("Exception : "+e+json);
+
+	    			}
+	    	 });
+ 	   }
+ 	});
+
+ 	$(reloadWall);
+
+  });
+
+  function reloadWall()
+  {
+	$("span#loading-wall").show();
+	var params="mode=ajax";
+	$.ajax({
+		   type: "POST",
+		   url: "/profile/reload-wall/username/<?php echo $user->getUsername(); ?>",
+		   data: params,
+		   dataType: "html",
+		   success: function(html)
+		   {
+				$("span#loading-wall").hide();
+				$("div#wall").html(html);
+
+		   },
+		   error: function (json, status, e){
+
+			   $("span#wall").html("Exception : "+e+json);
+
+			}
+	 });
+  }
+</script>
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/custom-form-elements.js"></script>
+<script type="text/javascript">
+
+        $(document).ready(function() {
+
+        	$("#share-link-dd_menu").hide();
+        	
+            $("#share-link-dd").click(function(e) {          
+				e.preventDefault();
+                $("#share-link-dd_menu").toggle("slow");
+				$("#share-link-dd").toggleClass("menu-open");
+            });
+			
+			$("#share-link-dd_menu").mouseup(function() {
+				return false;
+			});
+			
+        });
+</script>
+<div id="journal-center">
+  <h2>TRAVEL WALL</h2>
+  <h3 class="tw-sub-head"><a href="#"><?php echo $user->getFirstName();?></a> <?php print $this->textModifier($this->latestUpdates);?></h3>
+  <div class="time-stamp"><?php print $this->latestupdatesDate;?></div>
+  <?php
+  //only user's friends can post on wall
+  if($this->postWallAccess)
+  {
+  ?>
+  <div class="status-update-sml-user">
+    <form class="cmxform" id="commentForm" method="post" action="">
+      <input type="hidden" name="profileId" value="<?php echo $this->userObject->getId();?>">
+	  <span>Travel Wall Update</span>
+      <div class="updatedex-box">
+        <textarea name='status' id='status' class="required update-txt" ></textarea>
+      </div>
+      <input type="submit" name="share" id="share" value="Share" />
+	  <!--<div class="send-stat">
+	  <em>Send my status update to Facebook</em> <input class="styled" type="checkbox" name="facebook" checked="checked" id='facebook' value="1"/>
+	  <a onclick="fbLoginBox('<?php //echo $this->loginUrl;?>')" href="#;" class="connect-log"><img src="<?echo $this->cdnUri()?>/images/f_connect.gif" alt="" /></a>
+	  <span id="loading" style="display: none"><img src="<?php //echo $this->cdnUri()?>/images/loading.gif" alt="" /></span>
+	  <span id="msg"></span>
+	  </div>-->
+    </form>
+	<br class="clear" />
+    <span id="loading" style="display: none"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt="" /></span> <span id="msg"></span>
+  </div>
+  <?php }//end of if?>
+  <span id="loading-wall" style="display: none"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+  <div id="wall"> </div>
+</div>
+<script type="text/javascript" language="javascript">
+
+function like(item_id,vote)
+{
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=status";
+	$("span#like_"+item_id).hide();
+        $("span#loading_"+item_id).show();
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+				$("span#loading_"+item_id).hide();
+				$("#comment-main-"+item_id).show();
+				/*
+				if(vote==1){
+					$("span#unlike_"+item_id).show();
+					$("span#like_"+item_id).hide();
+					$("#you-like-this-"+item_id).show();
+
+
+				}else{
+					$("span#unlike_"+item_id).hide();
+					$("span#like_"+item_id).show();
+					$("#you-like-this-"+item_id).hide();
+				}
+
+
+				$("span#total_likes_"+item_id).html(json.total_up);
+				$("span#total_likes_left_"+item_id).html(json.total_up);
+				*/
+				
+				if(vote==1)
+				{
+					$("span#unlike_"+item_id).show();
+					$("span#like_"+item_id).hide();
+					$("#you-like-this-"+item_id).show();
+					$("#you-like-this-thumb-"+item_id).show();
+				}
+				else
+				{
+					$("span#unlike_"+item_id).hide();
+					$("span#like_"+item_id).show();
+					$("#you-like-this-"+item_id).hide();
+					$("#you-like-this-thumb-"+item_id).hide();
+				}
+				
+				//display main DIV and other as per user vote and total likes
+				if(vote==1)
+				{
+					$("div#travel_tag_div_"+item_id).show();
+					//$("div#travel_tag_div_"+item_id).addClass('like-dislike-img');
+				}
+				else
+				{
+					if(json.total_up==0)
+					{
+						$("div#travel_tag_div_"+item_id).hide();
+					}
+				}
+				
+				if(json.total_up>1)
+				{
+					$("span#total_likes_"+item_id).html(json.total_up + " members like this");
+				}
+				else if(json.total_up==1)
+				{
+					$("span#total_likes_"+item_id).show();
+					$("span#total_likes_"+item_id).html(json.total_up + " member like this");
+				}
+				else
+				{
+					$("span#total_likes_"+item_id).hide();
+					$("span#total_likes_"+item_id).html(json.total_up);
+				}
+              }
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+
+function showCommentBox(item_id)
+{
+     $("#comment-main-"+item_id).show();
+      $("#status-comment-"+item_id).focus();
+}
+
+function likeComment(item_id,vote)
+{
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=status_comment";
+	$("span#like_"+item_id).hide();
+        $("span#loading_comment_"+item_id).show();
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+				$("span#loading_comment_"+item_id).hide();
+				/*
+				if(vote==1){
+					$("span#unlike_comment_"+item_id).show();
+					$("span#like_comment_"+item_id).hide();
+					$("#you-like-this-comment-"+item_id).show();
+				}else{
+					$("span#unlike_comment_"+item_id).hide();
+					$("span#like_comment_"+item_id).show();
+					$("#you-like-this-comment-"+item_id).hide();
+				}
+
+
+				$("span#total_likes_comment_"+item_id).html(json.total_up);
+				//$("span#total_likes_left_"+item_id).html(json.total_up);
+				*/
+				
+				if(vote==1)
+				{
+					$("span#unlike_comment_"+item_id).show();
+					$("span#like_comment_"+item_id).hide();
+					$("#you-like-this-comment-"+item_id).show();
+					$("#you-like-comment-"+item_id).show();
+				}
+				else
+				{
+					$("span#unlike_comment_"+item_id).hide();
+					$("span#like_comment_"+item_id).show();
+					$("#you-like-this-comment-"+item_id).hide();
+					$("#you-like-comment-"+item_id).hide();
+				}
+								
+				if(json.total_up>1)
+				{
+					$("span#total_likes_comment_"+item_id).html(json.total_up + " members like this");
+					
+				}
+				else if(json.total_up==1)
+				{
+					$("#you-like-this-comment-"+item_id).show();
+					$("span#total_likes_comment_"+item_id).show();
+					$("span#total_likes_comment_"+item_id).html(json.total_up + " member like this");
+				}
+				else
+				{
+					$("span#total_likes_comment_"+item_id).hide();
+					$("span#total_likes_comment_"+item_id).html(json.total_up);
+				}
+              }
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+
+function statusComment(item_id,commentedPersonId)
+{
+	var comment = $("#status-comment-"+item_id).val();
+	if(comment == "" || comment == "Comment...")
+	{
+	  alert("Please enter comment");
+	  $('#status-comment-'+item_id).focus();
+	  return false;	
+	}
+	var params='';
+	params+="comment="+escape($("#status-comment-"+item_id).val());
+	params+="&item_id="+item_id;
+	params+="&user_id="+commentedPersonId;
+	params+="&item_type=status";
+	//$("span#like_"+item_id).hide();
+        $("span#comment_loading_"+item_id).show();
+        $("#saveComment_"+item_id).hide();
+	$.ajax({
+		   type: "POST",
+		   url: "/comment/save-comment/",
+		   data: params,
+		   dataType: "html",
+		   success: function(html){
+
+                    $("#saveComment_"+item_id).show();
+                    $("span#comment_loading_"+item_id).hide();
+                    $("#comment-list-"+item_id).append(html);
+                    $("#status-comment-"+item_id).val('Comment...');
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+var page=2;
+function moreTravelWall(user_id)
+{
+    $("span#travel_wall_loading_img").show();
+    $("#show_more_travelwall_link").hide();
+
+    var params='';
+    params+="page="+page+"&mode=ajax&user_id="+user_id;
+    page = page+1;
+    $.ajax({
+               type: "POST",
+               url: "/profile/view-morewall/",
+               data: params,
+               dataType: "html",
+               success: function(html)
+			   {
+					$("span#travel_wall_loading_img").hide();
+					$("#show_more_travelwall_link").show();
+
+					if(html=="nodata")
+					{
+						$("#show_more_travelwall_link").hide();
+						//$("#my_travel_wall_wallupdates").append("<span style='color:#EF4733;'>No more walls found.</span>");
+						$("#travel_wall_showmore_div").append("<span style='color:#EF4733;'>No more updates found.</span>");
+					}
+					else
+					{
+						$("#user_travel_wall_wallupdates").append(html);
+					}
+               },
+               error: function (json, status, e)
+			   {
+                     alert(e+json+status);
+               }
+     });
+}
+</script>

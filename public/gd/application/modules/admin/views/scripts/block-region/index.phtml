@@ -1,0 +1,73 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+
+	<div id="rightsideheading" class="headingblack"><span style='float: right; margin: 0 15px 0 0;'>
+	
+	<img src='/images/admin-images/newobject.gif' width='20px'>
+	<a class="add f-right" href='/admin/block-region/add'>Add Block-Region</a>
+	</span>Block Regions- <span class='msg'>Total <?php echo $this->total?> block region(s) found! </span></div>
+	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+	
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+<br />
+<br />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>Title</th>
+    <th>Alias</th>
+   	<th>Action</th>
+  </tr>
+  
+	<?
+	
+	
+	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+	
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['title']?></td>
+    		<td><?=$row['alias']?></td>
+    	
+    		
+    		<td>
+	    		<a href='/admin/block-region/edit/id/<?=$row['id']?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+</div>

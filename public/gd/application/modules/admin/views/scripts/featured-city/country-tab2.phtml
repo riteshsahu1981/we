@@ -1,0 +1,131 @@
+<?php
+$id = $this->countryId;
+$lonelyPlanetCountry	= array();
+//select details from lonely_planet_country table
+$lonelyPlanetCountryM	=	new Application_Model_LonelyPlanetCountry();
+$lonelyPlanetCountryM	=	$lonelyPlanetCountryM->fetchRow("country_id={$id}");
+	
+if(false!==$lonelyPlanetCountryM)
+{
+	$lonelyPlanetCountry = $lonelyPlanetCountryM;
+	//print_r($lonelyPlanetCountry);
+	//echo "ssssss=".$lonelyPlanetCountry->getId();
+	//echo "ssssss=".$lonelyPlanetCountry->getVisasOverview();
+}
+?>
+<form name="frmPracticalInfo" id="frmPracticalInfo" enctype="multipart/form-data" method="post" action="/admin/featured-city/update-country-tab2-data">
+	<input type="hidden" name="lonelyPlanetCountryId" value="<?php echo $lonelyPlanetCountry->getId();?>">
+	<input type="hidden" name="countryId" value="<?php echo $id;?>">
+	<input type="hidden" name="page" value="<?php echo $this->page;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<tr><td colspan="2"><div class="form-sub-head">Practical Info</div><span class="orange" id="tab2_msg"></span></td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">Facts</div></td></tr>
+		<tr><td colspan="2">
+		<table align="center" border="0" width="100%">
+		<tr><td width="50%" valign="top">
+		<table align="center" border="0" width="100%">
+			<?php
+			$timezoneArr = array();
+			$timezoneArr = unserialize($lonelyPlanetCountry->getTimezones());
+			//print_r($timezoneArr);
+			?>
+			<tr><td colspan="2"><h3>GENERAL</h3></td></tr>
+			<tr><td valign="top">Full Name</td><td><input type="text" name="fullDestinationName" value="<?php echo $lonelyPlanetCountry->getFullDestinationName();?>" class="small-input-box" maxlength="250"></td></tr>
+			<tr><td valign="top">Timezones</td><td>
+			<?php
+			if(count($timezoneArr)>0)
+			{
+				for($ti=0; $ti<count($timezoneArr); $ti++)
+				{
+					$timezoneStr = $timezoneArr[$ti]['gmt_utc'];
+					//$timezone_str .= $timezoneArr[$ti]['gmt_utc'].",";
+			?>	
+			<input type="text" name="gmtUtc[]" value="<?php echo $timezoneStr;?>" style="width:30px !important;" class="small-input-box" maxlength="20">&nbsp;
+			<?php
+				//echo "ssss===>".$timezone_str;
+				//echo "<br>original".substr($timezone_str, 3, strlen($timezone_str)-4);
+				}//end for
+			}
+			else
+			{
+			?>
+			<input type="text" name="gmtUtc[]" value="" style="width:30px !important;" class="small-input-box" maxlength="20">&nbsp;
+			<?php }?>GMT
+			</td></tr>
+			<tr><td valign="top">Capital City</td><td><input type="text" name="capitalCity" value="<?php echo $lonelyPlanetCountry->getCapitalCity();?>" class="small-input-box" maxlength="250"></td></tr>
+			<tr><td valign="top">Tel Dialing Code</td><td><input type="text" name="countryDiallingCode" value="<?php echo $lonelyPlanetCountry->getCountryDiallingCode();?>" class="small-input-box" maxlength="250"></td></tr>
+			<tr><td valign="top">Currency</td><td><input type="text" name="currencyName" value="<?php echo $lonelyPlanetCountry->getCurrencyName();?>" class="small-input-box" maxlength="250"></td></tr>
+			<tr><td valign="top">Currency Code</td><td><input type="text" name="currencyCode" value="<?php echo $lonelyPlanetCountry->getCurrencyCode();?>" class="small-input-box" maxlength="250"></td></tr>
+			<tr><td valign="top">Currency Unit</td><td><input type="text" name="currencyUnit" value="<?php echo $lonelyPlanetCountry->getCurrencyUnit();?>" class="small-input-box" maxlength="250"></td></tr>
+			<?php 
+			$languagesArr = array(0=>array("language_spoken_type"=>"official","language_spoken_name"=>"N/A","language_spoken_description"=>"N/A"));
+			$languagesAvail = unserialize($lonelyPlanetCountry->getLanguageSpokens());
+			if($languagesAvail)
+			{
+				$languagesArr = $languagesAvail;
+			}	
+			//print_r($languagesArr);
+			?>
+			<tr><td valign="top">Language(s)</td>
+			<td>
+			<?php
+			if(count($languagesArr)>0)
+			{
+				foreach($languagesArr AS $language)
+				{
+			?>
+			<input type="hidden" name="languageType[]" value="<?php echo $language["language_spoken_type"];?>">
+			<input type="text" name="languageName[]" value="<?php echo $language["language_spoken_name"];?>" class="small-input-box" maxlength="500"><br />
+			<input type="hidden" name="languageDesc[]" value="<?php echo $language["language_spoken_description"];?>" class="small-input-box" maxlength="500">
+			<?php
+			}//end foreach
+			}//end if
+			?>
+			</td></tr>
+		</table>
+		</td>
+		<td width="50%" valign="top">
+		<table align="center" border="0" width="100%">
+			<tr><td colspan="2"><h3>ENVIRONMENT</h3></td></tr>
+			<tr><td valign="top">Total Area</td><td><input type="text" name="areaSqkm" value="<?php echo $lonelyPlanetCountry->getAreaSqkm();?>" class="small-input-box" maxlength="250"></td></tr>
+			<tr><td valign="top">Population</td><td><input type="text" name="population" value="<?php echo $lonelyPlanetCountry->getPopulation();?>" class="small-input-box" maxlength="250"></td></tr>
+			<?php
+			$electricalPlugsArr = array(0=>array("image_filename"=>"/images/plug_types/elec_4.gif", "electrical_plug_description"=>""));
+			$electricalPlugsArr = unserialize($lonelyPlanetCountry->getElectricalPlugs());
+			//print_r($electricalPlugsArr);
+			?>
+			<tr><td valign="top">Electric Plug(s)</td>
+			<td>
+			<?php
+			for($ep=0; $ep<count($electricalPlugsArr); $ep++)
+			{
+			?>
+			<input type="hidden" name="elecPlugImage[]" value="<?php echo $electricalPlugsArr[$ep]["image_filename"];?>" class="small-input-box" maxlength="250">
+			<textarea name="elecPlugDesc[]" class="small-input-box" rows="3" cols="30"><?php echo $electricalPlugsArr[$ep]["electrical_plug_description"];?></textarea><br />
+			<?php }?>
+			</td></tr>
+			<tr><td valign="top">Electric Voltage</td><td><input type="text" name="electricityVoltage" value="<?php echo $lonelyPlanetCountry->getElectricityVoltage();?>" class="small-input-box" maxlength="250"></td></tr>
+			<?php
+			$relegions = "";
+			$relegions = $lonelyPlanetCountry->getReligion();
+			$relegions = str_replace("<p>", "", $relegions);
+			$relegions = str_replace("</p>", "", $relegions);
+			?>
+			<tr><td valign="top">Religions</td><td><textarea name="religion" class="small-input-box" rows="3" cols="30"><?php echo $relegions;?></textarea></td></tr>
+		</table>
+		</td></tr>
+		</table>
+		</td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">VISAS</div></td></tr>
+		<tr><td valign="top">Overview</td><td valign="top"><textarea cols="40" rows="10" name="visasOverview" class="title-input-box" style="width:795px !important;"><?php echo $lonelyPlanetCountry->getVisasOverview();?></textarea></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">HEALTH</div></td></tr>
+		<tr><td valign="top">Dangers & Annoyances</td><td valign="top"><textarea cols="40" rows="10" name="dangersAndAnnoyances" class="title-input-box" style="width:795px !important;"><?php echo $lonelyPlanetCountry->getDangersAndAnnoyances();?></textarea></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">WEATHER</div></td></tr>
+		<tr><td valign="top">Overview</td><td valign="top"><textarea cols="40" rows="10" name="weatherOverview" class="title-input-box" style="width:795px !important;"><?php echo $lonelyPlanetCountry->getWeatherOverview();?></textarea></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave" ></td><td></td></tr>
+	</table>
+</form>

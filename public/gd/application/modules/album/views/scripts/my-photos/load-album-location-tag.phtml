@@ -1,0 +1,9 @@
+<li>
+<span class="location-txt"><?php if($this->location != ""){?>Location: <a id="photo-location-comment"><?php print $this->location;?></a><?php }?></span>
+<?php if($this->tagStr != ""){
+     $arrTag = explode(',', $this->tagStr);
+    ?>Tags: <?php for($i=0; $i < count($arrTag); $i++){?> <a id="photo-tag-comment">
+    <?php print trim($arrTag[$i]);?></a><?php if(!empty($arrTag[$i+1])){?>,
+ <?php }}?>
+</li>
+<?php }?>

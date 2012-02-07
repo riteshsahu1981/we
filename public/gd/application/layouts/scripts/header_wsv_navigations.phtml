@@ -1,0 +1,62 @@
+<?php
+$workstudyTab = "";
+
+$mainCats=array("work"=>"Work", "study"=>"Study", "volunteer"=>"Volunteer");
+if(count($mainCats)>0)
+{
+	$workstudyTab .= "<ul class=\"menu hidden\">";
+	$ctr1 = 1;
+	foreach($mainCats as $identifier=>$mainCat)
+	{
+		$workstudyTab .= "<li>\n\t";
+		$workstudyTab .= "<img class=\"arrow\" src=\"/images/15x15_trans.gif\" alt=\"More\" />\n\t";
+		$mainCatUrl = $this->seoUrl('/work-study-volunteer/category-detail/category/'.$identifier);
+		$workstudyTab .= "<a href=\"{$mainCatUrl}\" rel=\"nofollow\">\n\t".$mainCat."\n\t</a>\n\t";
+		
+		//get Article category
+		$categoryM	= new Application_Model_Category();
+		$categories = $categoryM->getCategory(null,$identifier);
+		if(count($categories)>0)
+		{
+			$workstudyTab .= "<div class=\"submenu hidden col{$ctr1}\">\n\t";
+			$workstudyTab .= "<ul>\n\t";
+			$ctr2 = 1;
+			foreach($categories as $category_id=>$category)
+			{
+				$workstudyTab .= "<li>\n\t";
+				//$workstudyTab .= "<img class=\"arrow\" src=\"/images/15x15_trans.gif\" alt=\"More\" />\n\t";
+				$articleCatUrl = $this->seoUrl('/work-study-volunteer/detail/id/'.$category_id);
+				$workstudyTab .= "<a href=\"{$articleCatUrl}\" rel=\"nofollow\">\n\t".$category."\n\t</a>\n\t";
+				
+				//get WSV Article
+				/*
+				$articleM	=	new Application_Model_Articles();
+				$articles	=	$articleM->getArticleMore($category_id);
+				if(count($articles)>0)
+				{
+					$workstudyTab .= "<div class=\"submenu hidden col{$ctr1}{$ctr2}\">\n\t";
+					$workstudyTab .= "<ul>\n\t";
+					foreach($articles as $article)
+					{
+						$articleDetailURL = $this->seoUrl('/work-study-volunteer/article-detail/id/'.$article->getId());
+						$workstudyTab .= "<li>\n\t";
+						$workstudyTab .= "<a href=\"{$articleDetailURL}\" rel=\"nofollow\">\n\t".$article->getTitle()."\n\t</a>\n\t";
+						$workstudyTab .= "</li>\n";
+					}//end of article foreach
+					$workstudyTab .= "</ul>\n\t";
+					$workstudyTab .= "</div>\n\t";
+				}//end if
+				*/				
+				$workstudyTab .= "</li>\n";
+				$ctr2++;
+			}//end of category foreach
+			$workstudyTab .= "</ul>\n\t";
+			$workstudyTab .= "</div>\n\t";
+		}//end if		
+		$workstudyTab .= "</li>\n";
+		$ctr1++;
+	}//end of main cat foreach
+	$workstudyTab .= "</ul>\n\t";
+}
+echo Zend_Json::encode($workstudyTab);
+?>

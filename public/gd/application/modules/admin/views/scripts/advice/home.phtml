@@ -1,0 +1,27 @@
+<?php
+$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded .
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">
+	<!--<span style="margin: 0pt 15px 0pt 0pt; float: right;"><a href="/admin/page/index" class="add">Back</a></span>-->
+	Advice - Edit Home Page Content</div>
+ <div id="rightsidecontentpart">
+  <?php if ($this->errorMsg!=""){?><span class='red'><? echo $this->errorMsg;?></span>
+		<?php }?>
+		<form method="post" action="" enctype="multipart/form-data">
+		<table align="center" cellspacing="5" cellpadding="5" border="0" width="100%">
+		<tr><td><?php echo $this->form->title->getLabel();?></td><td><?php echo $this->form->title;?></td></tr>
+		<!--<tr><td><?php //echo $this->form->identifire->getLabel();?></td><td><?php //echo $this->form->identifire;?></td></tr>-->
+		<tr><td><?php echo $this->form->content->getLabel();?></td><td><?php echo $this->form->content;?></td></tr>
+		<tr><td><?php echo $this->form->metaTitle->getLabel();?></td><td><?php echo $this->form->metaTitle;?></td></tr>
+		<tr><td><?php echo $this->form->metaKeyword->getLabel();?></td><td><?php echo $this->form->metaKeyword;?></td></tr>
+		<tr><td><?php echo $this->form->metaDescription->getLabel();?></td><td><?php echo $this->form->metaDescription;?></td></tr>
+		<tr><td>&nbsp;</td><td><?php echo $this->form->savePublish;?> <?php //echo $this->form->saveUnpublish;?> <?php //echo $this->form->previewPage;?></td></tr>
+		</table>
+		</form>
+  </div>
+	</div>
+</div>
+<?php echo $this->setupEditor('content');?>

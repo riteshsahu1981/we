@@ -1,0 +1,32 @@
+<?php echo $this->doctype();?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<?php echo $this->headTitle();?>   
+	<?php echo $this->headMeta();?>
+	<?php 
+		if($this->jQuery()->isEnabled())
+		{
+			echo $this->jQuery();
+		}
+		$site_url	=	Zend_Registry::get('siteurl');
+	?>
+  <?php echo $this->headScript();?>
+  <script src="http://reservations.bookhostels.com/includes/countries.js"></script>
+  <?php echo $this->headLink();?>
+  <link rel="stylesheet" href="<?php echo $site_url;?>/style/shop-landing.css" type="text/css" media="all" />
+</head>
+
+<body>
+<div id="mainwrapper">
+	<div id="main">	
+		<?php echo $this->pageElement('header');?>		
+		<div id="contentArea">
+			<?php echo $this->layout()->content;?>
+			<?php //echo $this->pageElement('travelshop-right')?>
+		</div>
+	</div>	
+	<?php echo $this->pageElement('footer');?>
+</div>
+</body>
+</html>

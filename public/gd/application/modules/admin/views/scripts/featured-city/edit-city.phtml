@@ -1,0 +1,427 @@
+<?php
+	$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+	$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded.
+?>
+<script language="javascript" type="text/javascript">
+$(function()
+{
+	$("#country_tabs").tabs();
+	
+	//selected default tabs
+	$("#country_tabs").tabs({ selected: "<?php echo $this->selTab;?>" });
+	
+	//global wait message
+	var waitMsg = "<img src='/images/loading.gif' alt='' />&nbsp;&nbsp;&nbsp;&nbsp;wait...";
+	
+	//update Destination information from TAB1
+	$("#frmDestination111").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#dest_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/edit-city/id/"+<?php echo $this->id;?>,
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				//alert(json.error);
+				//alert(json.response);
+				$("span#dest_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update Eat, Sleep, Drink and be Merry information from TAB2
+	$("#frmDestinationEat").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#eat_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/edit-city/id/"+<?php echo $this->id;?>,
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#eat_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update Expriences information from TAB3
+	$("#frmDestinationExp").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#exp_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/edit-city/id/"+<?php echo $this->id;?>,
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#exp_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update Practicalities information from TAB4
+	$("#frmDestinationPrac").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#prac_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/edit-city/id/"+<?php echo $this->id;?>,
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#prac_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update TAB6 Meta Data information
+	$("#frmMetaData").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#tab8_msg").html(waitMsg);
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-metadata",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab8_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+});
+</script>
+<?php
+$destination	= array();
+$expriences		= array();
+$eatsleepdrink	= array();
+$practicalities	= array();
+$cityimages		= array();
+
+if(isset($this->destination) && count($this->destination)>0)
+{
+	$destination	= $this->destination;
+}
+if(isset($this->expriences) && count($this->expriences)>0)
+{
+	$expriences		= $this->expriences;
+}
+if(isset($this->eatsleepdrink) && count($this->eatsleepdrink)>0)
+{
+	$eatsleepdrink	= $this->eatsleepdrink;
+}
+if(isset($this->practicalities) && count($this->practicalities)>0)
+{
+	$practicalities	= $this->practicalities;
+}
+if(isset($this->cityimages) && count($this->cityimages)>0)
+{
+	$cityimages		= $this->cityimages;
+}
+
+//select XML Feed blocked status
+$city_id = $this->id;
+$destM	=	new Application_Model_Destination();
+$block_ovewrite  = $destM->selectXMLFeedsBlockStatus("city", $city_id);
+$block_ovewrite_no= "";
+$block_ovewrite_yes= "";
+if($block_ovewrite == "No")
+{
+	$block_ovewrite_no = "checked='checked'";
+}
+else
+{
+	$block_ovewrite_yes = "checked='checked'";
+}
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+		<a class="add f-right" href="/admin/featured-city/manage-city/page/<?php echo $this->page;?>">Back</a></span>
+	Edit City/Place Contents</div>
+<div id="rightsidecontentpart">
+	<div id="country_tabs" class="no-brdr-top no-top-padd">
+	<ul>
+		<li><a href="#tabs-1">In a Nutshell</a></li>
+		<li><a href="#tabs-2">Eat, Sleep, Drink and be Merry</a></li>
+		<li><a href="#tabs-3">Experiences</a></li>
+		<li><a href="#tabs-4">Practicalities</a></li>
+		<li><a href="#tabs-5">Images</a></li>
+		<li><a href="#tabs-6">Meta Data</a></li>
+	</ul>
+	<div id="tabs-1" class="no-bordr-all">
+		<form name="frmDestination" id="frmDestination" enctype="multipart/form-data" method="post">
+		<input type="hidden" name="destination_id" value="<?php echo $destination->id;?>">
+		<input type="hidden" name="id" value="<?php echo $this->id;?>">
+		<input type="hidden" name="page" value="<?php echo $this->page;?>">
+		<input type="hidden" name="update_action" value="destination">
+		<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<tr><td valign="top" colspan="2">Block the content from being overwritten by an upload: <input type="radio" name="block_ovewrite" value="No" <?php echo $block_ovewrite_no;?>>No <input type="radio" name="block_ovewrite" value="Yes" <?php echo $block_ovewrite_yes;?>>Yes</td></tr>
+		<tr><td valign="top" colspan="2" style="text-align:right;"><a href="javascript://" onclick="adminLocationPopupWin('/admin/featured-city/location-geo-code/id/<?php echo $this->id;?>/type/city');">Update GEO Codes</a></td></tr>
+		<tr><td colspan="2"><div class="form-sub-head">IN A NUTSHELL</div><span class="orange" id="dest_msg"><?php echo $this->errorMsg;?></span></td></tr>
+		<tr><td valign="top">Title</td><td><input type="text" name="title" value="<?php echo $destination->title;?>" class="title-input-box" maxlength="250"></td></tr>
+		<tr><td valign="top">Introduction</td><td><textarea cols="40" rows="4" name="introduction" class="title-input-box"><?php echo $destination->introduction;?></textarea></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave" ></td></tr>
+		</table>
+		</form>
+	</div>
+	<div id="tabs-2" class="no-bordr-all">
+		<form name="frmDestinationEat" id="frmDestinationEat" enctype="multipart/form-data" method="post">
+		<input type="hidden" name="update_action" value="eat">
+		<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<?php if(count($eatsleepdrink)>0){?>
+		<tr><td colspan="2"><div class="form-sub-head">Eat, Sleep, Drink and be Merry</div><span class="orange" id="eat_msg"></span></td></tr>
+		<?php 
+		$eatCount = 1;
+		foreach($eatsleepdrink AS $eatRow){?>
+		<input type="hidden" name="eatId[]" value="<?php echo $eatRow->getId();?>">
+		<tr><td valign="top">Title <?=$eatCount?></td><td><input type="text" name="eatTitle[]" value="<?php echo $eatRow->getTitle();?>" class="title-input-box" maxlength="250"></td></tr>
+		<tr><td valign="top">Back Packer Copy <?=$eatCount?></td><td><textarea cols="40" rows="4" name="backPackerCopy[]" class="title-input-box"><?php echo $eatRow->getBackPackerCopy();?></textarea></td></tr>
+		<tr><td valign="top">Local Copy <?=$eatCount?></td><td><textarea cols="40" rows="4" name="localCopy[]" class="title-input-box"><?php echo $eatRow->getLocalCopy();?></textarea></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<?php 
+			$eatCount++;
+			}//end foreach
+		}//end if
+		?>
+		<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave" ></td></tr>
+		</table>
+	</form>
+	</div>
+	<div id="tabs-3" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/city-tab3.phtml',array('expriences'=>$expriences,'destinationId'=>$destination->id));?>
+	</div>
+	<div id="tabs-4" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/city-tab4.phtml',array('practicalities'=>$practicalities,'destinationId'=>$destination->id));?>
+	</div>
+	<div id="tabs-5" class="no-bordr-all">
+	<form name="frmDestinationImg" id="frmDestinationImg" enctype="multipart/form-data" method="post">
+		<!--<input type="hidden" name="update_action" value="img">
+		<input type="hidden" name="cityId" value="<?php echo $this->id;?>">-->
+		<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<tr><td colspan="2"><div class="form-sub-head">Images </div><span class="orange" id="img_msg"><?php echo $this->errorMsg;?></span></td>
+		<td align="right" style="text-align:right;"><a href="javascript://" onclick="adminPopupWin('/admin/featured-city/add-city-image/id/<?=$this->id?>/page/<?=$this->page?>');">Add New Image</a></td>
+		</tr>
+		<!--<tr>
+		<td><?php //echo $this->uploadForm->cityImage->getLabel();?></td>
+		<td><?php //echo $this->uploadForm->cityImage;?></td>
+		<td align="left"><input type="submit" value="Upload Image" name="btnSave"><?php //echo $this->uploadForm->submit;?></td>
+		</tr>-->
+		</table>
+	</form>	
+		<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" class="dataTable" style="margin:10px 5px 0 5px;">		
+		<?php if(count($cityimages)>0){?>
+		<tr><th>S. No.</th><th>Title</th><th>Image</th><th>Order</th><th>Action</th></tr>
+		<?php
+		$imgCount = 1;
+		foreach($cityimages AS $imgRow){?>
+		<tr class="trbg" id="tr_image_row_<?php echo $imgRow->getId();?>">
+		<td valign="top" width="10%"><?php echo $imgCount;?></td>
+		<td valign="top" width="60%"><?php echo $imgRow->getSlideTitle();?></td>
+		<td valign="top" width="15%"><!--<img src="<?echo $this->cdnUri();?>/image?src=<?echo $this->cdnUri();?>/media/picture/city/<?php echo $imgRow->getCityImage();?>&size=journal">--><img src="<?echo $this->cdnUri();?>/media/picture/city/<?php echo $imgRow->getCityImage();?>" height="50" width="50"></td>
+		<td valign="top" width="5%"><?php echo $imgRow->getWeight();?></td>
+		<td valign="top" width="10%">
+		<a href="javascript://" onclick="adminPopupWin('/admin/featured-city/edit-city-image/id/<?=$this->id?>/page/<?=$this->page?>/img_id/<?php echo $imgRow->getId();?>');"><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;&nbsp;
+		<a href="javascript://" onclick="deleteCityImage(<?php echo $imgRow->getId();?>);"><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+		</td>
+		</tr>
+		<?php 
+			$imgCount++;
+			}//end foreach
+		}//end if
+		else
+		{
+			echo "<tr><td>No image found.</td></tr>";
+		}
+		?>
+		</table>	
+	</div>
+	<div id="tabs-6" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/travel-guides-metadata.phtml',array('itemId'=>$this->id, 'itemType'=>'city'));?>
+	</div>
+</div>
+	
+	</div>
+  </div>
+</div>
+<script language="javascript" type="text/javascript">
+function deleteCityImage(image_id)
+{
+	if(confirm('Are you sure? You want to delete this image?.'))
+	{
+		var params = "image_id="+image_id;
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/delete-city-image/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				if(json.error==0)
+				{
+					$("#tr_image_row_"+image_id).hide();
+				}
+				$("span#img_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+	}
+}
+
+//Finds y value of given object
+function findPos(obj)
+{
+	var curtop = 0;
+	if (obj.offsetParent)
+	{
+		do
+		{
+			curtop += obj.offsetTop;
+		}
+		while (obj = obj.offsetParent);
+		return [curtop];
+	}
+}
+
+function addMoreRowsExp()
+{
+	var tabRow ="<tr><td valign='top'>Title </td><td valign='top'><input type='text' name='expTitle[]' class='title-input-box' value=''></td></tr>";
+	tabRow +="<tr><td valign='top'>Copy </td><td valign='top'><textarea cols='40' rows='5' name='expCopy[]' class='title-input-box'></textarea></td></tr>";
+	tabRow +="<tr><td colspan='2' class='button_right'><input type='button' value='Remove' onclick='deleteExpRow(this);'></td></tr>";
+	$('#table_exp > tbody:last').append(tabRow);
+	$("#btnSaveTab1").show();
+}
+
+function removeMoreRowsExp()
+{
+	var table = document.getElementById("table_exp");
+	var rowCount = table.rows.length;
+	if(rowCount>4)
+	{
+		$('#table_exp > tbody:last tr:last').remove();
+		$('#table_exp > tbody:last tr:last').remove();
+		if(rowCount==4)
+		{
+			$("#remove_button_tab3").hide();
+		}	
+	}	
+}
+
+function deleteExpRow(r)
+{
+	if(confirm("Are you sure you want to delete this record?"))
+	{
+		var row3 = r.parentNode.parentNode.rowIndex;
+		var row2 = row3-1;
+		var row1 = row2-1;
+		document.getElementById('table_exp').deleteRow(row3);
+		document.getElementById('table_exp').deleteRow(row2);
+		document.getElementById('table_exp').deleteRow(row1);
+		
+		var table = document.getElementById("table_exp");
+	    var rowCount = table.rows.length;
+		//alert("rowCount=="+rowCount);
+		if(rowCount==1)
+		{
+			$("#btnSaveTab1").hide();
+		}
+	}	
+}
+
+function addMoreRowsPrac()
+{
+	var tabRow ="<tr><td valign='top'>Title </td><td valign='top'><input type='text' name='pracTitle[]' class='title-input-box' value=''></td></tr>";
+	tabRow +="<tr><td valign='top'>Copy </td><td valign='top'><textarea cols='40' rows='5' name='pracCopy[]' class='title-input-box'></textarea></td></tr>";
+	tabRow +="<tr><td colspan='2' class='button_right'><input type='button' value='Remove' onclick='deletePracRow(this);'></td></tr>";
+	$('#table_prac > tbody:last').append(tabRow);
+	$("#btnSaveTab4").show();
+}
+
+function removeMoreRowsPrac()
+{
+	var table = document.getElementById("table_prac");
+	var rowCount = table.rows.length;
+	if(rowCount>3)
+	{
+		$('#table_prac > tbody:last tr:last').remove();
+		$('#table_prac > tbody:last tr:last').remove();
+		if(rowCount==3)
+		{
+			$("#remove_button_tab4").hide();
+		}	
+	}	
+}
+
+function deletePracRow(r)
+{
+	if(confirm("Are you sure you want to delete this record?"))
+	{
+		var row3 = r.parentNode.parentNode.rowIndex;
+		var row2 = row3-1;
+		var row1 = row2-1;
+		document.getElementById('table_prac').deleteRow(row3);
+		document.getElementById('table_prac').deleteRow(row2);
+		document.getElementById('table_prac').deleteRow(row1);
+		
+		var table = document.getElementById("table_prac");
+	    var rowCount = table.rows.length;
+		//alert("rowCount=="+rowCount);
+		if(rowCount==1)
+		{
+			$("#btnSaveTab4").hide();
+		}
+	}	
+}
+</script>
+<?php
+echo $this->setupEditor("introduction");
+?>

@@ -1,0 +1,105 @@
+	<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<!--<span style="margin: 0pt 15px 0pt 0pt; float: right;"><a href="/admin/city/add/" class="add f-right">Add City</a></span>-->
+	Manage City/Places - <span class='msg'>Total <?php echo $this->total?> city(s) found! </span></div>	
+<div id="rightsidecontentpart">
+<form id="frmSearch" name="frmSearch"  method="get" action=""  class="admin-form-new">
+	<table align="center" cellspacing="2" cellpadding="3" border="0" class="admin-search-table">
+		<tr>
+			<td colspan="5" class="heading">Search City/Place</td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->name->getLabel();?></td><td><?php echo $this->form->name;?></td>
+		<td><?php echo $this->form->country_id->getLabel();?></td><td><?php echo $this->form->country_id;?></td>
+		<td><?php echo $this->form->submit;?></td>
+		</tr>
+		<tr><td colspan="5"></td></tr>
+	</table>
+    <input type="hidden" value="<?php echo $this->page_size?>" name ="page_size" id="page_size" >
+</form>
+<br class="clear" />
+<?php
+if($this->total>0)
+{	
+?>
+<span class='red'><? echo $this->msg;?></span>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>City</th>
+  	<th>Continent</th>
+	<th>Country</th>
+	<th>Region</th>
+    <th>Action</th>
+  </tr>  
+	<?	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;				
+		if($rowClass=="trbg1")
+		{
+			$rowClass='trbg';
+		}	
+		else
+		{
+			$rowClass='trbg1';
+		}
+		
+		$regionName="";
+		$region=$row->findParentRow('Application_Model_DbTable_Region','Region');
+		if($region)
+		{
+			$regionName=$region['name'];
+		}
+			
+		$countryName="";
+		$country=$row->findParentRow('Application_Model_DbTable_Country','Country');
+		if($country)
+		{
+			$countryName=$country["name"];
+		}
+			
+		$continentName="";
+		$continent=$row->findParentRow('Application_Model_DbTable_Continent','Continent');
+		if($continent)
+		{
+			$continentName=$continent["name"];
+		}		
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>    		
+    		<td><?=$row['name']?></td>
+			<td><?=$continentName?></td>
+			<td><?=$countryName?></td>
+			<td><?=$regionName?></td>
+    		<td>
+    		<a href='/admin/featured-city/edit-city/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>
+            </td>   		
+  		</tr>
+	<? 	
+	}//end foreach
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?><br />
+<?	
+}//end if
+else
+{
+	echo "<div class='orange'>No record found.</div>";
+}
+?>
+</div>
+</div>
+</div>

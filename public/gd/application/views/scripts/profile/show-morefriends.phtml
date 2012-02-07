@@ -1,0 +1,41 @@
+<?php
+if(count($this->data)>0)
+{
+	 foreach($this->data as $row)
+	 {
+		 $_friend	= new Application_Model_Friend();
+		 $_friend	= $_friend->find($row->id);
+
+		 $userid	= $_friend->getUserId();
+		 $friendid	= $_friend->getFriendId();
+		 $conntype	= $_friend->getConnectionType();
+
+		 $_friend->getId();
+		 $friendO	= $_friend->getFriendObj();
+		 
+		 $userM		= new Application_Model_User();
+		 $thumb		= '';
+		 if($friendObj = $userM->find($friendO->id))
+		 {
+			//$thumb=$friendObj->getThumbnail();
+		 }
+		 $thumb		= $_friend->getThumbnail($friendO->image, $friendO->facebook_id, $friendO->sex);
+?>
+<div class="friends-box">
+      <div class="friends-box-img">
+        <a href ="/<?php echo $friendO->username?>">
+		<img border="0" src="/image?src=<?php echo $thumb;?>&size=friends" style="float:left;margin:0 10px 5px 0;" alt="" />
+		</a>
+      </div>
+      <div class="friend-box-right">
+	  <a href ="/<?php echo $friendO->username?>"><span class="connect-name"><?php echo $friendO->first_name.' '.$friendO->last_name; ?></span></a></a> <span id="hideRes-<?php echo  $_friend->getId()?>" class="connect-type"><?php echo $_friend->getConnectionType(); ?></span> 
+	  <span class="connect-action"></span> 
+		<?php if($this->loggedInUser != $friendO->id){ // If loggedin user and friend Id is not same?>
+       <span class="alinks"> <a href ="/<?php echo $friendO->username?>"><b>View Profile</b></a> <a href ="/<?php echo $friendO->username?>"><b>Add To Friends</b></a> <a href ="/profile/messages/username/<?php echo $friendO->username?>"><b>Send Message</b></a> </span>
+	   <?php }?>
+	   </div>
+    </div>
+  <?php
+  }//end o foreach
+}//end of if
+?>

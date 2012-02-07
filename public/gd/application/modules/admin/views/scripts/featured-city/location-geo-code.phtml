@@ -1,0 +1,281 @@
+<?php
+$id				= $this->id;
+$type			= $this->type;
+$cityName		= "";
+$countryName	= "";
+$latitude		= "";
+$longitude		= "";
+$searchAddress	= "london";
+$mapZoom = 8;
+
+$cityM			= new Application_Model_City();
+$countryM		= new Application_Model_Country();
+
+if($type == "city")
+{
+	$cityM = $cityM->find($id);
+	if(false!==$cityM)
+	{
+		$cityName	= $cityM->getName();
+		$countryId	= $cityM->getCountryId();
+		$latitude	= $cityM->getLatitude();
+		$longitude	= $cityM->getLongitude();
+		
+		//now get city Country name
+		$countryM = $countryM->find($countryId);
+		if(false!==$countryM)
+		{
+			$countryName	= $countryM->getName();
+		}
+		$searchAddress = $cityName." ,".$countryName;
+		
+		//if Lat/Lon coordinates available
+		if($latitude!="" && $longitude!="")
+		{
+			$searchAddress = "(".$latitude.", ".$longitude.")";
+		}
+	}
+}
+
+else if ($type == "country")
+{
+	$countryM = $countryM->find($id);
+	if(false!==$countryM)
+	{
+		$countryName	= $countryM->getName();
+		$latitude		= $countryM->getLatitude();
+		$longitude		= $countryM->getLongitude();
+		
+		$searchAddress	= $countryName;
+		//if Lat/Lon coordinates available
+		if($latitude!="" && $longitude!="")
+		{
+			$searchAddress = "(".$latitude.", ".$longitude.")";
+		}
+	}
+	$mapZoom = 4;
+}
+?>
+<html>
+<head>
+<title>Gap Daemon Administration</title>
+<link href="<?echo $this->cdnUri();?>/style/css.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="<?echo $this->cdnUri();?>/style/reset.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="<?echo $this->cdnUri();?>/style/fonts.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="<?echo $this->cdnUri();?>/style/admin-style.css" media="screen" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="<?echo $this->cdnUri();?>/js/jqueryui/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="<?echo $this->cdnUri();?>/js/jquery.validate.js"></script>
+<?php
+//echo $this->jQuery();
+//echo $this->headScript();
+?>
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script language="javascript" type="text/javascript">
+var geocoder	= new google.maps.Geocoder();
+var marker		= null;
+var map			= null;
+var point		= "/images/point-blue.png";
+var infoWindow	= new google.maps.InfoWindow();
+function plotAddress()
+{
+    var strAddress = "<?php echo $searchAddress;?>";
+	/*
+	var locationAddress = "";
+	var lat = "28.635308";
+	var lon = "77.22496000000001";
+	if(lat!="" && lon!="")
+	{
+		strAddress = "("+lat+", "+ lon+")";
+	}
+	else
+	{
+		strAddress = locationAddress;
+	}
+	strAddress = "haldwani nainital";
+	*/
+	var request = { 'address': strAddress };
+	geocoder.geocode(request, locateDestination);
+	/*
+	//geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(lat, lon);
+    var myOptions = {
+      zoom: 12,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("location_map_holders"), myOptions);
+	
+	geocoder.geocode( { 'address': strAddress}, function(results, status)
+	{
+		if (status == google.maps.GeocoderStatus.OK)
+		{
+			map.setCenter(results[0].geometry.location);
+			var marker = new google.maps.Marker({
+				map: map, 
+				position: results[0].geometry.location
+			});
+		}
+		else
+		{
+			//alert("Geocode was not successful for the following reason: " + status);
+			alertBox("Warning","Google is unable to locate this location.");
+		}
+    });*/
+}
+function searchAddress()
+{
+    var query = document.getElementById('location_address').value;
+    var request={ 'address': query };
+    geocoder.geocode(request, locateDestination);
+}
+
+function locateDestination(results, status)
+{
+	if (status == google.maps.GeocoderStatus.OK)
+	{
+		//resetMap();
+		marker = new google.maps.Marker({
+		position: results[0].geometry.location,
+		title: 'Double Click here to set your current location.',
+		map: map,
+		draggable: true
+		});
+		buildMap(results[0].geometry.location);
+	}
+	else
+	{
+		alert("Unable to locate. Please try some other keyword.");
+	}
+}
+function buildMap(latLng)
+{
+    map = new google.maps.Map(document.getElementById('location_map_holders'), {
+    zoom: <?php echo $mapZoom;?>,
+    center: latLng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+
+     
+  marker = new google.maps.Marker({
+    position: latLng,
+    title: 'Drag and drop this pointer to set correct location GEO codes.',
+    map: map,
+    icon : point,
+    draggable: true
+  });
+    geocodePosition(latLng);
+    addingEventListnerToMaker(marker);
+    var content = "search address";
+    //smartInfo(content, marker,'click');
+}
+function addingEventListnerToMaker(marker)
+{
+     // Add dragging event listeners.
+	google.maps.event.addListener(marker, 'dragstart', function()
+	{
+		updateMarkerAddress('Wait...');
+    });
+	google.maps.event.addListener(marker, 'dragend', function()
+	{      
+		geocodePosition(marker.getPosition());
+	});
+	google.maps.event.addListener(marker, 'dblclick', function()
+	{
+		//updateGapperLocation(marker.getPosition());
+	});
+}
+
+function geocodePosition(pos)
+{
+  geocoder.geocode({
+    latLng: pos
+  }, function(responses) {
+    if (responses && responses.length > 0)
+	{
+		updateMarkerAddress(responses[0].formatted_address);
+		getLocationGeoCodes();
+	}
+	else
+	{
+		updateMarkerAddress('Cannot determine address at this location.');
+    }
+  });
+}
+
+function updateMarkerAddress(str)
+{
+	document.getElementById('location_address').value = str;
+}
+
+function getLocationGeoCodes()
+{
+	var latLng = marker.getPosition();
+	//saveLocationInDatabase(latLng.lat(),latLng.lng());
+	document.getElementById('latitude').value = latLng.lat();
+	document.getElementById('longitude').value = latLng.lng();
+}
+
+function resetMap()
+{
+  if (marker != null)
+  {
+    marker.setMap(null);
+    marker= null;
+  }
+}
+
+function updateLocationGeoCodes()
+{
+	var waitMsg = "<img src='/images/loading.gif' alt='' />&nbsp;&nbsp;&nbsp;&nbsp;wait...";
+	$("#btnUpdate").hide();
+	$("span#location_update").html(waitMsg);
+	var params = $("#frmLocationUpdate").serialize();
+	$.ajax({
+	   type: "POST",
+	   url: "/admin/featured-city/location-geo-code/",
+	   data: params,
+	   dataType: "json",
+	   success: function(json){
+			$("span#location_update").html(json.response);
+			$("#btnUpdate").show();
+		},
+	   error: function (json, status, e){
+			alert("json="+json+", status="+status+", e="+e);
+		}
+	 });
+}
+</script>
+</head>
+
+<body id="admin_pop_up" style="background:none;">
+<div id="rightsidemain" style="border: 2px solid #348698; width:99%; margin:0px;">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">Update GEO Code <span class='red' id="location_update" style="text-transform: none; font-size:12px;"></span></div>
+		<div id="rightsidecontentpart">
+			<form name="frmLocationUpdate" id="frmLocationUpdate" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="id" value="<?php echo $id;?>">
+			<input type="hidden" name="latitude" id="latitude" value="">
+			<input type="hidden" name="longitude" id="longitude" value="">			
+			<input type="hidden" name="type" id="type" value="<?php echo $type;?>">
+			<table align="center" cellspacing="5" cellpadding="10" border="0" width="100%">
+			<tr><td><div id="location_map_holders" style="border:1px solid #ffcc00; width:750px; height:400px;"></div></td></tr>
+			<tr>
+			<td>
+			<input type="text" name="location_address" id="location_address" style="width: 400px;">&nbsp;
+			<input type="button" name="btnSearch" value="Search" onclick="searchAddress();">&nbsp;
+			<input type="button" name="btnUpdate" id="btnUpdate" value="Update" onclick="updateLocationGeoCodes();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="button" name="btnCancel" value="Close Window" onclick="window.close();">
+			</td>
+			</tr>
+			</table>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+<script language="javascript">
+plotAddress();
+</script>

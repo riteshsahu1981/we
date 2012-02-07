@@ -1,0 +1,77 @@
+	<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<img src="/images/admin-images/bl-tl.gif" align="left" /><img src="/images/admin-images/bl-tr.gif" align="right" />
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+	
+	<img width="20" src="/images/admin-images/newobject.png" align="left" vspace="5" hspace="5" /><a href="/admin/permission/add/" class="add f-right">Add Permission</a></span>	
+	
+	<?php echo $this->title ?> - <span class='msg'>Total <?php echo $this->total?> permission(s) found! </span></div>	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+	
+?>
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+<br>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+
+
+<br />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>Permission</th>
+  	
+    <th>Action</th>
+  </tr>
+  
+	<?
+	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			
+	$DATE=new Base_Date();
+	
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		
+    		<td><?=$row['name']?></td>
+			
+    		<td>
+    		<a href='/admin/permission/edit/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+	<div class="btm-curve"><img src="/images/admin-images/btm-r-l.gif" align="left" /><img src="/images/admin-images/btm-r-r.gif" align="right" /></div>
+</div>

@@ -1,0 +1,247 @@
+<div id="blogs">
+<?php
+if(count($this->data)>0)
+{
+	$date = new Base_Date();
+	$date->setSysDateFormat("dS F Y");
+	foreach($this->data as $row)
+	{
+		$user	= $row->getUserObj();
+		$tagsM	= new Application_Model_Tags();
+		$tagStr	= $tagsM->getBlogTags($row->getId());
+        
+		$voteM	= new Application_Model_Vote();
+		//$total_likes=$voteM->getTotalVotes($row->getId(),"blog", 1,null);
+		
+        $userM	= new Application_Model_User();
+		$ustatus =$userM->getStatus();
+        $userM	= $userM->find($row->getUserId());
+				
+		$blogId		=	$row->getId();
+		$blogUserId	=	$row->getUserId();
+		$journal_id =	$row->getJournalId();
+		
+		//now check blog user journal settings
+		$viewJournal = false;
+		$journalM	=	new Application_Model_Journal();
+		$journalM	=	$journalM->find($journal_id);
+		if($journalM)
+		{
+			$jStatus	=	$journalM->getStatus();
+			$jPublish	=	$journalM->getPublish();
+		    //echo "status=".$jStatus." publish=".$jPublish." Journal Id=".$journal_id;
+		
+			if($jStatus=="public" AND $jPublish=="published" )
+			{
+				
+				$ustatus =$userM->getStatus();
+			    if($ustatus=="active")
+					{
+						$viewJournal 		= true;
+						//now get user journal permission
+						
+						//now check logged in user connection, permission from user to logged in user
+						$userNs 			= new Zend_Session_Namespace('members');
+						$loggedin_id		= $userNs->userId;
+						$view_my_journal 	= false;
+						$view_my_journal 	= $userM->checkUserPrivacySettings($blogUserId, $loggedin_id, 4);
+						if(!$view_my_journal)
+						{
+							$viewJournal = false;
+						}
+			       }
+			  }
+		   }
+		if($viewJournal)
+		{
+		?>
+
+		<div class="journal-box">
+        	<div class="journal-box-left">
+			<a href="/<?php echo $userM->getUsername()?>">
+			<img src="/image?src=<?php echo $userM->getThumbnail();?>&size=journal" />
+        	<!--<img src="<?php //echo $userM->getThumbnail()?>" alt="" width="61" />-->
+			</a>
+			</div>
+			<div class="journal-box-right">
+                <h3 class="main-heading3">
+					<a href="/journal/view-post/blog_id/<?php echo $row->getId();?>"><?php echo $row->getTitle();?></a>
+				</h3>
+                <div class="post-by">Posted by <b><a href="/<?php echo $userM->getUsername()?>"><?php echo  $user->first_name?></a></b> | <span><?php echo $date->timeAgo($row->getAddedon());?></span> | 
+				<?php
+				if($this->userId=="")
+				{
+				 ?>
+					 <a href="javascript: loginPopUp('Please login to like');">Like</a>
+				<?php
+				}
+				else
+				{
+					$userVote=$voteM->getTotalVotes($row->getId(),"blog", 1,$this->userId);
+					if($userVote>0)
+					{
+						$likeStyle="display:none";
+						$unlikeStyle="";
+					}
+					else
+					{
+						$likeStyle="";
+						$unlikeStyle="display:none";
+					}
+				 ?>
+					<span style="display: none;" id="loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+					<span style="<?php echo $unlikeStyle?>" id="unlike_<?php echo $row->getId();?>">
+					<a href="javascript: like(<?php echo $row->getId();?>, -1);">Unlike</a>
+					</span>
+
+					<span style="<?php echo $likeStyle?>"  id="like_<?php echo $row->getId();?>">
+					<a href="javascript: like(<?php echo $row->getId();?>, 1);">Like</a>
+					</span>
+            <?php } //end of else?>
+              </div>				
+              <div class="post-by-txt"><?php echo substr(strip_tags($row->getContent()),0,300)?>... <a href="/journal/view-post/blog_id/<?php echo $row->getId();?>" title="Read more">Read more</a></div>
+			<?php
+			//set total likes text
+			$total_likes = 0;
+			$total_likes = $voteM->getTotalVotes($row->getId(),"blog",1,null);
+			$textPrint	=	"member likes this";
+			if($total_likes > 1)
+			{
+				$textPrint	=	"members like this";
+			}
+
+			//set like-dislike class and style
+			$classTag		= "like-dislike";
+			$mainDivStyle	= "display: none;";			
+			if($tagStr!="" || $total_likes > 0)
+			{
+				$classTag		= "like-dislike like-dislike-img";
+				$mainDivStyle	= "display: block;";
+			}
+			?>
+            <div class="like-dislike like-dislike-img <?php //echo $classTag;?>">
+				
+		<!-- Tags and likes DIV starts here -->
+		<div style="<?php echo $mainDivStyle;?>" id="journal_tag_div_<?php echo $row->getId();?>">
+         <?php if ($total_likes>0){$totalLikeDisplay="";}else{$totalLikeDisplay="display:none";}?>
+		 	<span class="like-dislike-l f-left">
+            <span id="you-like-this-thumb-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>">
+			<img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like" class="f-left" />
+			<span id="you-like-this-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>">You likes this</span>
+            </span>
+            <a href="/journal/user-like-this/blog_id/<?php echo $row->getId()?>" class="like-this-l-link">
+			<span id="total_likes_<?php echo $row->getId();?>"  style="<?php echo $totalLikeDisplay?>">
+			<?php echo $total_likes.' '.$textPrint;?>
+			</span>
+			</a>
+            </span>
+			
+			<?php
+			//set style for seperator
+			$displaySeperator = "display: none;";
+			if($tagStr!="" && $total_likes > 0)
+			{
+				$displaySeperator = "display: block;";
+			}			
+			?>
+			<span class="like-dislike-pipe-seperator" style="<?php echo $displaySeperator;?>" id="journal_tag_sep_<?php echo $row->getId();?>">&nbsp;</span>
+			
+		  <?php if(isset($tagStr) && $tagStr!=""){?>
+		  <span class="like-dislike-r f-left" id="journal_tag_str_<?php echo $row->getId();?>">Tags: <?php echo $tagStr;?></span>
+		  <?php }?>
+		  </div>
+		  <!-- Tags and likes DIV ends here -->
+			<div class="clear"></div>
+				<?php
+                            $item_id= $row->getId();
+                            $commentM=new Application_Model_Comment();
+                            $where="item_id='{$item_id}' AND publish='1' AND item_type='blog'";
+                            $order="addedon ASC";
+                            $comments=$commentM->fetchAll($where,$order,10);
+                            $styleComment="";
+                            if(count($comments)==0){
+                                $styleComment="display:none";
+                            }
+                     ?>
+
+                    <div id="comment-list-<?php echo $row->getId();?>" class="comment-on-comment" >
+
+                     <?php
+
+                        if(count($comments)>0){
+                            foreach($comments as $_comment)
+                                echo $this->partial('comment/comment.phtml', array('comment'=>$_comment, 'type'=>'blog_comment',  'userId'=>$this->userId, 'item_id'=>$item_id));
+                        }
+                     ?>
+                    </div>
+                    <?php if($row->getComment()=='yes'){?>
+                    <div class="commet-frm-feed" id="comment-form-<?php echo $row->getId();?>">
+                        <form action="">
+							<a name="<?php echo "testval-".$blogId;?>"></a>
+                                <input type="text" id="blog-comment-<?php echo $row->getId();?>"  name="blog-comment-<?php echo $row->getId();?>" class="feed-comment-txt" value="Comment..." onfocus="if(this.value=='Comment...'){this.value=''}" onblur="if(this.value==''){this.value='Comment...'}" />
+                                
+								<?php if($this->userId==""){?>
+								         <input id="saveComment_<?php echo $row->getId();?>" name="saveComment_<?php echo $row->getId();?>" type="button" value="Comment" class="feed-comment-btn" onclick="loginPopUp('Please login to comment');"/>
+								<?php }else{  ?>
+										 <input id="saveComment_<?php echo $row->getId();?>" name="saveComment_<?php echo $row->getId();?>" type="button" value="Comment" class="feed-comment-btn" onclick="blogComment(<?php echo $row->getId();?>, <?php print $blogUserId;?>)"/>
+								<?php } ?>
+								
+                                
+								
+                                <span style="display:none;" id="comment_loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                        </form>
+                    </div>
+                    <?php }?>
+
+                </div>
+
+
+                <div class="clear"></div>
+                <br class="clear"></br>
+                
+				
+				
+				<a href="/journal/view-post/blog_id/<?php echo $row->getId()?>" class="orange-sml">VIEW POST</a>
+				<!--<a href="#" class="share-link-dd">SHARE IT</a>-->
+				<?php
+				$shareLink = Zend_Registry::get('siteurl')."/journal/view-post/blog_id/".$row->getId();
+				?>
+				<span class="share-id-option">
+					<a href="javascript://" id="share-link-dd-<?php echo $row->getId();?>" class="share-link-journal-dd">Share It</a>
+					<span id="share-link-dd_menu-<?php echo $row->getId();?>"  class="share-link-journal-menu">
+					<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=facebook&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Facebook"><img src="/images/facebook-icon-sml.png" alt="" /></a>
+					<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=twitter&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Twitter"><img src="/images/twitter-icon-sml.png" alt="" /></a>
+					<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=delicious&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Social"><img src="/images/social_03.png" alt="" /></a>
+					<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=digg&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Digg This"><img src="/images/digg-icon-sml.png" alt="" /></a>
+					<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=google&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Google"><img src="/images/gmail-icon-sml.png" alt="" /></a>
+					<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=stumbleupon&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Stumbleupon"><img src="/images/stumbleupon-icon-sml.png" alt="" /></a>
+				</span>
+                </span>
+				<script language="javascript" type="text/javascript">
+				$(document).ready(function(){
+					//set share journal drop-down menu here
+					$("#share-link-dd_menu-<?php echo $row->getId();?>").hide();
+					$("#share-link-dd-<?php echo $row->getId();?>").click(function(e) {          
+						$("#share-link-dd_menu-<?php echo $row->getId();?>").toggle("slow");
+						$("#share-link-dd-<?php echo $row->getId();?>").toggleClass("menu-open");
+					});
+					
+					$("#share-link-dd_menu-<?php echo $row->getId();?>").mouseup(function() {
+						return false;
+					});
+				});
+				</script>
+				
+            </div>
+		</div>
+
+<?php
+		}//end of if
+	}//end of foreach
+}
+else
+{
+	echo "No journals found.";
+}
+?>
+</div>

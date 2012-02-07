@@ -1,0 +1,65 @@
+<?php
+ $users = array();
+   $userM = new Application_Model_User();
+   $users= $userM->fetchAll("status='active'","addedon desc",6);
+
+   //print_r($users); die;
+   $userNs = new Zend_Session_Namespace('members');
+   $isLoggedIn = $userNs->userId;
+
+   if($isLoggedIn)
+   {   
+      
+	   $userFriend = new Application_Model_Friend();
+	   $arrFriend = $userFriend->getUserFriend($isLoggedIn);
+          
+          
+           $friendsId="";
+           if($arrFriend){
+	   $friendsId= implode("', '",$arrFriend);
+           $users= $userM->fetchAll("id IN('{$friendsId}')","addedon desc",6);
+           }else
+           {
+               $isLoggedIn=false;
+           }
+	   
+   }
+	   		   
+?>
+
+<div class="box1">
+    <?php
+            if(!$isLoggedIn)
+              {
+    ?>
+    <h1><?php echo $this->puts('Other Members on Gap Daemon');?></h1>
+    <p><?php echo $this->puts("Gap Daemon makes meeting other backpackers in your destination easy: there's no excuse not to be sociable!");?> </p>
+    <h1><?php echo $this->puts('LATEST MEMBERS');?></h1>
+    <?php }else{ ?>
+      <h1><?php echo $this->puts('Your Friends on Gap Daemon');?></h1>
+    <?php } ?>
+    <ul>
+        <?php 
+		foreach($users as $user)
+		{
+            if($user->getStatus()=="active")
+			{
+				$name = $user->getUsername();
+				$name = $user->getFirstName()." ".$user->getLastName();
+		?>
+             <li>
+			 <a href="<?php echo $this->seoUrl('/'.$user->getUsername()); ?>" title="<?php echo $name;?>">
+			 <!--<img src="<?php echo $user->getThumbnail()."?".rand(1,100000);?>" width="50" height="50" alt="<?php echo $user->getFirstName().' '.$user->getLastName();?>" title="<?php echo $user->getFirstName().' '.$user->getLastName();?>" />-->
+			 <img src="/image?src=<?php echo $user->getThumbnail();?>&size=journal&<?php echo rand(1,100000);?>" alt="<?php echo $name;?>" title="<?php echo $name;?>" />
+			 </a>
+			 </li>
+      <?php
+			}//end if
+		}//end foreach
+	  ?>
+    </ul>
+      <br class="clear" />
+     
+        <!-- <a href="#" class="orange-sml">See More</a> -->
+      
+  </div>

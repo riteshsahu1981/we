@@ -1,0 +1,22 @@
+<?php 
+            $category=new Application_Model_Category();
+            $arrCategory=$category->getCategory("--Filter by--","blog");
+            
+?>
+<div class="right-box-wide search-dest">
+	<h2 class="box-heading">SEARCH DESTINATIONS</h2>
+	<form name="journalfrm" id="journalfrm" action="/journal/index" method="post">
+		<input type="text"  class="search-strg" name="search-jrnl" id="search-jrnl" value="<?php echo $this->searchjrnl!=''?$this->searchjrnl:'Search by Keyword';?>" onfocus="if(this.value=='Search by Keyword'){this.value=''}" onblur="if(this.value==''){this.value='Search by Keyword'}"  />
+		<select class="search-filtr" name="search-filtr" id="search-filtr">
+		 <?php foreach($arrCategory as $k=>$cat){?>
+			<option value = "<?php echo $k;?>" <?php echo $this->searchfiltr==$k?'selected':'';?>><?php echo $cat;?></option>
+			<?php } ?>
+		</select>
+		<input type="text" name="search-city" id="search-city" class="search-city" value="<?php echo $this->searchcity!=''?$this->searchcity:'In City / Place';?>" onfocus="if(this.value=='In City / Place'){this.value=''}" onblur="if(this.value==''){this.value='In City / Place'}"  />
+		
+		<div class="clear"></div>
+		<input type="submit" name="" value="SEARCH"  class="submit-btn"  />
+		<input type="reset" name="" value="Reset"  class="submit-btn"  />
+	</form>
+	<input type="hidden" name="search-cloud" id="search-cloud"  value="<?php echo $this->searchcloud!=''?$this->searchcloud:'';?>" />
+</div>

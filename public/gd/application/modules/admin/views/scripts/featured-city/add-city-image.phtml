@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Gap Daemon Administration</title>
+<link href="<?echo $this->cdnUri();?>/style/css.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="<?echo $this->cdnUri();?>/style/reset.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="<?echo $this->cdnUri();?>/style/fonts.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="<?echo $this->cdnUri();?>/style/admin-style.css" media="screen" rel="stylesheet" type="text/css" />
+</head>
+<body id="admin_pop_up" style="background:none;">
+<div id="rightsidemain" style="border: 2px solid #348698; width:99%; margin:0px;">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">
+	Add/Edit Image</div>
+		<div id="rightsidecontentpart">
+			<span class='red'><? echo $this->errorMsg;?></span>
+			<form name="frmUpload" id="frmUpload" method="post" enctype="multipart/form-data">
+			<table align="center" cellspacing="5" cellpadding="10" border="0" width="100%">
+			<input type="hidden" name="cityId" value="<?php echo $this->cityId;?>">
+				<!--<tr><td colspan="2"><div class="form-sub-head">Upload Image</div></td></tr>-->
+				<tr>
+				<td valign="top"><?php echo $this->uploadForm->cityImage->getLabel();?></td>
+				<td>
+				<?php
+				if(isset($this->cityImage) && $this->cityImage!="")
+				{
+				?>
+				<!--<img src="<?echo $this->cdnUri();?>/image?src=<?echo $this->cdnUri();?>/media/picture/city/<?php echo $this->cityImage;?>&w=50&h=50" style="border: 1px solid rgb(230, 230, 230);" />-->
+				<img src="<?echo $this->cdnUri();?>/media/picture/city/<?php echo $this->cityImage;?>" height="50" width="50">
+				<br />
+				<?php }?>
+				<?php echo $this->uploadForm->cityImage;?> <span class="span-field-note">(Upload 623x347 dimensions image)</span></td>
+				</tr>
+				<tr><td><?php echo $this->uploadForm->slideTitle->getLabel();?></td><td><?php echo $this->uploadForm->slideTitle;?></td></tr>
+				<tr><td><?php echo $this->uploadForm->altText->getLabel();?></td><td><?php echo $this->uploadForm->altText;?></td></tr>
+				<tr><td><?php echo $this->uploadForm->slideLinkUrl->getLabel();?></td><td><?php echo $this->uploadForm->slideLinkUrl;?></td></tr>
+				<tr><td><?php echo $this->uploadForm->slideLinkTarget->getLabel();?></td><td><?php echo $this->uploadForm->slideLinkTarget;?></td></tr>
+				<tr><td><?php echo $this->uploadForm->weight->getLabel();?></td><td><?php echo $this->uploadForm->weight;?></td></tr>
+				<tr><td>&nbsp;</td><td><?php echo $this->uploadForm->btnSave;?> <input type="button" name="btnCancel" value="Cancle" onclick="window.close();"></td></tr>
+			</table>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+</html>

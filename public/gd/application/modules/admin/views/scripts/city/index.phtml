@@ -1,0 +1,81 @@
+	<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+	<a href="/admin/city/add/" class="add f-right">Add City</a></span>	
+	<?php echo $this->title ?> - <span class='msg'>Total <?php echo $this->total?> city(s) found! </span></div>	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+?>
+<span class='red'><? echo $this->msg;?></span>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml');?>
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>City</th>
+  	<th>Region</th>
+  	<th>Country</th>
+  	<th>Continent</th>
+    <th>Action</th>
+  </tr>  
+	<?	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$region=$row->findParentRow('Application_Model_DbTable_Region','Region');
+		$regionName="";
+		if($region)
+			$regionName=$region['name'];
+			
+		$country=$row->findParentRow('Application_Model_DbTable_Country','Country');
+		$countryName="";
+		if($country)
+			$countryName=$country["name"];
+			
+		$continentName="";		
+		$continent=$row->findParentRow('Application_Model_DbTable_Continent','Continent');
+		if($continent)
+			$continentName=$continent["name"];
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			
+	$DATE=new Base_Date();
+	
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		
+    		<td><?=$row['name']?></td>
+			<td><?=$regionName?></td>
+			<td><?=$countryName?></td>
+			<td><?=$continentName?></td>
+    		<td>
+    		<a href='/admin/city/edit/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;
+            <!--<a href='/admin/city/delete/id/<?=$row['id']?>' onclick="return confirm('Are you sure you want to delete the city?')"><img src='/images/admin-images/false.gif' border='0' title='Click here to delete the city'/></a>-->
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml'); ?><br />
+<?	
+}
+?>
+</div>
+</div>
+</div>

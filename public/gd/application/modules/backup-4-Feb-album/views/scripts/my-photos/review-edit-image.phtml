@@ -1,0 +1,341 @@
+<div class="my-photo" id="center">
+    <h2>Create album</h2>
+    <h2 class="subheading">Title of Album</h2>
+    <span class="page_number">Please edit your photos  | <a href="/album/my-photos/album-photos/id/<?php print $this->albumId;?>">Skip this and view album</a></span>
+        <?php print $this->paginationControl($this->arrAlbumPhoto, 'Sliding', 'album-page.phtml');?> 
+    <!-- Start Btns Area -->
+    <div class="btns"></div>
+    <!-- End Btns Area -->
+
+    <!-- Start Create Album Form -->
+
+    <div class="create-album">
+
+        <form id="album-create-edit" name="album-create-edit" method="post" action="" >            
+            <input type="hidden" name="albumId" id="albumId" value="<?php print $this->albumId;?>" />
+            <input type="hidden" name="nextPage" id="nextPage" value="<?php print $this->nextPage;?>" />
+            <input type="hidden" name="countVal" id="countVal" value="" />
+            <?php
+                $objModelAlbumPhoto     =   new Album_Model_AlbumPhoto();
+                $count  =   1;
+                foreach($this->arrAlbumPhoto as $albumPhoto){
+
+                $photoTag   =   $objModelAlbumPhoto->getAlbumPhotoTags($albumPhoto->id);
+                if($photoTag == "")
+                {
+                    $strPhotoTag   =   "Separate Tags by a comma. Example: Holiday, London, Travel";
+                }else{
+                    $strPhotoTag   =   $photoTag;
+                }
+
+                $latLong    =   "(".$albumPhoto->latitude.",".$albumPhoto->longitude.")";
+            ?>
+
+            <div class="edit-border">
+			<div class="form">
+                <input type="hidden" name="<?php print 'photoId'.$count;?>" id="<?php print 'photoId'.$count;?>" value="<?php print $albumPhoto->id;?>" />
+                <label>Name of Photo <input name="<?php print 'name'.$count;?>" id="<?php print 'name'.$count;?>" type="text" value="<?php print $albumPhoto->name;?>" /></label>
+
+                <label>Caption <textarea name="<?php print 'caption'.$count;?>" id="<?php print 'caption'.$count;?>" cols="" rows=""><?php print stripslashes($albumPhoto->caption);?></textarea></label>
+
+                
+                <label>Photo Location                    
+                    <input type="text" id="<?php print 'location'.$count;?>" name="<?php print 'location'.$count;?>" value="<?php print $albumPhoto->location;?>" class="" />
+                    <input type="hidden" id="<?php print 'latLong'.$count;?>" name="<?php print 'latLong'.$count;?>" value="<?php print $latLong;?>">
+                </label>
+                <div class="find-map"><input type="button" class="button-grn" value="find" name="<?php print 'find'.$count;?>" id="<?php print 'find'.$count;?>" onclick="return searchAddress('<?php print $count;?>')" /></div>
+
+
+                <label>Permission 
+                        <select name="<?php print 'permission'.$count;?>" id="<?php print 'permission'.$count;?>" class="permission">
+                            <?php foreach($this->arrFriendGroup as $id=>$val){?>
+                            <option value="<?php print $id;?>" <?php if($albumPhoto->permission == $id){?> selected="selected" <?php }?>><?php print $val;?></option>
+                            <?php }?>
+                        </select>
+                </label>
+
+                <label>Photo Tag <textarea name="<?php print 'photoTag'.$count;?>" id="<?php print 'photoTag'.$count;?>" class="txtAreaPhotoTag" cols="" rows=""><?php print $strPhotoTag;?></textarea></label>
+            </div>
+            <div class="image"><img src="/images/album/thumb/<?php print $albumPhoto->image;?>" alt="" />
+                <a href="/album/my-photos/album-photo-delete/id/<?php print $albumPhoto->album_id;?>/photoId/<?php print $albumPhoto->id;?>/page/<?php print $this->page;?>">Delete Photo</a>
+                <label>Move Photo to:
+                <select name="<?php print 'album'.$count;?>" id="<?php print 'album'.$count;?>">
+                    <?php foreach($this->arrAlbum as $album){?>
+                        <option value="<?php print $album->id?>" <?php if($albumPhoto->album_id == $album->id){?> selected="selected" <?php }?>><?php print $album->name?></option>
+                    <?php }?>
+                </select>
+                </label>
+            </div>
+            
+			</div>
+<?php $count++;}?>
+         
+                <div class="savecont"><input type="hidden" name="numAlbumPhoto" id="numAlbumPhoto" value="<?php print $count;?>" />
+            <?php if($this->nextPage == 'done'){?>
+                <input type="submit" name="submit" value="Save &amp; View" class="button" />
+            <?php }else{?>
+                <input type="submit" name="submit" value="Save &amp; Continue" class="button" />
+            <?php  }?>
+			
+			<?php print $this->paginationControl($this->arrAlbumPhoto, 'Sliding', 'album-page.phtml');?> 
+			 <div class="pages"><a href="/album/my-photos/album-photos/id/<?php print $this->albumId;?>">Skip this and view album</a></div>
+        
+			
+			</div>
+           
+
+        </form>
+        
+
+    </div>
+
+    <!-- End Create Album Form -->
+   
+
+
+    
+    <div class="edit-photo-location" id="photo-location-box" style="display:none;" >
+	<div id="map_canvas" class="map-photo"></div>
+		<div class="close-photo-map" id="close-photo-map"><img src="/images/close-grn.png" alt="" /></div>
+    </div>
+
+    <?php
+        $this->mapLib(null, "false")->setGear();
+        $userNs=new Zend_Session_Namespace("members");
+        $this->userId=$userNs->userId;
+    ?>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+	$("div#close-photo-map").click(function(){
+
+	    $("div#map_canvas").html("");
+            $("#photo-location-box").fadeOut(800);
+
+	});
+});
+
+$(document).ready(function(){
+    $(".txtAreaPhotoTag").focus(function(){
+        var photoTag    =   $(this).val();
+            if(photoTag=='Separate Tags by a comma. Example: Holiday, London, Travel')
+            {
+                $(this).val('');
+            }
+    });
+});
+
+$(document).ready(function(){
+    $(".txtAreaPhotoTag").blur(function(){
+        var photoTag    =   $(this).val();
+            if(photoTag=='')
+            {
+                $(this).val('Separate Tags by a comma. Example: Holiday, London, Travel');
+            }
+    });
+});
+</script>
+
+<script type="text/javascript">
+var user_login_id='<?php echo $this->userId?>';
+
+//* Global variable declaration
+var geocoder = new google.maps.Geocoder();
+var marker=null;
+var map =null;
+var point="/images/point-blue.png";
+var infoWindow = new google.maps.InfoWindow();
+var siberia = new google.maps.LatLng(60, 105);
+var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
+var initialLocation;
+
+function buildMap(latLng)
+{
+     map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 8,
+    center: latLng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+
+
+  marker = new google.maps.Marker({
+    position: latLng,
+    title: 'Double Click to set your current location here.',
+    map: map,
+    icon : point,
+    draggable: true
+  });
+    geocodePosition(latLng);
+    addingEventListnerToMaker(marker);
+    
+}
+
+function expandMap()
+{  
+    var latLng=marker.getPosition();
+    buildMap(latLng);
+}
+
+function shrinkMap()
+{    
+    var latLng=marker.getPosition();
+    buildMap(latLng);
+}
+
+function locateMe()
+{
+    // Try W3C Geolocation method (Preferred)
+	  if(navigator.geolocation)
+          {
+	    browserSupportFlag = true;
+	    navigator.geolocation.getCurrentPosition(function(position) {
+	      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+	      contentString = "Location found using W3C standard";
+	      //map.setCenter(initialLocation);
+
+	      buildMap(initialLocation);
+	    }, function() {
+
+	      handleNoGeolocation(browserSupportFlag);
+	    });
+	  } else if (google.gears){
+	    // Try Google Gears Geolocation
+	    browserSupportFlag = true;
+	    var geo = google.gears.factory.create('beta.geolocation');
+	    geo.getCurrentPosition(function(position) {
+	      initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
+	      contentString = "Location found using Google Gears";
+	      //map.setCenter(initialLocation);
+	      buildMap(initialLocation);
+
+	    }, function() {
+	      handleNoGeolocation(browserSupportFlag);
+	    });
+	  }else{
+	    // Browser doesn't support Geolocation
+	    browserSupportFlag = false;
+	    handleNoGeolocation(browserSupportFlag);
+	  }
+}
+
+function handleNoGeolocation(errorFlag) {
+
+	  if (errorFlag == true) {
+	    initialLocation = newyork;
+	    contentString = "Error: The Geolocation service failed.";
+	  } else {
+	    initialLocation = siberia;
+	    contentString = "Error: Your browser doesn't support geolocation. Are you in Siberia?";
+	  }
+            contentString="We are unable to locate you on map. You are being located to the London, England";
+            alert(contentString);
+
+            var latLng = new google.maps.LatLng("51.5001524", "-0.1262362");
+            buildMap(latLng);
+}
+
+function geocodePosition(pos) {
+  geocoder.geocode({
+    latLng: pos
+  }, function(responses) {
+    if (responses && responses.length > 0) {
+      updateMarkerAddress(responses[0].formatted_address, responses[0].geometry.location);
+    } else {
+      updateMarkerAddress('Cannot determine address at this location.');
+    }
+  });
+}
+
+
+function updateMarkerAddress(str, latlang) {
+
+    countVal = $("#countVal").val();
+   
+    $("#location"+countVal).val(str);
+  
+    $('#latLong'+countVal).val(latlang);
+}
+
+function searchAddress(countVal)
+{
+    $("#photo-location-box").show();
+
+    $("#countVal").val(countVal);
+
+    var query = $("#location"+countVal).val();
+
+    var p = $("#find"+countVal);
+    var position = p.position();
+    var topPos  =   position.top-125;
+    var leftPos =   position.left-260;
+
+    jQuery('#photo-location-box').animate({top:topPos },{queue: false, duration: 350});
+    jQuery('#photo-location-box').animate({left:leftPos },{queue: false, duration: 350});
+    
+  
+    var request={ 'address': query };
+
+    geocoder.geocode(request, locateDestination);
+
+}
+
+function locateDestination(results, status) {
+     if (status == google.maps.GeocoderStatus.OK){
+
+     //buildMap(results[0].geometry.location);
+
+     shrinkMap()
+     resetMap();
+    marker = new google.maps.Marker({
+    position: results[0].geometry.location,
+    title: 'Double Click here to set your current location.',
+    map: map,
+    draggable: true
+  });
+
+    //map.panTo(marker.getPosition());
+    buildMap(results[0].geometry.location);
+   
+     }else{
+         alert("Unable to locate. Please try some other keyword.");
+     }
+
+}
+
+function resetMap() {
+
+  if (marker != null) {
+    marker.setMap(null);
+    marker= null;
+  }
+}
+
+function addingEventListnerToMaker(marker)
+{
+     // Add dragging event listeners.
+  	google.maps.event.addListener(marker, 'dragstart', function() {
+
+    updateMarkerAddress('Wait...');
+
+
+  });
+
+  google.maps.event.addListener(marker, 'dragend', function() {
+
+    geocodePosition(marker.getPosition());
+
+  });
+
+  google.maps.event.addListener(marker, 'dblclick', function() {
+    updateGapperLocation(marker.getPosition());
+  });
+
+}
+// Onload handler to fire off the app.
+//
+google.maps.event.addDomListener(window, 'load', locateMe);
+
+</script>

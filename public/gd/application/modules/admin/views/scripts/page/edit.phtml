@@ -1,0 +1,51 @@
+<?php
+$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded .
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;"><a href="/admin/page/index" class="add">Back</a></span>
+	Static Pages- Edit</div>
+ <div id="rightsidecontentpart">
+  <span class='red'><? echo $this->msg;?></span>
+		<form method="post" action="" enctype="multipart/form-data">
+		<table align="center" cellspacing="5" cellpadding="5" border="0" width="100%">
+		<tr><td><?php echo $this->form->title->getLabel();?></td><td><?php echo $this->form->title;?></td></tr>
+		<tr><td><?php echo $this->form->identifire->getLabel();?></td><td><?php echo $this->form->identifire;?></td></tr>
+		<tr><td><?php echo $this->form->content->getLabel();?></td><td><?php echo $this->form->content;?></td></tr>
+		<tr><td><?php echo $this->form->metaTitle->getLabel();?></td><td><?php echo $this->form->metaTitle;?></td></tr>
+		<tr><td><?php echo $this->form->metaKeyword->getLabel();?></td><td><?php echo $this->form->metaKeyword;?></td></tr>
+		<tr><td><?php echo $this->form->metaDescription->getLabel();?></td><td><?php echo $this->form->metaDescription;?></td></tr>
+		<tr><td>&nbsp;</td><td><?php echo $this->form->savePublish;?> <?php echo $this->form->saveUnpublish;?> <?php echo $this->form->previewPage;?></td></tr>
+		</table>
+		</form>
+  </div>
+	</div>
+</div>
+<?php echo $this->setupEditor('content');?>
+<?php
+//if(in_array($this->pageIdentifire,$this->fixedPages))
+//{
+?>
+<script language="javascript" type="text/javascript">
+document.getElementById("identifire").readOnly = true;
+</script>
+<?php
+//}//end if
+?>
+
+<?php
+if($this->preview==true)
+{
+	$preview_url = $this->cdnUri()."/index/page/identifire/".$this->identifire."/preview/true";
+	if($this->identifire=="contact")
+	{
+		$preview_url = $this->seoUrl("/index/contact");
+		$preview_url = $preview_url."?preview=true";
+	}	
+?>
+<script language="javascript" type="text/javascript">
+window.open ('<?=$preview_url?>','Static page');
+</script>
+<?php }?>

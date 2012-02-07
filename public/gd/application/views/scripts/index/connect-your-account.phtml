@@ -1,0 +1,152 @@
+<div class="register_area">
+<h1 class="green_heading"><?php echo $this->puts("REGISTER WITH GAP DAEMON")?></h1>    
+
+	<p class="green_heading_dis">
+	<?php echo $this->puts("Please fill out the form below to register. Once logged in you can update your full profile.")?>
+	</p>
+	<h1 class="green_heading"><?php echo $this->puts("CONNECT TO US USING YOUR FACEBOOK DETAILS")?></h1>
+	<br /><br />	
+		<form method="post" action="/index/connect-your-account/">
+		<?php echo $this->form->firstTimeTraveller;?>
+		<?php echo $this->form->gapperOrFriend;?>
+		<?php echo $this->form->usernameOfGapper;?>
+		<!--<h3>Loging Details</h3>-->
+		<input type="hidden" id="sender"  name="sender" value="<?php echo $this->sender?>"></input>		     
+		<div class="registration">
+		<label><?php echo $this->puts($this->form->email->getLabel());?></label>
+		<?php echo $this->form->email;?>
+		</div>
+        
+		<div class="registration">
+        <label><?php echo $this->puts($this->form->username->getLabel());?></label>
+		<?php echo $this->form->username;?>
+		</div>
+		
+		<div class="registration">
+        <label><?php echo $this->puts($this->form->password->getLabel());?></label>
+		<?php echo $this->form->password;?>
+		</div>
+		
+		<div class="registration">
+        <label><?php echo $this->puts($this->form->confirmPassword->getLabel());?></label>
+		<?php echo $this->form->confirmPassword;?>
+		</div>     
+		<!-- <h3>Tell Us About Yourself</h3> -->
+				
+		<div class="registration2">		         
+			<span><?php echo $this->puts($this->form->day->getLabel());?></span>
+			<span><?php echo $this->form->day;?> </span>
+			<span><?php echo $this->form->month;?> </span>
+			<span><?php echo $this->form->year;?> </span>
+		</div>	
+		<!--    
+		<div class="reg_con3">		      
+		<span><?php //echo $this->puts($this->form->gapperOrFriend->getLabel());?></span>
+		<span><?php //echo $this->form->gapperOrFriend;?> </span>
+		</div>		
+		<div id="firstTimeTravellerContainer"  class="reg_con3">     
+		<span><?php //echo $this->puts($this->form->firstTimeTraveller->getLabel());?></span>
+		<span><?php //echo $this->form->firstTimeTraveller;?> </span>		
+		<br class='clear'>
+		</div>		
+		<div id="usernameOfGapperContainer" class="reg_con">
+		<label><?php //echo $this->puts($this->form->usernameOfGapper->getLabel());?></label>
+		<?php //echo $this->form->usernameOfGapper;?> 
+		</div>-->		
+		<div class="reg_con2">
+		<label><?php echo $this->puts($this->form->termsCondition->getLabel());?></label>
+		<?php echo $this->form->termsCondition;?>
+		</div>
+		
+		<div class="reg_con2">
+		<label><?php echo $this->puts($this->form->newsletter->getLabel());?></label>
+		<?php echo $this->form->newsletter;?>
+		</div>
+		
+		<div class="reg_con" style="padding-top:15px">
+		<span class="human">We need to make sure you're a real person! Please drag across the shape on the left that matches the one on the right. Then click 'REGISTER' to create your account.</span><br /><br />
+		<?php //echo $this->form->fcaptcha;?>
+		<div class="myCaptcha"></div>
+            <script>
+					$(document).ready(function() {
+						$('.myCaptcha').sexyCaptcha('/index/captcha');
+					});
+			</script>
+		</div>
+		
+		<span class="cmn_but"><?php echo $this->form->submit;?> </span>		
+		</form>
+</div>		
+<script type="text/javascript">
+$(function()
+{
+	$("#cityName").autocomplete({
+	source: "/index/autosuggest-city/",
+	minLength: 1,
+	select: function(event, ui) {
+		$("#cityId").val(ui.item.id);
+	}
+	});
+
+	function split(val)
+	{
+		return val.split(/,\s*/);
+	}
+	function extractLast(term)
+	{
+		return split(term).pop();
+	}
+	$("#otherLanguages").autocomplete({
+	source: function(request, response) {
+	$.getJSON("/index/autosuggest-language/", {
+	term: extractLast(request.term)
+	}, response);
+	},
+	
+	search: function() {
+	// custom minLength
+	var term = extractLast(this.value);
+	if (term.length < 2)
+	{
+		return false;
+	}
+	},
+	
+	focus: function()
+	{
+		// prevent value inserted on focus
+		return false;
+	},
+	select: function(event, ui) 
+	{
+		var terms = split( this.value );
+		// remove the current input
+		terms.pop();
+		// add the selected item
+		terms.push( ui.item.value );
+		// add placeholder to get the comma-and-space at the end
+		terms.push("");
+		this.value = terms.join(", ");
+		return false;
+	}
+	});
+
+	//$(showhidegapper);
+	//$("#gapperOrFriend").change(showhidegapper);
+});
+
+function showhidegapper()
+{
+	var var_name = $("#gapperOrFriend").val();
+	$('#usernameOfGapperContainer').hide();
+	$('#firstTimeTravellerContainer').hide();	
+	if(var_name=="friend" || var_name=="family")
+	{
+		$('#usernameOfGapperContainer').show();
+	}
+	if(var_name=="gapper")
+	{
+		$('#firstTimeTravellerContainer').show();
+	}
+}
+</script>	

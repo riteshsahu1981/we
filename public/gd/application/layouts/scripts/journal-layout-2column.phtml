@@ -1,0 +1,66 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<?php echo $this->headTitle(); ?>   
+	<?php echo $this->headMeta(); ?>
+	
+  
+	  <?php 
+	  /*-------------- jquery ui----------------------*/
+	  if($this->jQuery()->isEnabled())
+		echo $this->jQuery();
+	  /*-----------------------------------------------*/
+	 ?>
+  
+  <?php echo $this->headScript(); ?>
+  
+  <?php echo $this->headLink(); ?>
+</head>
+<body>
+
+<!-- Header -->
+<?php echo $this->pageElement('header')?>
+<!-- Header -->
+
+<!-- Middle Container -->
+<!--<div class="middle-container">-->
+
+<!-- Main -->
+<div id="main" >
+
+<!-- Sub-Header -->
+<?php //echo $this->pageElement('sub-header')?>
+<!-- Sub-Header -->
+	  
+<!-- Page -->
+<div id="contentArea">
+
+<!-- Banner ADD -->
+<div class="google-rgt-banner">
+<?php
+$banner = new Cms_Model_Banner();
+$banner ->showBanner("right_home", "600", "160")
+?>
+</div>
+<!-- Banner ADD -->
+
+<?php echo $this->layout()->content ?>
+<?php echo $this->pageElement('journal-right')?>
+</div>
+<!-- Page -->
+
+</div>
+<!-- Main -->
+
+<!--</div>-->
+<!-- Middle Container -->
+
+<!-- Footer -->
+<div class="main-footer">
+<?php echo $this->pageElement('footer')?>
+</div>
+<!-- Footer -->
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;"><a href="/admin/page/add/" class="add f-right">Add New Page</a></span>
+	<?php echo $this->title ?> - <span class='msg'>Total <?php echo $this->total?> page(s) found! </span></div>	
+<div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+<span class='red'><? echo $this->msg;?></span>
+<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+<?php }?>
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+    <th>Title</th>
+    <th>URL Re-write</th>
+	<th>Meta Title</th>
+	<th>Publish Date</th>
+	<th>Status</th>
+    <th>Action</th>
+  </tr>  
+	<?	
+	$sno = 0;
+	$page = $this->paginator->getCurrentPageNumber();
+	$items_per_page = $this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+		{
+			$rowClass='trbg';
+		}	
+		else
+		{
+			$rowClass='trbg1';
+		}
+		
+		//create links for each title
+		if($row['status']=="1")
+		{
+			$titleLink = $this->seoUrl("/index/".$row["identifire"]);
+			if($row["identifire"]=="contact")
+			{
+				$titleLink = $this->seoUrl("/index/contact");
+			}
+			$linkTitle = "Click here to see the page";
+		}
+		else
+		{
+			$titleLink = "/index/page/identifire/".$row["identifire"]."/preview/true";
+			if($this->identifire=="contact")
+			{
+				$titleLink = $this->seoUrl("/index/contact");
+				$titleLink = $titleLink."?preview=true";
+			}
+			$linkTitle = "Click here to see the preview page";
+		}
+		$titleLink = $this->cdnUri().$titleLink;
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><a href="<?php echo $titleLink;?>" target="_blank" title="<?php echo $linkTitle;?>"><?=$row['title']?></a></td>
+    		<td><?=$row['identifire']?></td>
+			<td><?=$row['meta_title']?></td>
+    		<td><?php echo date("M j, Y", $row['addedon']);?></td>
+			<?
+    		$status	=	$row['status'];
+			$printImage	=	"/images/admin-images/false.gif";
+			$published_title="Click here to publish";
+			if($status == 1)
+			{
+				$printImage	=	"/images/admin-images/true.gif";
+				$published_title="Click here to unpublish";
+			}
+    		?>
+			<td><a href='/admin/page/status/id/<?=$row['id']?>/page/<?=$page?>' title="<?php echo $published_title;?>"><img src="<?php print $printImage;?>" /></a></td>
+			<td>
+			<a href='/admin/page/edit/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;&nbsp;
+			<a href='/admin/page/delete/id/<?=$row['id']?>/page/<?=$page?>' onclick="return confirm('Are you sure to delete this page?');"><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+			</td>
+  		</tr>
+	<?php	
+	}//end foreach
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?php
+}//end if
+?>
+</div>
+</div>
+<div class="btm-curve"><img src="/images/admin-images/btm-r-l.gif" align="left" /><img src="/images/admin-images/btm-r-r.gif" align="right" /></div>
+</div>

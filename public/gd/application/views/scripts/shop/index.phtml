@@ -1,0 +1,549 @@
+<?php
+$site_url	=	Zend_Registry::get('siteurl');
+?>
+<script language="JavaScript">
+function populateCitySelect( country ) {
+  newcountry = country.replace(/ /g,'');
+  if ( newcountry.length == 0 ) {
+    document.theForm.Choice.length = 1;
+    document.theForm.Choice.options[0] = new Option('Choose a country:');
+    document.theForm.Choice.options[0].value = '';
+    return;
+  }
+  if ( country == 'Holland' ) {
+    newcountry = 'Netherlands';
+  }
+  if ( country == 'Britain' ) {
+    newcountry = 'England';
+  }
+  newOptions = eval(newcountry+'Array');
+  document.theForm.Choice.length = 1;
+  document.theForm.Choice.options[0] = new Option('Choose a city :');
+  document.theForm.Choice.options[0].value = '';
+  document.theForm.Choice.options[0].selected = true;
+  var citylength = newOptions.length + 1;
+  for ( i=0; i<newOptions.length; i++ ) {
+    document.theForm.Choice.length++;
+    thisEntry = newOptions[i];
+    newOption = new Option( thisEntry );
+    newOption.value = 'C' + thisEntry + ';' + country;
+    document.theForm.Choice.options[i+1] = newOption;
+  }
+  document.theForm.Choice.length = citylength;
+  if(newOptions.length == 1) document.theForm.Choice.options[1].selected = true;
+}
+
+function makeValidDate() {
+  year = document.theForm.selYear.options[ document.theForm.selYear.selectedIndex ].value;
+  month = document.theForm.selMonth.options[ document.theForm.selMonth.selectedIndex ].value;
+  day = document.theForm.selDay.options[ document.theForm.selDay.selectedIndex ].value;
+  maxDay = 31;
+  if ( month == 4 || month == 6 || month == 9 || month == 11 ) {
+    maxDay = 30;
+  } else if ( month == 2 ) {
+    if ( year%100 != 0 && year%4 == 0 ) {
+      maxDay = 28;
+    } else {
+      maxDay = 29;
+    }
+  }
+  document.theForm.selDay.selectedIndex = Math.min(day, maxDay)-1;
+}
+function SwitchTypes(element) {
+  if (element.checked == true) {
+    if(document.theForm.SelPropTypes_HOSTEL) document.theForm.SelPropTypes_HOSTEL.checked = true;
+    if(document.theForm.SelPropTypes_HOTEL) document.theForm.SelPropTypes_HOTEL.checked = true;
+    if(document.theForm.SelPropTypes_GUESTHOUSE) document.theForm.SelPropTypes_GUESTHOUSE.checked = true;
+    if(document.theForm.SelPropTypes_APARTMENT) document.theForm.SelPropTypes_APARTMENT.checked = true;
+    if(document.theForm.SelPropTypes_CAMPSITE) document.theForm.SelPropTypes_CAMPSITE.checked = true;
+  } else {
+    if(document.theForm.SelPropTypes_HOSTEL) document.theForm.SelPropTypes_HOSTEL.checked = false;
+    if(document.theForm.SelPropTypes_HOTEL) document.theForm.SelPropTypes_HOTEL.checked = false;
+    if(document.theForm.SelPropTypes_GUESTHOUSE) document.theForm.SelPropTypes_GUESTHOUSE.checked = false;
+    if(document.theForm.SelPropTypes_APARTMENT) document.theForm.SelPropTypes_APARTMENT.checked = false;
+    if(document.theForm.SelPropTypes_CAMPSITE) document.theForm.SelPropTypes_CAMPSITE.checked = false;
+  }
+}
+function SwitchAllTypes(element) {
+  if (element.checked == false) {
+    document.theForm.ShowAll.checked = false;
+  } else {
+    var selectAll = true;
+    if(document.theForm.SelPropTypes_HOSTEL && !document.theForm.SelPropTypes_HOSTEL.checked) selectAll = false;
+    if(document.theForm.SelPropTypes_HOTEL && !document.theForm.SelPropTypes_HOTEL.checked) selectAll = false;
+    if(document.theForm.SelPropTypes_GUESTHOUSE && !document.theForm.SelPropTypes_GUESTHOUSE.checked) selectAll = false;
+    if(document.theForm.SelPropTypes_APARTMENT && !document.theForm.SelPropTypes_APARTMENT.checked) selectAll = false;
+    if(document.theForm.SelPropTypes_CAMPSITE && !document.theForm.SelPropTypes_CAMPSITE.checked) selectAll = false;
+    document.theForm.ShowAll.checked = selectAll;
+  }
+}
+</script>
+<!-- Start Main Center Area -->
+<div class="main-center">
+  <!-- Start Right Part -->
+  <!-- End Right Part  -->
+<!-- Bottom Banner -->
+<div class="ln-hght20" ></div><div class="left_area "><img src="<?php echo $site_url;?>/images/shop-landing/stuff.jpg" width="619" height="75" />
+  <div class="box1">
+    <div class="box1_top"></div>
+    <div class="box1_mid">
+      <div class="box1_heading">WELCOME TO THE GAP DAEMON SHOP</div>
+      <div class="gd_icon"><img src="<?php echo $site_url;?>/images/shop-landing/gd_img.png" width="76" height="86" /></div>
+      <div class="box1_text">Where we help you to find the things you need for your travels. From 
+        best-in-class insurance to baggage tracking and plenty of reading. </div>
+    </div>
+    <div class="box1_bot"></div>
+</div>
+
+<div class="box2">
+<div class=" box2_top"><img src="<?php echo $site_url;?>/images/shop-landing/box2_top_l.jpg" width="15" height="15" /></div>
+<div class=" box2_mid">
+  <div class="box2_heading">BACKPACKERS TRAVEL INSURANCE</div>
+  <div class="cover_icon"><img src="<?php echo $site_url;?>/images/shop-landing/cover_icon.png" width="146" height="138" /></div>
+  <div class="box2_text">Created for Gap Daemon – we’ve teamed up with Preferential 
+    to provide complete global insurance cover for independent 
+    travellers.</div>
+<div class="quote"> <a href="http://preferential.co.uk/gapdaemon" target="_blank">GET A QUOTE</a></div> 
+
+</div>
+<div class=" box2_bot"><img src="<?php echo $site_url;?>/images/shop-landing/box2_bot_l.jpg" /></div>
+
+</div>
+<div class="box3">
+  <div class=" box3_top"><img src="<?php echo $site_url;?>/images/shop-landing/box2_top_l.jpg" width="15" height="15" /></div>
+<div class=" box3_mid">
+  <div class="box3_heading">EXPLORER PACK</div>
+  <div class="box3_text">
+    The ultimate in travel care to give you total peace of mind while you're<br />
+      travelling.<br /><br />
+    One phone number. Any problem, any time zone, any destination worldwide!
+      </div>
+  <div class="package">The explorer package includes:
+     <div class="lanuage_tag">luggage tags and tracking service </div>
+     <div class="text_help">text help in any country, language or time</div>
+     <div class="over_phone">over the phone language interpretation</div>
+     <div class="online_storage">25mb secure online storage</div>
+  </div>
+  <div class="img_box">
+    <div class="pack_icon"><a href="http://www.calluma.com/explorer.aspx?AID=GDMWL_LDN1" target="_blank"><img src="<?php echo $site_url;?>/images/shop-landing/pack-icon.png" width="116" height="118" border="0" /></a></div>
+  <div class="quote"> <a href="<?php echo $site_url;?>/shop/explorer" target="_blank">FIND OUT MORE</a> </div>
+  </div>
+</div>
+<div class=" box3_bot"><img src="<?php echo $site_url;?>/images/shop-landing/box2_bot_l.jpg" /></div>
+
+</div>
+
+<div class="stuff_box">
+    <div class="stuff_box_top"><img src="<?php echo $site_url;?>/images/shop-landing/stuff_box_top_l.jpg" width="15" height="17" /></div>
+    <div class="stuff_box_mid">
+      <div class="stuff_box_heading">STUFF YOUR BACKPACK SOME MORE.......</div>
+     <div class="stuff_banner">
+      <div class="left"><div class="headpart"><div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-l.jpg" width="12" height="12" align="left" /></div>TRAVEL EQUIPMENT</div>
+<div class="content"><OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" id="Player_4ba78235-a29c-4fde-a3e5-2c0a2c5ed0f7"  WIDTH="400px" HEIGHT="150px"> <PARAM NAME="movie" VALUE="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2F4ba78235-a29c-4fde-a3e5-2c0a2c5ed0f7&Operation=GetDisplayTemplate"><PARAM NAME="quality" VALUE="high"><PARAM NAME="bgcolor" VALUE="#FFFFFF"><PARAM NAME="allowscriptaccess" VALUE="always"><embed src="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2F4ba78235-a29c-4fde-a3e5-2c0a2c5ed0f7&Operation=GetDisplayTemplate" id="Player_4ba78235-a29c-4fde-a3e5-2c0a2c5ed0f7" quality="high" bgcolor="#ffffff" name="Player_4ba78235-a29c-4fde-a3e5-2c0a2c5ed0f7" allowscriptaccess="always"  type="application/x-shockwave-flash" align="middle" height="150px" width="400px"></embed></OBJECT> <NOSCRIPT><A HREF="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2F4ba78235-a29c-4fde-a3e5-2c0a2c5ed0f7&Operation=NoScript">Amazon.co.uk Widgets</A></NOSCRIPT></div>
+</div>
+<div class="right">
+<div class="headpart">
+<div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-r.jpg" width="12" height="12" align="right" /></div>
+<span>RTN</span><img src="<?php echo $site_url;?>/images/shop-landing/flight.jpg" width="28" height="27" align="right" class="flight" /> </div>
+<div class="content">
+<div class="code-bar"><img src="<?php echo $site_url;?>/images/shop-landing/bar.jpg" width="26" height="70" /></div>
+<div class="code"><form action="" method="get">
+<label><span>Gate</span></label>
+<img src="<?php echo $site_url;?>/images/shop-landing/gate.jpg" width="86" height="102" />
+</form></div>
+</div>
+</div>
+<div class="ftr"><div class="btm"><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-l.jpg" width="12" height="12" align="left" /><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-r.jpg" width="12" height="12" align="right" /></div></div>
+      </div>
+
+<div class="stuff_banner">
+<div class="left"><div class="headpart"><div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-l.jpg" width="12" height="12" align="left" /></div>LANGUAGE LEARNING</div>
+<div class="content"><OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" id="Player_bf423347-c122-41a3-a4b5-d3a69b216c36"  WIDTH="400px" HEIGHT="150px"> <PARAM NAME="movie" VALUE="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2Fbf423347-c122-41a3-a4b5-d3a69b216c36&Operation=GetDisplayTemplate"><PARAM NAME="quality" VALUE="high"><PARAM NAME="bgcolor" VALUE="#FFFFFF"><PARAM NAME="allowscriptaccess" VALUE="always"><embed src="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2Fbf423347-c122-41a3-a4b5-d3a69b216c36&Operation=GetDisplayTemplate" id="Player_bf423347-c122-41a3-a4b5-d3a69b216c36" quality="high" bgcolor="#ffffff" name="Player_bf423347-c122-41a3-a4b5-d3a69b216c36" allowscriptaccess="always"  type="application/x-shockwave-flash" align="middle" height="150px" width="400px"></embed></OBJECT> <NOSCRIPT><A HREF="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2Fbf423347-c122-41a3-a4b5-d3a69b216c36&Operation=NoScript">Amazon.co.uk Widgets</A></NOSCRIPT></div>
+</div>
+<div class="right">
+<div class="headpart">
+<div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-r.jpg" width="12" height="12" align="right" /></div>
+<span>RTN</span><img src="<?php echo $site_url;?>/images/shop-landing/flight.jpg" width="28" height="27" align="right" class="flight" /> </div>
+<div class="content">
+<div class="code-bar"><img src="<?php echo $site_url;?>/images/shop-landing/bar.jpg" width="26" height="70" /></div>
+<div class="code"><form action="" method="get">
+<label><span>Gate</span></label>
+<img src="<?php echo $site_url;?>/images/shop-landing/gate.jpg" width="86" height="102" />
+</form></div>
+</div>
+</div>
+<div class="ftr"><div class="btm"><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-l.jpg" width="12" height="12" align="left" /><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-r.jpg" width="12" height="12" align="right" /></div></div>
+</div>
+
+<div class="stuff_banner">
+<div class="left"><div class="headpart"><div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-l.jpg" width="12" height="12" align="left" /></div>TRAVEL READING</div>
+<div class="content"><OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" id="Player_07deca76-bd35-4868-b257-2a0415763169"  WIDTH="400px" HEIGHT="150px"> <PARAM NAME="movie" VALUE="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2F07deca76-bd35-4868-b257-2a0415763169&Operation=GetDisplayTemplate"><PARAM NAME="quality" VALUE="high"><PARAM NAME="bgcolor" VALUE="#FFFFFF"><PARAM NAME="allowscriptaccess" VALUE="always"><embed src="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2F07deca76-bd35-4868-b257-2a0415763169&Operation=GetDisplayTemplate" id="Player_07deca76-bd35-4868-b257-2a0415763169" quality="high" bgcolor="#ffffff" name="Player_07deca76-bd35-4868-b257-2a0415763169" allowscriptaccess="always"  type="application/x-shockwave-flash" align="middle" height="150px" width="400px"></embed></OBJECT> <NOSCRIPT><A HREF="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2F07deca76-bd35-4868-b257-2a0415763169&Operation=NoScript">Amazon.co.uk Widgets</A></NOSCRIPT></div>
+</div>
+<div class="right">
+<div class="headpart">
+<div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-r.jpg" width="12" height="12" align="right" /></div>
+<span>RTN</span><img src="<?php echo $site_url;?>/images/shop-landing/flight.jpg" width="28" height="27" align="right" class="flight" /> </div>
+<div class="content">
+<div class="code-bar"><img src="<?php echo $site_url;?>/images/shop-landing/bar.jpg" width="26" height="70" /></div>
+<div class="code"><form action="" method="get">
+<label><span>Gate</span></label>
+<img src="<?php echo $site_url;?>/images/shop-landing/gate.jpg" width="86" height="102" />
+</form></div>
+</div>
+</div>
+<div class="ftr"><div class="btm"><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-l.jpg" width="12" height="12" align="left" /><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-r.jpg" width="12" height="12" align="right" /></div></div>
+</div>
+
+<div class="stuff_banner">
+<div class="left"><div class="headpart"><div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-l.jpg" width="12" height="12" align="left" /></div>MUSIC FOR THE TRIP</div>
+<div class="content"><OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" id="Player_e6b02444-b5ab-4239-9b13-4d00f55f5933"  WIDTH="400px" HEIGHT="150px"> <PARAM NAME="movie" VALUE="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2Fe6b02444-b5ab-4239-9b13-4d00f55f5933&Operation=GetDisplayTemplate"><PARAM NAME="quality" VALUE="high"><PARAM NAME="bgcolor" VALUE="#FFFFFF"><PARAM NAME="allowscriptaccess" VALUE="always"><embed src="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2Fe6b02444-b5ab-4239-9b13-4d00f55f5933&Operation=GetDisplayTemplate" id="Player_e6b02444-b5ab-4239-9b13-4d00f55f5933" quality="high" bgcolor="#ffffff" name="Player_e6b02444-b5ab-4239-9b13-4d00f55f5933" allowscriptaccess="always"  type="application/x-shockwave-flash" align="middle" height="150px" width="400px"></embed></OBJECT> <NOSCRIPT><A HREF="http://ws.amazon.co.uk/widgets/q?ServiceVersion=20070822&MarketPlace=GB&ID=V20070822%2FGB%2Fgapdae-21%2F8010%2Fe6b02444-b5ab-4239-9b13-4d00f55f5933&Operation=NoScript">Amazon.co.uk Widgets</A></NOSCRIPT></div>
+</div>
+<div class="right">
+<div class="headpart">
+<div class="top"><img src="<?php echo $site_url;?>/images/shop-landing/gry-top-r.jpg" width="12" height="12" align="right" /></div>
+<span>RTN</span><img src="<?php echo $site_url;?>/images/shop-landing/flight.jpg" width="28" height="27" align="right" class="flight" /> </div>
+<div class="content">
+<div class="code-bar"><img src="<?php echo $site_url;?>/images/shop-landing/bar.jpg" width="26" height="70" /></div>
+<div class="code"><form action="" method="get">
+<label><span>Gate</span></label>
+<img src="<?php echo $site_url;?>/images/shop-landing/gate.jpg" width="86" height="102" />
+</form></div>
+</div>
+</div>
+<div class="ftr"><div class="btm"><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-l.jpg" width="12" height="12" align="left" /><img src="<?php echo $site_url;?>/images/shop-landing/gry-btm-r.jpg" width="12" height="12" align="right" /></div></div>
+</div>
+
+
+    </div>
+    <div class="stuff_box_bot"><img src="<?php echo $site_url;?>/images/shop-landing/stuff_box_bot_l.jpg" width="20" height="26" /></div>
+</div>
+
+</div>
+<div class="right_area"> <a href="<?php echo $site_url;?>/shop/amazon" target="_blank"><img src="<?php echo $site_url;?>/images/shop-landing/amazon_heading.png" width="278" height="32" border="0" /></a>
+  <div class="amazon_box">
+  <?php echo $this->pageElement("amazon-shop-widget", "/views/scripts/shop");?>
+  </div>
+  
+  <div class="hostel">BOOK A HOSTEL</div>
+<div class="hostel_box">
+  <div class="hostel_box_top"><img src="<?php echo $site_url;?>/images/shop-landing/box2_top_l.jpg" width="15" height="15" /></div>
+  <div class="hostel_box_mid">
+    <div class="booking_form">
+    
+<div class="hw_wrapper">
+<!--<form name="theForm" action="http://reservations.bookhostels.com/#PLEASE PASTE HOSTELWORLD'S 'UserID' HERE#/index.php" method="POST">-->
+<form name="theForm" target="_blank" action="http://reservations.bookhostels.com/gapdaemon.com/?SubID=false" method="POST">
+<div class="HW_search_panel">
+<div class="row1">
+<div class="top"><label>Select Country</label>
+<input name="SearchType" value="HOSTEL" type="hidden">
+<input name="affiliate" value="letsgo.com" type="hidden">
+<input name="Currency" value="USD" type="hidden">
+<select name="CountryChoice" onChange="javascript:populateCitySelect( this.options[selectedIndex].value )" class="country">
+<option value="">Choose a country:</option>
+<script src="http://reservations.bookhostels.com/includes/countrylistarray.js"></script><option value="Albania">Albania</option><option value="Algeria">Algeria</option><option value="Andorra">Andorra</option><option value="Antigua And Barbuda">Antigua And Barbuda</option><option value="Argentina">Argentina</option><option value="Armenia">Armenia</option><option value="Aruba">Aruba</option><option value="Australia">Australia</option><option value="Austria">Austria</option><option value="Azerbaijan">Azerbaijan</option><option value="Bahamas">Bahamas</option><option value="Bangladesh">Bangladesh</option><option value="Barbados">Barbados</option><option value="Belarus">Belarus</option><option value="Belgium">Belgium</option><option value="Belize">Belize</option><option value="Benin">Benin</option><option value="Bermuda">Bermuda</option><option value="Bolivia">Bolivia</option><option value="Bosnia And Herzegovina">Bosnia And Herzegovina</option><option value="Botswana">Botswana</option><option value="Brazil">Brazil</option><option value="Britain">Britain</option><option value="British Virgin Islands">British Virgin Islands</option><option value="Brunei">Brunei</option><option value="Bulgaria">Bulgaria</option><option value="Burkina Faso">Burkina Faso</option><option value="Cambodia">Cambodia</option><option value="Canada">Canada</option><option value="Cape Verde">Cape Verde</option><option value="Chile">Chile</option><option value="China">China</option><option value="Colombia">Colombia</option><option value="Congo">Congo</option><option value="Cook Islands">Cook Islands</option><option value="Costa Rica">Costa Rica</option><option value="Croatia">Croatia</option><option value="Cuba">Cuba</option><option value="Cyprus">Cyprus</option><option value="Czech Republic">Czech Republic</option><option value="Denmark">Denmark</option><option value="Dominica">Dominica</option><option value="Dominican Republic">Dominican Republic</option><option value="East Timor">East Timor</option><option value="Ecuador">Ecuador</option><option value="Egypt">Egypt</option><option value="El Salvador">El Salvador</option><option value="England">England</option><option value="Estonia">Estonia</option><option value="Ethiopia">Ethiopia</option><option value="Fiji">Fiji</option><option value="Finland">Finland</option><option value="France">France</option><option value="French Guiana">French Guiana</option><option value="French Polynesia">French Polynesia</option><option value="Gambia">Gambia</option><option value="Georgia">Georgia</option><option value="Germany">Germany</option><option value="Ghana">Ghana</option><option value="Greece">Greece</option><option value="Greenland">Greenland</option><option value="Grenada">Grenada</option><option value="Guadeloupe">Guadeloupe</option><option value="Guam">Guam</option><option value="Guatemala">Guatemala</option><option value="Haiti">Haiti</option><option value="Holland">Holland</option><option value="Honduras">Honduras</option><option value="Hong Kong">Hong Kong</option><option value="Hungary">Hungary</option><option value="Iceland">Iceland</option><option value="India">India</option><option value="Indonesia">Indonesia</option><option value="Iran">Iran</option><option value="Ireland">Ireland</option><option value="Israel">Israel</option><option value="Italy">Italy</option><option value="Jamaica">Jamaica</option><option value="Japan">Japan</option><option value="Jordan">Jordan</option><option value="Kazakhstan">Kazakhstan</option><option value="Kenya">Kenya</option><option value="Kosovo">Kosovo</option><option value="Kyrgyzstan">Kyrgyzstan</option><option value="Laos">Laos</option><option value="Latvia">Latvia</option><option value="Lebanon">Lebanon</option><option value="Lesotho">Lesotho</option><option value="Liechtenstein">Liechtenstein</option><option value="Lithuania">Lithuania</option><option value="Luxembourg">Luxembourg</option><option value="Macau">Macau</option><option value="Macedonia">Macedonia</option><option value="Madagascar">Madagascar</option><option value="Malawi">Malawi</option><option value="Malaysia">Malaysia</option><option value="Malta">Malta</option><option value="Martinique">Martinique</option><option value="Mauritius">Mauritius</option><option value="Mexico">Mexico</option><option value="Micronesia">Micronesia</option><option value="Moldova">Moldova</option><option value="Monaco">Monaco</option><option value="Mongolia">Mongolia</option><option value="Montenegro">Montenegro</option><option value="Montserrat">Montserrat</option><option value="Morocco">Morocco</option><option value="Mozambique">Mozambique</option><option value="Myanmar">Myanmar</option><option value="Namibia">Namibia</option><option value="Nepal">Nepal</option><option value="Netherlands">Netherlands</option><option value="Netherlands Antilles">Netherlands Antilles</option><option value="New Caledonia">New Caledonia</option><option value="New Zealand">New Zealand</option><option value="Nicaragua">Nicaragua</option><option value="Nigeria">Nigeria</option><option value="Northern Ireland">Northern Ireland</option><option value="Norway">Norway</option><option value="Oman">Oman</option><option value="Pakistan">Pakistan</option><option value="Panama">Panama</option><option value="Papua New Guinea">Papua New Guinea</option><option value="Paraguay">Paraguay</option><option value="Peru">Peru</option><option value="Philippines">Philippines</option><option value="Poland">Poland</option><option value="Portugal">Portugal</option><option value="Puerto Rico">Puerto Rico</option><option value="Qatar">Qatar</option><option value="Reunion">Reunion</option><option value="Romania">Romania</option><option value="Russia">Russia</option><option value="Saint Lucia">Saint Lucia</option><option value="Saint Vincent And The Grenadines">Saint Vincent And The Grenadines</option><option value="Samoa">Samoa</option><option value="Saudi Arabia">Saudi Arabia</option><option value="Scotland">Scotland</option><option value="Senegal">Senegal</option><option value="Serbia">Serbia</option><option value="Seychelles">Seychelles</option><option value="Sierra Leone">Sierra Leone</option><option value="Singapore">Singapore</option><option value="Slovakia">Slovakia</option><option value="Slovenia">Slovenia</option><option value="South Africa">South Africa</option><option value="South Korea">South Korea</option><option value="Spain">Spain</option><option value="Sri Lanka">Sri Lanka</option><option value="Swaziland">Swaziland</option><option value="Sweden">Sweden</option><option value="Switzerland">Switzerland</option><option value="Syria">Syria</option><option value="Taiwan">Taiwan</option><option value="Tanzania">Tanzania</option><option value="Thailand">Thailand</option><option value="Tonga">Tonga</option><option value="Trinidad and Tobago">Trinidad and Tobago</option><option value="Tunisia">Tunisia</option><option value="Turkey">Turkey</option><option value="Turks And Caicos Islands">Turks And Caicos Islands</option><option value="UK">UK</option><option value="US Virgin Islands">US Virgin Islands</option><option value="USA">USA</option><option value="Uganda">Uganda</option><option value="Ukraine">Ukraine</option><option value="United Arab Emirates">United Arab Emirates</option><option value="Uruguay">Uruguay</option><option value="Uzbekistan">Uzbekistan</option><option value="Vanuatu">Vanuatu</option><option value="Venezuela">Venezuela</option><option value="Vietnam">Vietnam</option><option value="Wales">Wales</option><option value="Zambia">Zambia</option><option value="Zimbabwe">Zimbabwe</option>
+    	</select></div>
+<label>Select City</label><select name="Choice" class="country"><option value="">Choose a country:</option></select>
+</div>
+
+<div class="row1">
+<span class="hw_arrival">
+<label>Arrival Date:</label>
+<select name="selMonth" onChange="makeValidDate();">
+<option value="1">Jan</option>
+<option value="2">Feb</option>
+<option value="3">Mar</option>
+<option value="4">Apr</option>
+<option value="5">May</option>
+<option value="6">June</option>
+<option value="7">July</option>
+<option value="8">Aug</option>
+<option value="9">Sept</option>
+<option value="10">Oct</option>
+<option value="11">Nov</option>
+<option value="12">Dec</option>
+</select>
+<select name="selDay" onChange="makeValidDate();">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+<option value="25">25</option>
+<option value="26">26</option>
+<option value="27">27</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+<option value="31">31</option>
+</select>
+<select name="selYear" onChange="makeValidDate();"></select>
+</span>
+</div>
+<?php
+$displayTypes = "no";
+if($displayTypes=="yes")
+{
+?> 
+<div class="row1">
+<label>Property Type:</label>
+<ul id="propertyTypesHolder">
+<div style=" float:left; width:80px;"><li class="propertyTypesAll"><input type="checkbox" onClick="SwitchTypes(this);" value="" checked="checked" name="ShowAll" id="p-all"/><label for="p-all">All</label></li>
+<li><input type="checkbox" onClick="SwitchAllTypes(this);" value="1" checked="checked" name="SelPropTypes_HOSTEL" id="p-HOSTEL"/><label for="p-HOSTEL">Hostel</label></li>
+<li><input type="checkbox" onClick="SwitchAllTypes(this);" value="1" checked="checked" name="SelPropTypes_HOTEL" id="p-HOTEL"/><label for="p-HOTEL">Hotel</label></li></div>
+<li><input type="checkbox" onClick="SwitchAllTypes(this);" value="1" checked="checked" name="SelPropTypes_GUESTHOUSE" id="p-GUESTHOUSE"/><label for="p-GUESTHOUSE">Guesthouse</label></li>
+<li><input type="checkbox" onClick="SwitchAllTypes(this);" value="1" checked="checked" name="SelPropTypes_APARTMENT" id="p-APARTMENT"/><label for="p-APARTMENT">Apartment</label></li>
+<li><input type="checkbox" onClick="SwitchAllTypes(this);" value="1" checked="checked" name="SelPropTypes_CAMPSITE" id="p-CAMPSITE"/><label for="p-CAMPSITE">Campsite</label></li>
+</ul>
+</div>
+<?php
+}
+else
+{
+	echo "<input type='hidden' name='SelPropTypes_HOSTEL' value='1'>";
+	echo "<input type='hidden' name='SelPropTypes_HOTEL' value='1'>";
+	echo "<input type='hidden' name='SelPropTypes_GUESTHOUSE' value='1'>";
+	echo "<input type='hidden' name='SelPropTypes_APARTMENT' value='1'>";
+	echo "<input type='hidden' name='SelPropTypes_CAMPSITE' value='1'>";
+}
+$displayCur = "no";
+if($displayCur == "yes")
+{
+?>
+<div class="row1">
+<label>Currency:</label>
+      <select name="Currency">
+        <option value="AUD">Australian Dollar</option>
+        <option value="GBP">British Pound</option>
+        <option value="CAD">Canadian Dollar</option>
+        <option value="EUR" selected>Euro</option>
+        <option value="USD">US Dollar</option>
+        <option value="">----------</option>
+        <option value="ALL">Albanian Lek</option>
+        <option value="DZD">Algerian Dinar</option>
+        <option value="ARS">Argentine Peso</option>
+        <option value="AMD">Armenian Dram</option>
+        <option value="AUD">Australian Dollar</option>
+        <option value="AZN">Azerbaijan New Manat</option>
+        <option value="BSD">Bahamian Dollar</option>
+        <option value="BHD">Bahraini Dinar</option>
+        <option value="BDT">Bangladeshi Taka</option>
+        <option value="BZD">Belize Dollar</option>
+        <option value="BOB">Bolivian Boliviano</option>
+        <option value="BRL">Brazilian Real</option>
+        <option value="GBP">British Pound</option>
+        <option value="BND">Brunei Dollar</option>
+        <option value="XOF">CFA Franc BCEAO</option>
+        <option value="XAF">CFA Franc BEAC</option>
+        <option value="XPF">CFP Franc</option>
+        <option value="KHR">Cambodian Riel</option>
+        <option value="CAD">Canadian Dollar</option>
+        <option value="CLP">Chilean Peso</option>
+        <option value="CNY">Chinese Yuan Renminbi</option>
+        <option value="COP">Colombian Peso</option>
+        <option value="KMF">Comoros Franc</option>
+        <option value="CRC">Costa Rican Colon</option>
+        <option value="HRK">Croatian Kuna</option>
+        <option value="CUC">Cuban Convertible Peso</option>
+        <option value="CZK">Czech Koruna</option>
+        <option value="DKK">Danish Krone</option>
+        <option value="DJF">Djibouti Franc</option>
+        <option value="DOP">Dominican R. Peso</option>
+        <option value="XCD">East Caribbean Dollar</option>
+        <option value="EGP">Egyptian Pound</option>
+        <option value="EEK">Estonian Kroon</option>
+        <option value="EUR">Euro</option>
+        <option value="FJD">Fiji Dollar</option>
+        <option value="HNL">Honduran Lempira</option>
+        <option value="HKD">Hong Kong Dollar</option>
+        <option value="HUF">Hungarian Forint</option>
+        <option value="ISK">Iceland Krona</option>
+        <option value="INR">Indian Rupee</option>
+        <option value="IDR">Indonesian Rupiah</option>
+        <option value="ILS">Israeli New Shekel</option>
+        <option value="JPY">Japanese Yen</option>
+        <option value="JOD">Jordanian Dinar</option>
+        <option value="KZT">Kazakhstan Tenge</option>
+        <option value="KES">Kenyan Shilling</option>
+        <option value="KWD">Kuwaiti Dinar</option>
+        <option value="LAK">Lao Kip</option>
+        <option value="LVL">Latvian Lats</option>
+        <option value="LBP">Lebanese Pound</option>
+        <option value="LTL">Lithuanian Litas</option>
+        <option value="MYR">Malaysian Ringgit</option>
+        <option value="MTL">Maltese Lira</option>
+        <option value="MRO">Mauritanian Ouguiya</option>
+        <option value="MUR">Mauritius Rupee</option>
+        <option value="MXN">Mexican Peso</option>
+        <option value="MNT">Mongolian Tugrik</option>
+        <option value="MAD">Moroccan Dirham</option>
+        <option value="NAD">Namibia Dollar</option>
+        <option value="NPR">Nepalese Rupee</option>
+        <option value="NZD">New Zealand Dollar</option>
+        <option value="NIO">Nicaraguan Cordoba Oro</option>
+        <option value="NOK">Norwegian Kroner</option>
+        <option value="OMR">Omani Rial</option>
+        <option value="PKR">Pakistan Rupee</option>
+        <option value="PGK">Papua New Guinea Kina</option>
+        <option value="PEN">Peruvian Nuevo Sol</option>
+        <option value="PHP">Philippine Peso</option>
+        <option value="PLN">Polish Zloty</option>
+        <option value="QAR">Qatari Rial</option>
+        <option value="RON">Romanian New Lei</option>
+        <option value="RUB">Russian Rouble</option>
+        <option value="WST">Samoan Tala</option>
+        <option value="SAR">Saudi Riyal</option>
+        <option value="SGD">Singapore Dollar</option>
+        <option value="SKK">Slovak Koruna</option>
+        <option value="SOS">Somali Shilling</option>
+        <option value="ZAR">South African Rand</option>
+        <option value="KRW">South-Korean Won</option>
+        <option value="LKR">Sri Lanka Rupee</option>
+        <option value="SZL">Swaziland Lilangeni</option>
+        <option value="SEK">Swedish Krona</option>
+        <option value="CHF">Swiss Franc</option>
+        <option value="TWD">Taiwan Dollar</option>
+        <option value="TZS">Tanzanian Shilling</option>
+        <option value="THB">Thai Baht</option>
+        <option value="TOP">Tonga Pa'anga</option>
+        <option value="TTD">Trinidad/Tobago Dollar</option>
+        <option value="TND">Tunisian Dinar</option>
+        <option value="TRY">Turkish Lira</option>
+        <option value="USD">US Dollar</option>
+        <option value="UGX">Uganda Shilling</option>
+        <option value="UAH">Ukraine Hryvnia</option>
+        <option value="UYU">Uruguayan Peso</option>
+        <option value="AED">Utd. Arab Emir. Dirham</option>
+        <option value="VUV">Vanuatu Vatu</option>
+        <option value="VEB">Venezuelan Bolivar</option>
+        <option value="VND">Vietnamese Dong</option>
+      </select>
+    </div>
+<?php
+}
+else
+{
+	echo "<input type='hidden' name='Currency' value='GBP'>";
+}	
+?>
+<div class="row1"><span class="hw_nights">
+<label> Nights:</label>
+<select name="NumNights">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+</select>  
+</span>
+</div>
+<div class="row1">     
+<span class="hw_guests">
+<label>Guests:</label>
+<select name="Persons">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+</select>  
+</span>
+</div>
+<div class="row1">
+<!--<span class="hw_text">Search Hostels, B&amp;B's &amp; Budget Hotels Worldwide</span>-->
+<input name="Submit" value="Search Hostels" type="submit" class="quote">
+</div>
+</div>
+</form>
+<!-- <a href="http://www.hostelworld.com" target="_blank"></a>--><img src="<?php echo $site_url;?>/images/shop-landing/hostel_img.png" width="132" height="26" />
+</div>
+<script language="JAVASCRIPT">
+ <!--
+  Today = new Date();
+  TwoWeeks = new Date();
+  TwoWeeks.setTime(Today.getTime() + (60*60*24*14*1000));
+  Day = TwoWeeks.getDate();
+  Month = TwoWeeks.getMonth();
+  Year = TwoWeeks.getYear();
+  if (Year < 1900) { Year+=1900; } 
+  document.theForm.selDay.options[Day].selected = true;
+  document.theForm.selMonth.options[Month].selected = true;
+  var YearSelect = document.theForm.selYear;
+  for(var y=Year; y <= (Year+3); y++) { 
+    YearSelect.options.add(new Option(y, y, (y==Year?true:false)));
+  }
+  if ( document.theForm.CountryChoice.selectedIndex > 0 ) {  
+    populateCitySelect( document.theForm.CountryChoice.options[document.theForm.CountryChoice.selectedIndex].value );
+  }
+  if ( document.theForm.CountryChoice.options.length == 2 ) {
+    document.theForm.CountryChoice.options[1].selected = true;
+    populateCitySelect( document.theForm.CountryChoice.options[document.theForm.CountryChoice.selectedIndex].value );
+  }
+// -->
+</script>
+    </div>
+   </div>
+  <div class="hostel_box_bot"><img src="<?php echo $site_url;?>/images/shop-landing/box2_bot_l.jpg" /></div>
+  </div>
+  <div class="flight">CHECK OUT FLIGHTS</div>
+  <div class="flight_box">
+  	<div class="flight_box_top"><img src="<?php echo $site_url;?>/images/shop-landing/box4_top_l.jpg" width="17" height="17" /></div>
+   <div class="flight_box_mid">
+      	  <div class="kayak_img"><img src="http://imps.acetrk.com/i/2RS/6I.jpg?subid=2&websiteid=3969" border=0 width=1 height=1>
+		  <!--<script language="javascript" src="http://www.kayak.com/widget/?ai=atrinsic&tab=flights&p=413/3697/3592&doubleEncoded=on&clickTAG=http%3A%2F%2Faan.atrinsic.com%2Fz%2F413%2F3592%2F%26subid1%3D3697%26lnkurl%3D"></script>-->
+		  <?php echo $this->pageElement("flights-widget", "/views/scripts/shop");?>
+		  </div>
+      	</div>
+          	<div class="flight_box_bot"><img src="<?php echo $site_url;?>/images/shop-landing/box4_bot_l.jpg" width="17" height="23" /></div>
+  </div>
+  
+   <div class="kayak">NEED A HOTEL OR HIRE CAR?</div>
+  <div class="kayak_box">
+  	<div class="kayak_box_top"><img src="<?php echo $site_url;?>/images/shop-landing/box5_top_l.jpg" width="17" height="17" /></div>
+      	<div class="kayak_box_mid">
+      	  <div class="kayak_img">
+		 <!--<script src="http://www.kayak.com/widget/?ai=atrinsic&p=1016/3697/3592&doubleEncoded=on&clickTAG=http%3A%2F%2Faan.atrinsic.com%2Fz%2F1016%2F3592%2F%26subid1%3D3697%26lnkurl%3D&size=200x258"></script>-->
+		 <?php echo $this->pageElement("hotel-car-widget", "/views/scripts/shop");?>
+		  </div>
+      	</div>
+        <div class="kayak_box_bot"><img src="<?php echo $site_url;?>/images/shop-landing/box5_bot_l.jpg" /></div>
+  </div>
+   <div class="banner_adds">HOT AFFILIATE DEALS</div>
+   <div class="banner_adds_box">
+  	<div class="banner_adds_box_top"></div>
+      	<div class="banner_adds_box_mid">
+		<div class="banner_adds_img">
+			<div class="banner-add120x60"><?php echo $this->add120x60;?></div>
+			<div class="banner-add120x600"><?php echo $this->add120x600;?></div>
+		</div>
+		</div>
+     <div class="banner_adds_box_bot"><img src="<?php echo $site_url;?>/images/shop-landing/adds_bot_l.jpg" width="32" height="17"/></div>
+  </div>
+</div>
+<!-- Bottom Banner --> 
+</div>
+<!-- End Main Center Area -->  

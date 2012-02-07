@@ -1,0 +1,126 @@
+<?php
+$id = $this->countryId;
+
+$destination			= array();
+$bankBreaker			= array();
+$dontLeaveWithout		= array();
+$lonelyPlanetCountry	= array();
+$destination_id			= 0;
+
+//select details from lonely_planet_country table
+$lonelyPlanetCountryM	=	new Application_Model_LonelyPlanetCountry();
+$lonelyPlanetCountryM	=	$lonelyPlanetCountryM->fetchRow("country_id={$id}");
+	
+if(false!==$lonelyPlanetCountryM)
+{
+	$lonelyPlanetCountry = $lonelyPlanetCountryM;
+	
+	//select Destinations details
+	$destinationId = "";
+	$destinationM	=	new Application_Model_Destination();
+	$destinationM	=	$destinationM->fetchRow("location_id={$id} AND location_type='country'");
+	if(false!==$destinationM)
+	{		
+		$destination = $destinationM;		
+		$bankBreaker	=	unserialize($destination->getBankBreaker());
+		
+		//select Dont Leave Here Without details
+		$dontLeaveWithoutM	=	new Application_Model_DontLeaveWithout();
+		$dontLeaveWithoutM	=	$dontLeaveWithoutM->fetchAll("destination_id={$destination_id}");
+		if(false!==$dontLeaveWithoutM)
+		{
+			$dontLeaveWithout = $dontLeaveWithoutM;
+		}
+	}
+	else
+	{
+		$destinationM	=	new Application_Model_Destination();
+		$destinationM->setDefaultRowData($id, "country");
+		
+		$destinationM	= $destinationM->fetchRow("location_id={$id} AND location_type='country'");
+		$destination 	= $destinationM;
+		$destination_id = $destination->getId();
+	}
+}
+
+//set default if no data available
+$noteMsg = "";
+if(!isset($bankBreaker['bankBreaker']))
+{
+	$bankBreaker['bankBreaker'] = array("Hostel Bed N/A"=>"1/5","Beer N/A"=>"1/5","Big Mac N/A"=>"1/5", "Taxi N/A"=>"1/5","Cigarettes N/A"=>"1/5");
+	$bankBreaker['dailyBudget'] = array("amount"=>"0","currency"=>"Currency","rate"=>"0");
+	$noteMsg = "<b>Note:</b> No content exists for this area, this is default data to display input fields. Please modify following data for this country and then Save else this default data will appear for this country.";
+}
+
+//select XML Feed blocked status
+$destM	=	new Application_Model_Destination();
+$block_ovewrite  = $destM->selectXMLFeedsBlockStatus("country", $id);
+$block_ovewrite_no= "";
+$block_ovewrite_yes= "";
+if($block_ovewrite == "No")
+{
+	$block_ovewrite_no = "checked='checked'";
+}
+else
+{
+	$block_ovewrite_yes = "checked='checked'";
+}
+?>
+<form name="frmOverview" id="frmOverview" enctype="multipart/form-data" method="post" action="/admin/featured-city/update-country-tab1-data">
+	<input type="hidden" name="id" value="<?php echo $lonelyPlanetCountry->getId();?>">
+	<input type="hidden" name="destinationId" value="<?php echo $destination->getId();?>">
+	<input type="hidden" name="countryId" value="<?php echo $id;?>">
+	<input type="hidden" name="page" value="<?php echo $this->page;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<tr><td valign="top" colspan="2">Block the content from being overwritten by an upload: <input type="radio" name="block_ovewrite" value="No" <?php echo $block_ovewrite_no;?>>No <input type="radio" name="block_ovewrite" value="Yes" <?php echo $block_ovewrite_yes;?>>Yes</td></tr>
+		<tr><td valign="top" colspan="2" style="text-align:right;"><a href="javascript://" onclick="adminLocationPopupWin('/admin/featured-city/location-geo-code/id/<?php echo $id;?>/type/country');">Update GEO Codes</a></td></tr>
+		<tr><td colspan="2"><div class="form-sub-head">Overview</div><span class="orange" id="tab1_msg"></span></td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">In A Nutshell</div></td></tr>
+		<!--<tr><td valign="top">Title</td><td><input type="text" name="introMini" value="<?php echo $lonelyPlanetCountry->getIntroMini();?>" class="title-input-box" maxlength="250"></td></tr>-->
+		<tr><td valign="top">Introduction</td><td><textarea cols="40" rows="4" name="introShort" class="title-input-box"><?php echo $lonelyPlanetCountry->getIntroShort();?></textarea></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">Don't Leave Here Without</div></td></tr>
+		<tr><td colspan="2" id="dont_leave_without_reload">Content for Don't leave here witjout goes here.....</td><tr>
+		<tr>
+		<td>&nbsp;</td>
+		<td><input type="button" value="Add New Item" onclick="addMoreRowsDontLeave();">
+		<!--<input type="button" value="Remove Item" onclick="removeMoreRowsDontLeave();" id="remove_button_tab1">-->
+		</td>
+		</tr>
+		
+		<?php if(count($bankBreaker)>0 && isset($bankBreaker['bankBreaker'])){?>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">Bank Breaker Or Penny Pincher</div></td></tr>
+		<?php
+		if($noteMsg!="")
+		{
+			echo "<tr><td colspan='2'><span class='orange'>".$noteMsg."</span></td></tr>";
+		}
+		?>
+		<?php
+		$itemCount = 1;
+		foreach($bankBreaker["bankBreaker"] AS $item=>$rating){			
+		?>
+		<tr><td valign="top">Item <?=$itemCount;?></td><td><input type="text" name="bankBreakerItem[]" value="<?php echo $item;?>" class="subtitle-input-box"style="width:200px !important;">&nbsp;&nbsp;
+		<select name="bankBreakerRating[]" class="subtitle-input-box" style="width:120px !important;">
+		<option value="1/5" <?php if($rating=="1/5"){ echo "selected";}?>>1/5</option>
+		<option value="1.5/5" <?php if($rating=="1.5/5"){ echo "selected";}?>>1.5/5</option>
+		<option value="2/5" <?php if($rating=="2/5"){ echo "selected";}?>>2/5</option>
+		<option value="2.5/5" <?php if($rating=="2.5/5"){ echo "selected";}?>>2.5/5</option>
+		<option value="3/5" <?php if($rating=="3/5"){ echo "selected";}?>>3/5</option>
+		<option value="3.5/5" <?php if($rating=="3.5/5"){ echo "selected";}?>>3.5/5</option>
+		<option value="4/5" <?php if($rating=="4/5"){ echo "selected";}?>>4/5</option>
+		<option value="4.5/5" <?php if($rating=="4.5/5"){ echo "selected";}?>>4.5/5</option>
+		<option value="5/5" <?php if($rating=="5/5"){ echo "selected";}?>>5/5</option>
+		</select></td></tr>
+		<?php
+			$itemCount++;
+			}//end foreach
+		?>
+		<tr><td valign="top">Typical Daily Budget</td><td><input type="text" name="bankBreakerCurrency" value="<?php echo $bankBreaker['dailyBudget']['currency'];?>" class="subtitle-input-box" maxlength="250" style="width:200px !important;">&nbsp;&nbsp;<input type="text" name="bankBreakerAmount" value="<?php echo $bankBreaker['dailyBudget']['amount'];?>" class="subtitle-input-box" maxlength="250" style="width:100px !important;">&nbsp;&nbsp;<input type="hidden" name="bankBreakerRate" value="<?php echo $bankBreaker['dailyBudget']['rate'];?>" class="subtitle-input-box" maxlength="250" style="width:100px !important;"></td></tr>
+		<?php	
+		}//end if
+		?>
+		<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave" ></td></tr>
+	</table>
+</form>

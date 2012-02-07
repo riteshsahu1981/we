@@ -1,0 +1,120 @@
+<?php 
+if(count($this->data)>0)
+{ 
+	$date=new Base_Date();
+	$date->setSysDateFormat("dS F Y");
+	
+	$com_obj = new Application_Model_Comment();
+	$vot_obj = new Application_Model_Vote();	
+	
+	foreach($this->data as $row)
+	{
+		$tagsM	=	new Application_Model_Tags();
+		$tagStr	=	$tagsM->getBlogTags($row->getId());
+		
+		$tagsStrEdit = $row->getTags();
+		$tagsStrEdit = $tagsM->getTagsForEdit($row->getId());
+?>
+      <div class="my-journal-box"> 
+	<div class="hide-view f-right">
+	<a href="javascript://" onclick='showEdit(<?php echo $row->getId();?>)' id="edit_link_<?php echo $row->getId();?>">EDIT</a>
+	</div>
+	 
+	<h3><b><?php echo $row->getTitle();?></b><div id="msg_<?php echo $row->getId() ?>" style="padding:0px 50px 0px 20px;float:right;" class="orange-sml"></div></h3>
+    <div class="post-by">
+		  Posted by <strong><span>Me</span></strong> <span></span> | 
+		  <span><?php echo $date->getSysDate($row->getAddedon());?></span> | 
+		  <span id="total_comments_<?php echo $row->getId();?>"><?php 
+                  $total_comment= $com_obj->numComments('blog', $row->getId()) ;
+                  if($total_comment>1)
+                  {
+                      echo $total_comment." Comments";
+                  }
+                  else
+                  {
+                      echo $total_comment." Comment";
+                  }
+                  ?> </span> |
+		  <?php 
+		  if($vot_obj->numVotes('blog', $row->getId()) > 0)
+		  {
+				$total_like = $vot_obj->numVotes('blog', $row->getId());
+				$totalLikePrint	=	$this->language("like_singular");
+				if($total_like > 1)
+				{
+					$totalLikePrint	=	$this->language("like_plural");
+				}
+		  ?>
+		  <span><?php echo $total_like." ".$totalLikePrint;?></span>
+		  <?php }?>
+	</div>	  
+	<div class="Edit_Blog_Info_<?php echo $row->getId();?>" style="display:none;padding:10px 0px 10px 0px;">
+		  <div class="clear"></div>
+		  <form name="frmBlogInfo_<?php echo $row->getId();?>" id="frmBlogInfo_<?php echo $row->getId();?>" method="post">
+		  <div class="cat-left"><span>Category</span>
+				<?php 
+				   $this->form->getElement('categoryId')->setName('categoryId_'.$row->getId());
+				   $this->form->getElement('categoryId')->setAttrib('id','categoryId_'.$row->getId());
+				   $this->form->getElement('categoryId')->setValue($row->getCategoryId());
+				   echo $this->form->categoryId
+				?>
+		  </div>
+		  <div class="loc-left"><span>Location</span> 
+				<?php 
+				   $this->form->getElement('location')->setName('location_'.$row->getId());
+				   $this->form->getElement('location')->setAttrib('id','location_'.$row->getId());
+				   $this->form->getElement('location')->setValue($row->getLocation());
+				   echo $this->form->location
+				?>
+		  </div>
+		  <div class="clear"></div>
+		  <div class="tag-div"><span>Tags</span> 
+			  <?php 
+				   $this->form->getElement('tags')->setName('tags_'.$row->getId());
+				   $this->form->getElement('tags')->setAttrib('id','tags_'.$row->getId());
+				   $this->form->getElement('tags')->setValue($tagsStrEdit);
+				   echo $this->form->tags
+			  ?>
+		  </div>
+		  <div class="buttonss">
+			  <!--<input name="btnSave" type="button" value="Edit Entry" class="button" onclick='editBlock(<?php //echo $row->getId() ?>)'/>
+			  <input name="btnDelete" type="button" value="Delete" class="button" onclick='deleteBlock(<?php //echo $row->getId() ?>)'/>-->
+			  <span><a href="javascript://" title="Save changes" onclick="editBlock(<?php echo $row->getId()?>)"><b>Edit Entry</b></a></span>&nbsp;&nbsp;&nbsp;
+			  <span><a href="/journal/delete-post/blog_id/<?php echo $row->getId();?>" title="Delete blog post" onclick="return confirm('Are you sure? You want to delete this post?\r\nThis action will also delete all comments associated with this post.');"><b>Delete</b></a></span>&nbsp;&nbsp;&nbsp;
+			  <span><a href="/gapper/edit-blog/id/<?php echo $row->getId();?>" title="Edit full details"><b>Edit Journal</b></a></span>
+		  </div>
+		  </form>
+	 </div> 
+	 <div class="view-comment-div">
+		<div class="view-comment-div-like">
+			<span class="view-comment"> <a href="javascript://" onclick="showComments(<?php echo $row->getId();?>)" id="view_comment_link_<?php echo $row->getId();?>" style="font-weight:bold;">View Comment</a></span>
+			<span class="jurnal-like-dislike-l">
+			<?php if($vot_obj->numVotes('blog', $row->getId()) > 0)
+			{
+				$total_like= $vot_obj->numVotes('blog', $row->getId());
+				$totalLikePrint	=	$this->language("like_singular");
+				if($total_like > 1)
+				{
+					$totalLikePrint	=	$this->language("like_plural");
+				}
+			?>
+			<span><img src="/images/like-icon-2.jpg"></span> 			
+			<span><a href="<?php echo $this->seoUrl('/journal/user-like-this/type/blog/item_id/'.$row->getId());?>"><?php echo $total_like." ".$totalLikePrint;?></a></span>
+			<?php }?>			
+			</span>
+                        <?php 
+                        $style='';
+                        if($tagStr==""){
+                            $style="style='display:none'";
+                        }
+                        ?>
+                        <span <?php echo $style?> id="tag_container_<?php echo $row->getId()?>"class="jurnal-like-dislike-r">Tags: <?php echo $tagStr;?></span>
+		</div>
+		<div id="delete_comment_response" style="display:none;"></div> 
+		<div id="comment_lisitng_<?php echo $row->getId();?>" style="display:none;"></div>
+	</div>
+</div>
+    <?php 
+	}//end of foreach
+}//end of if	
+?>

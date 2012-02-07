@@ -1,0 +1,65 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">
+	Subscribed Users - <span class='msg'>Total <?php echo $this->total_users;?> user(s) found! </span>
+	</div>
+<div id="rightsidecontentpart">
+<?php
+if($this->total_users>0)
+{
+?>
+<span class='red'><? echo $this->msg;?></span>
+<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+<a href="/admin/user/export-subscriber/type/xls" class="add1 f-right xls">Export (XLS)</a>
+<a href="/admin/user/export-subscriber/type/csv" class="add1 f-right csv">Export (CSV)</a>
+<!--<a href="/admin/user/export-subscriber/type/pdf" class="add1 f-right csv">Export (PDF)</a>-->
+</span><br class="clear" />
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml');?>
+<br class="clear" />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+	<th>First Name</th>
+    <th>Surname</th>
+    <th>Email</th>
+	<th>Gender</th>
+    <th>Date Subscribed</th>
+  </tr>
+  <?
+	$sno=0;
+	$page = $this->paginator->getCurrentPageNumber();
+	$items_per_page = $this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno = $items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass = 'trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+?>
+		<tr class="<?=$rowClass?>">
+    		<td><?=$sno?></td>
+			<td><?php echo $row->first_name;?></td>
+    		<td><?php echo $row->last_name;?></td>
+    		<td><?php echo $row->email;?></td>
+			<td><?php echo ucwords($row->sex);?></td>
+    		<td><?php echo date("M j, Y", $row->addedon);?></td>
+    	</tr>
+<?php
+	}//foreach
+?>
+</table><br />
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml'); ?><br />
+<?php	
+}//if
+?>
+</div>
+</div>
+</div>

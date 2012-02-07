@@ -1,0 +1,99 @@
+<?php
+$cache = Zend_Cache::factory("Output","File");
+//if (!($cache->start('TravelGuidesMy123'))){
+//if (!($cache->start('TravelGuidesMy123'.rand(1,1000)))) {
+
+$continentM = new Application_Model_Continent();
+$continents = $continentM->getContinent();
+$travelGuides = "";
+if(count($continents)>0)
+{
+	//$travelGuides .= "<ul class='subnav' style='display: none;'>";
+	?>
+	<ul class='subnav' style='display: none;'>
+	<?php
+	foreach($continents as $continent_id=>$continents)
+	{
+		$countryM	= new Application_Model_Country();
+		$countries	= $countryM->getCountry(null, $continent_id);
+		$total_countries = count($countries);
+		
+		//$travelGuides .= "<li>";
+		//$travelGuides .= "<a href='javascript://' class='sub f-left'>".$continents."</a>";
+		//$travelGuides .= "<img class='f-right showsub' src='/images/subnav_btn.png' alt='More' style='margin: 12px 5px 0 0;' />";
+		?>
+		<li>
+		<a href='javascript://' class='sub f-left'><?php echo $continents;?></a>
+		<img class='f-right showsub' src='/images/subnav_btn.png' alt='More' style='margin: 12px 5px 0 0;' />
+		<?php
+		//get continents countries
+		if($total_countries>0)
+		{
+			$per_column=20;
+			if($total_countries<=$per_column)
+			{
+				$ctr=1;
+			}
+			else
+			{
+				$rem = $total_countries/$per_column;
+				$q = (int)($total_countries/$per_column);
+				if($rem>0)
+				{
+					$ctr=$q+1;
+				}
+				else
+				{
+					$ctr=$q;
+				}
+			}
+			$ulctr=0;
+			//$travelGuides .= "<div class='submenu hidden col{$ctr}'>";
+			//$travelGuides .= "<ul class='subnav1' style='display: none;'>";
+			?>
+			<!--<div class='submenu hidden col<?php echo $ctr;?>'>-->
+			<?php
+			$total_block=0;
+			foreach($countries as $country_id=>$country)
+			{
+				//check country data into lonely planet feeds if exists then will appear here
+				$destinationM	=	new Application_Model_Destination();
+				$destinationCountry = $destinationM->checkCountryData($country_id);
+				if(false!==$destinationCountry)
+				{
+					$countryUrl = $this->seoUrl('/destination/country/id/'.$country_id);
+					//$travelGuides .= "<li><a href='{$countryUrl}'>{$country}</a></li>";
+					?>
+					<li><a href='<?php echo $countryUrl;?>'><?php echo $country;?></a></li>
+					<?php
+					$ulctr++;
+					if($ulctr==$per_column)
+					{
+						//$travelGuides .= "</ul>";</ul>
+						
+						$total_block++;
+						if($total_block<$ctr)
+						//$travelGuides .= "<ul>";<ul>
+						$ulctr=0;
+					}
+				}//end of if
+			}//end of country foreach
+			//$travelGuides .= "</div>";
+			?>
+			<!--</div>-->
+			<?php
+		}//end if
+		//$travelGuides .= "</li>";
+		?>
+		</li>
+		<?php
+	}//end of continent foreach
+	//$travelGuides .= "</ul>";
+	?>
+	</ul>
+	<?php
+}//end of if
+//$cache->end();
+//}//caching
+
+?>

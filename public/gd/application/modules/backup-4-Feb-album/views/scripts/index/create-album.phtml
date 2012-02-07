@@ -1,0 +1,90 @@
+<script type="text/javascript">
+	$(function() {
+		$("#datepicker").datepicker({altField: '#date', altFormat: 'yy-mm-dd'});
+
+	});
+	</script>
+<?php
+echo $this->msg;
+
+
+
+?>
+<div id="center">
+	<h2>CREATE A ALBUM</h2>
+	<div class="welcome-content">
+		<p>Here you can create posts that will be added to your Travel Journal</p>
+		<div class="form-structure">
+			<?php
+			echo $this->msg;
+		
+			?>
+			
+			<form method="post">
+			<label><?php echo $this->form->name->getLabel()?></label>
+			<?php echo $this->form->name?>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->datepicker->getLabel()?></label>
+			<?php echo $this->form->datepicker?>
+			<?php echo $this->form->date?>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->status->getLabel()?></label>
+			<?php echo $this->form->status?>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->categoryId->getLabel()?></label>
+			<?php echo $this->form->categoryId?>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->location->getLabel()?></label>
+			<?php echo $this->form->location?>
+			<br class="clear" />
+			
+			
+			<label>
+				<?php echo $this->form->description->getLabel()?>
+				<span>The entries can include text and images as well as any items that can be embedded into normal HTML using the provided editor.</span>
+			</label>
+			<span class="blog-txtarea"><?php echo $this->form->description?></span>
+			<br class="clear" />
+			
+			<label>
+				<?php echo $this->form->tags->getLabel()?>
+				<span>eg. party, new year ,etc.</span>
+			</label>
+			<span class="tags-txtarea"><?php echo $this->form->tags?></span>
+			<br class="clear" />
+			
+			
+			
+			<label>
+				<?php echo $this->form->enableComments->getLabel();?>
+			</label>
+			<div class="radio-box2"><?php echo $this->form->enableComments;?> </div>
+			<br class="clear" />
+			
+			
+			
+			<label>
+				<?php echo $this->form->enableLikes->getLabel();?>
+			</label>
+			<div class="radio-box2"><?php echo $this->form->enableLikes;?> </div>
+			<br class="clear" />
+			
+			
+			<br class="clear" />
+			<label></label><?php echo $this->form->submit;?>
+			</form>
+		</div>
+	</div>
+</div>	
+
+
+	<div id="right" class="pad-top">
+		<div class="inex-add-space">
+			Internal or External <br />Ad space
+		</div>
+	</div>
+</div>

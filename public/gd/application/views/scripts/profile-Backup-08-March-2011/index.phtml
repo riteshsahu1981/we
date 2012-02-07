@@ -1,0 +1,217 @@
+<?php $this->mapLib();?>
+
+<script type="text/javascript">
+
+//* Global variable declaration
+var geocoder = new google.maps.Geocoder();
+var marker=null;
+var map =null;
+var infoWindow = new google.maps.InfoWindow();
+function buildMap(latLng)
+{
+	 map = new google.maps.Map(document.getElementById('map_canvas'), {
+	zoom: 8,
+	center: latLng,
+	mapTypeId: google.maps.MapTypeId.ROADMAP
+	});
+	marker = new google.maps.Marker({
+	position: latLng,
+	title: "Member's current location",
+	map: map,
+	draggable: false
+});
+
+//var content = '<div class="where-iam-info"><div class="section1"><img src="/image?src=<?php echo $this->userThumb;?>&size=journal"></div><div class="section2"><b><?php echo $this->fullName;?></b></div></div>';
+var content = "<div class='where-iam-info'><div class='section1'><img src='/image?src=<?php echo $this->userThumb;?>&size=journal'></div><div class='section2'><b><?php echo addslashes($this->fullName);?></b></div></div>";
+smartInfo(content, marker,'mouseover');
+}
+
+function smartInfo(content, marker, eventName)
+{
+google.maps.event.addListener(map, 'click', function(){infoWindow.close();});
+google.maps.event.addListener(marker, eventName, function(e) {
+
+	infoWindow.close();
+infoWindow.setContent(content);
+infoWindow.open(map, marker);
+
+});
+
+google.maps.event.addListener(map, 'click', function(e) {
+
+infoWindow.close();
+
+});
+}
+function expandMap()
+{
+$("#show-map").hide();
+$("#close-map").show();
+$("#map_canvas").css("height", "500px");
+var latLng=marker.getPosition();
+buildMap(latLng);
+
+}
+
+function shrinkMap()
+{
+    // $("#show-map").show();
+   // $("#close-map").hide();
+    $("#show-map").hide();
+    $("#close-map").show();
+$("#map_canvas").css("height", "300px");
+var latLng=marker.getPosition();
+buildMap(latLng);
+
+
+}
+
+
+function showMap()
+{
+$("#show-map").hide();
+$("#close-map").show();
+$("#map_canvas").css("height", "300px");
+var latLng=marker.getPosition();
+buildMap(latLng);
+$('#my_location').removeClass('grey'); $('#my_location').addClass('blue');$('#my_journey').removeClass('blue'); $('#my_journey').addClass('grey');
+}
+
+function hideMap()
+{
+$("#show-map").show();
+$("#close-map").hide();
+$("#map_canvas").css("height", "100px");
+var latLng=marker.getPosition();
+buildMap(latLng);
+$('#my_location').removeClass('grey'); $('#my_location').addClass('blue');$('#my_journey').removeClass('blue'); $('#my_journey').addClass('grey');
+}
+
+
+function plotMyJourney()
+{
+    var params = "userId=<?php echo $this->userId?>";
+ $.ajax({
+       type: "POST",
+       url: "/profile/get-my-journey/",
+       data : params,
+       dataType: "json",
+       success: function(json){
+                if(json.error==0)
+                {
+                    $("#map_canvas").css("height", "500px");
+                    var latLng = new google.maps.LatLng(json.coord[0].lat,json.coord[0].lng);
+                    buildMap(latLng);
+                    
+                    var polyOptions = {
+                    strokeColor: '#348698',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 4
+                    }
+                    var poly = new google.maps.Polyline(polyOptions);
+                    poly.setMap(map);
+                    var path = poly.getPath();
+                    var latiLongi=null;
+                    for(i=0;i<json.coord.length;i++)
+                    {
+                        latiLongi=new google.maps.LatLng(json.coord[i].lat, json.coord[i].lng);
+                        path.push(latiLongi);
+                        var marker1 = new google.maps.Marker({
+                            position: latiLongi,
+                            title: 'Destination #' + path.getLength(),
+                            map: map
+                          });
+                          //var content="<div><img src='/image?src=<?php echo $this->userThumb;?>&size=journal' /> <?php echo $this->fullName?><br>Destination # "+ path.getLength()+" </div>";
+						  //var content = '<div class="where-iam-info"><div class="section1"><img src="/image?src=<?php echo $this->userThumb;?>&size=journal"></div><div class="section2"><b><?php echo $this->fullName;?></b><br />Destination #'+path.getLength()+'</div></div>';
+						  var content = "<div class='where-iam-info'><div class='section1'><img src='/image?src=<?php echo $this->userThumb;?>&size=journal'></div><div class='section2'><b><?php echo addslashes($this->fullName);?></b><br />Destination #"+path.getLength()+"</div></div>";
+                          smartInfo(content, marker1,'click');
+                    }
+                }
+                else
+                {
+                     alert("You don't have any coordinate.");
+                }
+
+       },
+       error: function (json, status, e){
+                alert(json + status)
+
+            }
+});
+
+}
+
+function resetMap() {
+
+if (marker != null) {
+marker.setMap(null);
+marker= null;
+}
+
+
+}
+
+function initialize()
+{
+	var myLatitude='<?php echo $this->myLatitude?>';
+	var myLongitude='<?php echo $this->myLongitude?>';
+	if(myLatitude=="" || myLongitude=="")
+	{
+		alert("Member have no coordinates. Could'nt locate member location.");
+		return false;
+	}
+	var latLng = new google.maps.LatLng(myLatitude, myLongitude);
+	buildMap(latLng);
+	
+}
+</script>
+<?php 
+				
+if($this->view_map)
+{
+?>
+<!-- google map starts -->
+<div class="location">
+    <a  id="my_location" href="javascript:void(0);" onclick="shrinkMap(); $('#my_location').removeClass('grey'); $('#my_location').addClass('blue');$('#my_journey').removeClass('blue'); $('#my_journey').addClass('grey'); " class="blue"><?php echo strtoupper($this->fullName);?>'S LOCATION</a>
+    <a id="my_journey" href="javascript:void(0);" onclick="plotMyJourney();  $('#my_location').removeClass('blue'); $('#my_location').addClass('grey');$('#my_journey').removeClass('grey'); $('#my_journey').addClass('blue');" class="grey"><?php echo strtoupper($this->fullName);?>'S GAP JOURNEY</a>
+    
+    
+    <div class="f-right show-hide-map">
+        <a id="show-map" href="javascript:void(0);" onclick="showMap()" class="red" style="display:none"><?php echo $this->puts('SHOW MAP')?></a>
+        <a id="close-map" href="javascript:void(0);" onclick="hideMap()" class="red" ><?php echo $this->puts('CLOSE MAP')?></a>
+    </div>
+</div>
+
+<div class="where_map">
+<div id="map_canvas" style="width: 815px; height: 300px" class="f-left"></div>
+
+<div class="update-location-blank">
+    
+
+</div>
+<?php 
+}
+else
+	{
+		echo "<div class='recently-added'>Member's location is not public.</div>";
+	}
+	?>
+</div>
+
+<div class="clear"></div>
+
+<script language='javascript' type="text/javascript">
+//Onload handler to fire off the app.
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+<!-- google map ends -->
+
+
+<!-- top section ends -->
+
+
+<!-- status update starts  (My Travel Wall)-->
+<?php echo $this->partial('profile/travel-wall.phtml', array('section_to_display'=>"where-i-am", 'userObject'=>$this->userObject,"postWallAccess"=>$this->postWallAccess)) ?>
+<!-- My travel wall ends -->
+
+

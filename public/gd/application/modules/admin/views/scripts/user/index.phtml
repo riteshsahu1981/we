@@ -1,0 +1,196 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">
+	Members - <span class='msg'>Total <?php echo $this->total_users?> member(s) found! </span></div>
+<div id="rightsidecontentpart">
+<!--<form id="frmSearch"  name="frmSearch"  method="post" class="admin-form-new">
+	<input style="width:250px" type="text" onblur="if(this.value==''){this.value='Search'}" onfocus="if(this.value=='Search'){this.value=''}" value="<?php echo $this->searchValue?>" id="search-txt" name="search-txt" autocomplete="off" >
+	<select name="search-lable" id="search-lable"  onchange="frmSearch.submit();">
+    <option value="">Filter By User Levels</option>
+     <?php
+          $userLevel=new Application_Model_UserLevel();
+          $userLevels=$userLevel->fetchAll();
+          foreach($userLevels as $userLevel)
+          {
+           ?>
+           <option <?php echo $this->lableValue==$userLevel->getId()?'selected':''; ?> value="<?php echo $userLevel->getId();?>"><?php echo $userLevel->getLabel()?></option>
+           <?php
+            }
+           ?>
+      </select>
+      <span style="margin: 0pt 15px 0pt 0pt; float: right;">
+	  <a href="/admin/user/export/type/xls" class="add1 f-right xls">Export (XLS)</a>
+	  <a href="/admin/user/export/type/csv" class="add1 f-right csv">Export (CSV)</a>
+	  </span>
+</form>-->
+<form id="frmSearch" name="frmSearch"  method="get" action="/admin/user/index/"  class="admin-form-new">
+	<table align="center" cellspacing="2" cellpadding="3" border="0" class="admin-search-table">
+		<tr>
+			<td colspan="4" class="heading">Search Members</td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->name->getLabel();?></td><td><?php echo $this->form->name;?></td>
+		<td><?php echo $this->form->username->getLabel();?></td><td><?php echo $this->form->username;?></td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->email->getLabel();?></td><td><?php echo $this->form->email;?></td>
+		<td><?php echo $this->form->status->getLabel();?></td><td><?php echo $this->form->status;?></td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->gender->getLabel();?></td><td><?php echo $this->form->gender;?></td>
+		<td><?php echo $this->form->page_size?></td><td><?php echo $this->form->submit;?></td>
+		</tr>
+	</table>
+    <input type="hidden" value="<?php echo $this->page_size?>" name ="page_size" id="page_size" >
+</form>
+<?php
+if($this->total_users>0)
+{
+?><br class="clear" />
+<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+	  <a href="/admin/user/export/type/xls" class="add1 f-right xls">Export (XLS)</a>
+	  <a href="/admin/user/export/type/csv" class="add1 f-right csv">Export (CSV)</a>
+</span><br class="clear" />
+<span class='red'><? echo $this->msg;?></span>
+
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+
+<br class="clear" />
+
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+	<th>Username</th>
+    <th>First Name</th>
+	<th>Surname</th>
+    <th>Email</th>
+	<th>Gender</th>
+    <th>Number of Friends</th>
+    <th>Created On</th>
+    <th>Action</th>
+  </tr>  
+<?php	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			
+		//$userLevel=new Application_Model_UserLevel();
+		//$userLevel=$userLevel->find($row['user_level_id']);
+		
+		//select users Numbers of friends
+		$noOfFriends = 0;
+		$friendM = new Application_Model_Friend();
+		$userFriends = $friendM->countUserFriends($row['id']);
+		$noOfFriends = $userFriends["totalFriends"];
+		
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+			<td><?php echo $row['username']?></td>
+    		<td><?=$row['first_name']?></td>
+			<td><?=$row['last_name']?></td>
+    		<td><?=$row['email']?></td>
+			<td><?php echo ucfirst($row['sex']);?></td>
+    		<td align="center"><?=$noOfFriends;?></td>
+    		<td><?php echo date("M j, Y", $row['addedon']);?></td>    		
+    		<td>
+    		<a href='/admin/user/reset-password/id/<?=$row['id']?>'>Reset Password</a>
+    		<a href='/admin/user/edit/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;
+			<?
+    		$published="false.gif";
+    		$published_title="Click here to unblock";
+    		if($row['status']=='active')
+    		{
+    			$published="true.gif";
+    			$published_title="Click here to block";
+    		}    		
+    		$usersNs = new Zend_Session_Namespace("members");
+        	$myId=$usersNs->userId;
+        	if($myId == $row['id'])
+        	{
+			?>
+				<a href="javascript://" onclick='alert("You cannot change your block status.")'><img src='/images/admin-images/<?php echo $published?>' border='0' title='<?php echo $published_title?>'/></a>&nbsp;&nbsp;
+				<a href="javascript://" onclick='alert("You cannot delete your own account.")'><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+        	<?php
+ 			}	
+        	else
+        	{
+    		?>    		
+				<a href='/admin/user/block/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/<?php echo $published?>' border='0' title='<?php echo $published_title?>'/></a>&nbsp;&nbsp;
+				<a href='/admin/user/delete/id/<?=$row['id']?>/page/<?=$page?>' onclick="return confirm('Are you sure? You want to delete this user?.');"><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+    		<?php }?>
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?><br />
+<?	
+}//if
+else
+{
+	echo "<div class='orange'>No record found.</div>";
+}
+?>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+$(function()
+{
+	$("#name").autocomplete({
+		source: "/admin/user/autosuggest-user/",
+		minLength: 3,
+		select: function(event, ui)
+		{
+			$("#name").val(ui.item.value);
+			//document.frmSearch.submit();
+		}
+	});
+	
+	$("#username").autocomplete({
+		source: "/admin/user/auto-suggest-field/field/username",
+		minLength: 3,
+		select: function(event, ui)
+		{
+			$("#username").val(ui.item.value);
+		}
+	});
+	
+	$("#email").autocomplete({
+		source: "/admin/user/auto-suggest-field/field/email",
+		minLength: 3,
+		select: function(event, ui)
+		{
+			$("#email").val(ui.item.value);
+		}
+	});
+
+	$("#search-lable").autocomplete({
+		source: "/admin/user/",
+		minLength: 1,
+		select: function(event, ui)
+		{
+			$("#search-lable").val(ui.item.value);
+			document.frmSearch.submit();
+		}
+	});
+
+});
+</script>

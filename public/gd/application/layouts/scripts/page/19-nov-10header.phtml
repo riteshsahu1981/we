@@ -1,0 +1,304 @@
+<div id="header"> 
+	<a href="/" class="logo"></a>
+        
+	<div class="top_rgt_ban2">
+
+            <?php
+            $banner = new Cms_Model_Banner();
+            $banner ->showBanner("top", "600", "120")
+            ?>
+            <?php //echo $this->action("banner",'index','cms', array("position"=>'top','width'=>600, 'height'=>120));?>
+        </div>
+<br class="clear">
+		<!-- Top Navigation-->
+		<div class="topnav">
+			<?php $this->navigation()->menu()->setPartial(array('topnav.phtml','default'));
+				echo $this->navigation()->menu()->render();
+                        ?>
+		</div>
+		<!-- Top Navigation-->
+</div>
+<!-- Breadcrumbs -->
+<div class="breadcrumbs">
+
+<?php
+ $params=$this->params;
+if($this->controllerName=="advice" && $this->actionName=="detail"){
+
+ $adviceM=new Application_Model_Advice();
+ $adviceM=$adviceM->find($params['id']);
+ $title="Detail";
+ if(false!==$adviceM)
+     $title=$adviceM->getTitle();
+ ?>
+
+		<a href="/">Home</a> &gt;
+                <a href="/advice">Advice</a>
+                &gt; <? echo $title?>
+	
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="category-detail"){?>
+                <a href="/">Home</a> &gt;
+                <a href="/work-study-volunteer">Work Study Volunteer</a>
+                &gt; <? echo ucfirst($params['category'])?>
+
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="detail"){
+    $categoryM = new Application_Model_Category();
+    $categoryM=$categoryM->find($params['id']);
+    $title="Detail";
+    if(false!==$categoryM)
+        $title=$categoryM->getName();
+    ?>
+                <a href="/">Home</a> &gt;
+                <a href="/work-study-volunteer">Work Study Volunteer</a>
+                &gt; <? echo $title?>
+<?php  }elseif($this->controllerName=="work-study-volunteer" && $this->actionName=="article-detail"){
+    $articleM=new Application_Model_Articles();
+    $articleM=$articleM->find($params['id']);
+    $title="Detail";
+    if(false!==$articleM)
+        $title=$articleM->getTitle();
+    ?>
+            <a href="/">Home</a> &gt;
+                <a href="/work-study-volunteer">Work Study Volunteer</a>
+                &gt; <? echo $title?>
+<?php  }elseif($this->controllerName=="journal" && $this->actionName=="view-post"){
+    $blogM=new Application_Model_Blog();
+    $blogM=$blogM->find($params['blog_id']);
+    $title="Detail";
+    if(false!==$blogM)
+        $title=$blogM->getTitle();
+    ?>
+        <a href="/">Home</a> &gt; <a href="/journal">Journals</a> 
+                &gt; <? echo $title?>
+<?php }else{
+    echo $this->navigation()
+		->breadcrumbs()
+		->setLinkLast(false);
+		;
+}?>
+</div>
+
+<!-- Breadcrumbs -->
+<?php
+if(isset($this->searchtext) && $this->searchtext!="")
+{
+	$default_search_txt = $this->searchtext;
+}
+else
+{
+	$default_search_txt = "Search Gap Daemon";
+}
+?>
+<div id="search">
+<form name="frmseach" id="frmseach" action="/search" method="get">
+	<input name="q" type="text" class="search-input" value="<?php echo $default_search_txt;?>" id="keywords" onblur="replaceText(this);" onfocus="clearText(this);" /><input name="btnSearch" type="button" class="search-button" onclick="document.frmseach.submit();" />
+</form>
+
+	<?php
+	 if (Zend_Auth::getInstance()->hasIdentity()){ 
+	?>
+                <a href="/gapper/my-profile" class="register"><?=$this->puts("My Profile")?></a>
+		<span class="logout"><a href="/index/logout/"><?=$this->puts("LOG OUT")?></a></span>
+	<?php 
+	}else{?>
+		<a href="/index/register" class="register"><?=$this->puts("Register")?></a>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+ 
+ 	$("#btn-slide").click(function(event) {
+
+			event.preventDefault();
+		  $("#login_box").slideToggle();
+	  });
+	  
+	  $("#login_box").blur(function() {
+	  	alert(1);
+	   	//$("#login_box").slideUp(500);
+	  });
+ 
+ });
+
+
+
+
+ function submitenter(myfield,e)
+ {
+ var keycode;
+ if (window.event) keycode = window.event.keyCode;
+ else if (e) keycode = e.which;
+ else return true;
+
+ if (keycode == 13)
+    {
+    myfield.form.submit();
+    return false;
+    }
+ else
+    return true;
+ }
+  
+
+</script>
+
+
+
+<a href="javascript:;" class="login" id="btn-slide">
+	<?=$this->puts("LOG IN")?><img src="<?echo $this->cdnUri()?>/images/login.jpg" alt=""  />
+</a>
+<?php
+
+    /*------facebook------*/
+    $facebook = $this->facebook();
+    //$return_url=Zend_Registry::get('siteurl')."/index/do-fb-return/";
+	$return_url=Zend_Registry::get('siteurl')."/index/facebook-connect/";
+    $cancel_url=Zend_Registry::get('siteurl')."/index/cancel-facebook";
+    //$this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location", "display"=>"popup"));
+    $this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("cancel_url"=>$cancel_url,"next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location","display"=>"popup"));
+    //$this->view->loginUrl="https://graph.facebook.com/oauth/authorize?redirect_uri=$return_url&scope=offline_access,publish_stream,read_stream&client_id=102609193129645";
+    /*------------------*/
+
+
+$this->Lform=new Admin_Form_Login();
+?>
+<div id="login_box"  <?php if($this->lmsg <> ""){ echo ' style="display:block"'; }?>>
+	<div class="topbg"></div>
+	<div class="content_box">
+		<form id="frmLogin" name="frmLogin" method="post" action="/index">
+		<div class="div2 aqua_green"><strong>Sign into Gap Daemon</strong></div>
+		<!--<div class="div2"><a href="<?php //echo $this->seoUrl("/index/register/");?>" class="cmn_register">REGISTER</a></div>-->
+		<div class="div2 clear mart5 orange"><strong><?php echo $this->lmsg?></strong></div>
+		<?php //echo $this->getRequest()->_getParam("msg")?>
+		
+		<div class="input-field"><?php echo $this->Lform->email;?></div>
+		
+		<div class="input-field"><?php echo $this->Lform->password;?></div>
+		<div class="div2 mart5"><a href="#" onclick="document.frmLogin.submit()" class="cmn_register marl">SIGN IN</a> 
+		<div class="rememberme"><?php echo $this->Lform->rememberMe?><span>Remember me</span></div>
+		</div>
+		<div class="div2 padb"><a href="/index/username/" class="orange">Forgot username?</a>  <a href="/index/forgot/" class="orange">Forgot password?</a></div>
+		<div class="div3 aqua_green"><strong>Sign in with Facebook</strong></div>
+		<div class="f_connect"><a  onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" href="#;" class="connect-log"><img src="<?echo $this->cdnUri()?>/images/f_connect.gif" alt="" /></a></div>	
+			<!-- don not delete ( Stand by form <div class="dis_area">
+				<div class="dis_pic"><div class="social_icon"><img src="<?echo $this->cdnUri()?>/images/fb.png" alt="" /></div><img src="<?echo $this->cdnUri()?>/images/2.jpg" alt="" /></div>
+				<p>Hello <span>Kevin G!</span></p>
+			</div>
+			<div class="div1"><input type="radio" class="inpu1" name="a"><label>I am already a Gap Daemon member</label></div>
+			<div class="div1"><input type="radio" class="inpu1" name="a"><label>I am new to Gap Daemon</label></div>
+			<div class="div1 padb">
+				<input type="text" class="inpu2" value="Enter a Username" onfocus="if( this.value=='Enter a Username') value = '';" id="keywords" onblur="if (this.value == '') this.value = 'Enter a Username';">
+				<input type="text" class="inpu2" value="Email Address" onfocus="if( this.value=='Email Address') value = '';" id="keywords" onblur="if (this.value == '') this.value = 'Email Address';">
+				<input type="text" class="inpu2" value="Password" onfocus="if( this.value=='Password') value = '';" id="keywords" onblur="if (this.value == '') this.value = 'Password';">
+				<input type="text" class="inpu2" value="Re-enter Password" onfocus="if( this.value=='Re-enter Password') value = '';" id="keywords" onblur="if (this.value == '') this.value = 'Re-enter Password';">
+			</div>
+			
+			<div class="div1"><strong class="padb">What is your date of birth?</strong><br class="clear">
+				<select>
+					<option>DD</option>
+				</select>
+				<select>
+					<option selected="select">Month</option>
+					<option>January</option>
+					<option>Feburary</option>
+					<option>March</option>
+					<option>April</option>
+					<option>May</option>
+					<option>June</option>
+					<option>July</option>
+					<option>August</option>
+					<option>September</option>
+					<option>October</option>
+					<option>November</option>
+					<option>December</option>
+				</select>
+				<select>
+					<option>Year</option>
+				</select>
+			</div>
+			<div class="div1"><strong class="padt">Are you a:</strong>
+			<br class="clear" />
+			<input type="checkbox" class="inpu3"> <label class="padr10">Traveler</label>
+			<input type="checkbox" class="inpu3"> <label>Friend of a Traveler</label><div  class="clear padb10"></div>
+			<input type="checkbox" class="inpu3"> <label> I agree to the <span class="orange">Terms of Use</span></label>
+		</div>							
+		<input type="submit" value="REGISTER NOW" class="r_now">-->
+		</form>
+		
+	</div>
+</div>
+
+
+	<?php }?>
+</div>
+
+
+
+
+
+<!-- Modal Login form -->
+
+
+<style type="text/css">
+
+
+input.text { margin-bottom:12px; width:95%; padding: .4em; }
+fieldset { padding:0; border:0; margin-top:25px; }
+h1 { font-size: 1.2em; margin: .6em 0; }
+div#users-contain { width: 350px; margin: 20px 0; }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+.ui-dialog .ui-state-error { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+
+</style>
+
+  <div id="dialog" style='display:none' >
+        <div id="login_box1" >
+  <div class="topbg"></div>
+  <div class="content_box">
+	<form id="frmLoginR"  action="/index/login/" method="post"> 
+    <div class="div2 aqua_green"><strong>Sign into Gap Daemon</strong></div>
+      <div id="login_error_msg" class="div2 clear mart5 orange"><strong></strong></div>
+      
+      <div class="input-field">
+        <label class="required" for="email">Username/Email:</label>
+        <input type="text" name="email_m" id="email_m" value="" class="inpu2" />
+      </div>
+      <div class="input-field">
+        <label class="required" for="password">Password:</label>
+        <input type="password" name="password_m" id="password_m" value="" class="inpu2" />
+      </div>
+      <div class="div2 mart5">
+	  <a class="cmn_register marl"  href="javascript: loginModal();">SIGN IN</a>
+        <div class="rememberme">
+         <input type="checkbox" class="form"  value="1" id="rememberMe_m" name="rememberMe_m">
+		  <span>Remember me</span>
+        </div>
+      </div>
+      <div class="div2 padb"><a href="/index/username/" class="orange">Forgot username?</a> <a href="/index/forgot/" class="orange">Forgot password?</a></div>
+      <div class="div3 aqua_green"><strong>Sign in with Facebook</strong></div>
+      <div class="f_connect"><a  onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" href="#;" class="connect-log"><img src="<?echo $this->cdnUri()?>/images/f_connect.gif" alt="" /></a></div>
+    </form>
+  </div>
+</div>
+  </div>
+
+<!-- Modal Login form end -->
+
+
+<!-- Modal alert box start -->
+<div id="alert-box" title="Warning!" style="display:none">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+		<span id="alert-msg">Please enter a keyword and proceed.</span>
+        </p>
+</div>
+<!-- Modal alert box end -->
+
+
+<div id="confirm-box" title="Warning!" style="display:none">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 50px 0;"></span>
+		<span id="confirm-msg">Please enter a keyword and proceed.</span>
+        </p>
+</div>

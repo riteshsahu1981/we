@@ -1,0 +1,76 @@
+<div id="main-left">
+<h2 class="main-heading"><?php echo $this->title?></h2>
+<div class="work-sdudy-home"><?php echo $this->content?></div>
+<?php if(count($this->workCats)>0){?>
+<div class="work-stydy-box"><h3>Work</h3>
+	<div class="work-study-box-img">
+		<img src="<?php echo $this->cdnUri()?>/images/work_abroad.jpg" alt="" width="128" height="84" />
+	</div>
+	<div class="work-study-box-left">
+<!--		<p>From fruit picking to waiting tables. Whatever you decide to do, and wherever you decide to travel on your gap year, career break or working holiday, we have the information and advice you need.</p>-->
+            <p>Gap years cost money, and there's many a backpacker who relies on casual work to keep their bank managers happy when travelling. From pulling pints to teaching English abroad, we've got working on your gap year covered.</p>
+		<a href="<?php echo $this->seoUrl('/work-study-volunteer/category-detail/category/work');?>" class="learn-more">Find out more about working abroad</a>
+		</div>
+	<div class="work-study-box-right">
+		<?php 
+		foreach($this->workCats as $_cat)
+		{
+			$work_url = "/work-study-volunteer/detail/id/".$_cat->getId();
+		?>		
+			<a href="<?php echo $this->seoUrl($work_url);?>"><?php echo $_cat->getName(); ?></a>
+			<br class="clear" />
+		<?php }?>
+	</div>
+</div>
+<?php }?>
+
+<?php if(count($this->studyCats)>0){?>
+<div class="work-stydy-box">
+	<h3>Study</h3>
+	<div class="work-study-box-img">
+		<img src="<?php echo $this->cdnUri()?>/images/study_abroad.jpg" alt="" width="128" height="84" />
+	</div>
+	<div class="work-study-box-left">
+<!--		<p>Studying abroad is a very popular means of travelling and experiencing the culture of a new country.</p>-->
+            <p>Ever thought of heading to a foreign university during your gap year? It's a guaranteed way to immerse yourself in a new culture, learn a new language and gain a degree for your efforts. Gap Daemon is here to show you how...</p>
+		<a href="<?php echo $this->seoUrl('/work-study-volunteer/category-detail/category/study');?>" class="learn-more">Find out more about studying abroad</a>
+		</div>
+	<div class="work-study-box-right">
+		<?php 
+		foreach($this->studyCats as $_cat)
+		{
+			$work_url = "/work-study-volunteer/detail/id/".$_cat->getId();
+		?>
+			<a href="<?php echo $this->seoUrl($work_url);?>"><?php echo $_cat->getName(); ?></a>
+			<br class="clear" />
+		<?php }?>
+	</div>
+</div>
+<?php }?>
+
+<?php if(count($this->volunteerCats)>0){?>
+<div class="work-stydy-box">
+	<h3>VOLUNTEER</h3>
+	<div class="work-study-box-img">
+		<img src="<?php echo $this->cdnUri()?>/images/volunteer.jpg" alt="" width="128" height="84" />
+	</div>
+	<div class="work-study-box-left">
+<!--		<p>Thousands of people volunteer overseas every year to work alongside local charities, government bodies and community organisations across the world.</p>-->
+                <p>Volunteering is not as straightforward as you may think; it can cost a lot of money for starters. But there's  very little out there that's so rewarding and the scope of projects to get involved with is mind-boggling.</p>
+
+		<a href="<?php echo $this->seoUrl('/work-study-volunteer/category-detail/category/volunteer');?>" class="learn-more">Find out more about volunteering abroad</a>
+	</div>
+	<div class="work-study-box-right">
+		<?php 
+		foreach($this->volunteerCats as $_cat)
+		{
+			$work_url = "/work-study-volunteer/detail/id/".$_cat->getId();
+			?>
+			<a href="<?php echo $this->seoUrl($work_url);?>"><?php echo $_cat->getName(); ?></a>
+			<br class="clear" />
+		<?php }?>
+	</div>
+</div>
+<?php }?>
+</div>
+  

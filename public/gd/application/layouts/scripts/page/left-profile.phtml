@@ -1,0 +1,126 @@
+<script language="javascript" type="text/javascript">
+function addAsFriend(id)
+{
+	//$("div#add_as_friend"+id).html("<img src='/images/ajax-loader.gif'>");
+	var params=	'';
+	params+="id="+id+"&ftype=friend";
+	$.ajax({
+		   type: "POST",
+		   url: "/gapper/add-friend/",
+		   data: params,
+		   dataType: "json",
+		   success: function(res)
+		   {
+		        if(res.error==1)
+				{
+					loginPopUpExt(res.response, res.profileUrl);//open login Pop Up
+				}
+				else
+				{
+					alertBox("Message",res.response);
+				}				
+		   },
+		   error: function (res, status, e)
+		   {
+			   //$("div#add_as_friend").html('error');
+			   alertBox("Message","Error occured please try again later.");
+		   }
+	 });
+	return false;
+}
+</script>
+<?php 
+$user 		= $this->userObject;
+
+//get user ID and Login use Id
+$login_id	= "";
+$user_id 	= $user->getId();
+$userNs 	= new Zend_Session_Namespace('members');
+$login_id	= $userNs->userId;
+
+//check if login user is friend with user, to disable "Add as Friend" link
+$friend_record_id = 0;
+$friendM	= new Application_Model_Friend();
+$where_cond = "user_id='{$login_id}' AND friend_id='{$user_id}' AND status='accept'";
+$friendRes  = $friendM->fetchRow($where_cond);
+if(false!==$friendRes)
+{
+	$friend_record_id = $friendRes->getId();
+}
+
+//set active class for each links as per their action
+$locationCls = "";
+$profileCls = "";
+$travelwallCls = "";
+$friendsCls = "";
+$photosCls = "";
+$journalsCls = "";
+$sendMsgCls = "";
+//echo "cont=>".$this->controllerName." action==>".$this->actionName;
+if($this->controllerName=="profile" && $this->actionName=="index")
+{
+	$locationCls = "active";
+}
+else if($this->controllerName=="profile" && $this->actionName=="view")
+{
+	$profileCls = "active";
+}
+else if($this->controllerName=="profile" && $this->actionName=="travel-wall")
+{
+	$travelwallCls = "active";
+}
+else if($this->controllerName=="profile" && $this->actionName=="friends")
+{
+	$friendsCls = "active";
+}
+else if($this->controllerName=="profile" && ($this->actionName=="photos" || $this->actionName=="album-photos" || $this->actionName=="tagged-photo" || $this->actionName=="photo"))
+{
+	$photosCls = "active";
+}
+else if($this->controllerName=="profile" && $this->actionName=="journals")
+{
+	$journalsCls = "active";
+}
+else if($this->controllerName=="profile" && $this->actionName=="messages")
+{
+	$sendMsgCls = "active";
+}
+?>
+<div class="avatar-profile">
+	<a href="/<?php echo $user->getUsername();?>">
+	<img src="/image?src=<?php echo $user->getThumbnail();?>&size=profile_left&<?php echo rand(1,100000);?>" />
+	</a>
+</div>
+
+<div class="avatar-name">
+<a href="/<?php echo $user->getUsername(); ?>" class="blk"><?php echo $user->getFirstName().' '.$user->getLastName();?></a>
+</div>
+<?php 
+if(($user_id != $login_id) && ($friend_record_id==0))
+{
+?>
+<div class="avatar-name" style="font-weight:normal;" id="add_as_friend">
+<?php if($login_id!=""){?>
+<a href="<?php echo $this->seoUrl('/profile/messages/username/'.$user->getUsername());?>" class="blk">Send Message</a>
+<?php } else{?>
+<a href="javascript://" onclick="loginPopUpExt('Please Login','/<?php echo $user->getUsername();?>');" class="blk">Send Message</a>
+<?php }?>
+<br /><a href="javascript://" onclick="addAsFriend(<?php echo $user_id;?>);" class="blk">Add as Friend</a>
+</div>
+<?php }?>
+<br /><br />
+<ul class="accord" id="menu">
+<li class="<?php echo $locationCls;?>"><a href="<?php echo $this->seoUrl('/'.$user->getUsername()); ?>" >Location</a></li>
+<li class="<?php echo $profileCls;?>"><a href="<?php echo $this->seoUrl('/profile/view/username/'.$user->getUsername()); ?>"><?php echo $this->puts('Profile')?></a></li>
+<li class="<?php echo $travelwallCls;?>"><a href="<?php echo $this->seoUrl('/profile/travel-wall/username/'.$user->getUsername()); ?>"><?php echo $this->puts('Travel Wall')?></a></li>
+<li class="<?php echo $friendsCls;?>"><a href="<?php echo $this->seoUrl('/profile/friends/username/'.$user->getUsername()); ?>"><?php echo $this->puts('Friends')?></a></li>
+<li class="<?php echo $photosCls;?>"><a href="<?php echo $this->seoUrl('/profile/photos/username/'.$user->getUsername()); ?>"><?php echo $this->puts('Photos')?></a></li>
+<li class="<?php echo $journalsCls;?>"><a href="<?php echo $this->seoUrl('/journal/'.$user->getUsername()); ?>"><?php echo $this->puts('Journals')?></a></li>
+<?php 
+if($login_id!="" && $friend_record_id!=0)
+{
+?>
+<li class="<?php echo $sendMsgCls;?>"><a href="<?php echo $this->seoUrl('/profile/messages/username/'.$user->getUsername());?>"><?php echo $this->puts('Send Message')?></a></li>
+<?php } ?>
+</ul>
+<?php $this->blocks("left-profile");?>

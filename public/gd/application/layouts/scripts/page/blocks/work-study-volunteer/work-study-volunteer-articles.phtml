@@ -1,0 +1,13 @@
+
+<div class="right-box-wide">
+	<h2 class="box-heading">MORE ARTICLES IN THIS AREA</h2>
+	
+	<ul class="journal-cat-list-right">
+		<?php foreach($this->allarticles as $art){
+		$id = $art->getId();
+			?>
+		<li><a href="<?php echo $this->seoUrl("/work-study-volunteer/article-detail/id/$id")?>"><?php echo $art->getTitle();?></a></li>
+		<?php }?>
+	</ul>
+	
+</div>

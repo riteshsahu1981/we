@@ -1,0 +1,126 @@
+<div id="myjquerymenu" class="jquerycssmenu">
+<?php 
+    echo '<ul >';
+    // loop root level (only has Home, but later may have an Admin root page?)
+    foreach ($this->container as $page) {
+    	
+        // check if it is active (not recursive)
+        $isActive = $page->isActive(false);
+        $liClass = $isActive ? ' class="active"' : '';
+        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($page->getUri()) . '">'.$this->puts($page->getLabel()).'</a></li>', PHP_EOL;
+        // loop next level
+        foreach ($page as $p) {
+        	
+        	if($p<>"Login" && $p<>"Register")
+        	{
+                    $url="/".$p->getController()."/".$p->getAction();
+        		
+	            // check if it is active (recursive)
+	            $isActive = $p->isActive(true);
+                    //var_dump($isActive);
+	            $liClass = $isActive ? ' class="active"' : '';
+	            echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+	            
+	            if($p=="Destinations1")
+	            {
+	            	$continentM=new Application_Model_Continent();
+	            	$continents=$continentM->getContinent();
+	            	if(count($continents)>0){
+		            	echo '<ul>';
+		            	foreach($continents as $continent_id=>$continents){
+		            		echo '<li><a href="#">'.$continents.'</a>';
+		            		
+		            		/*---country-----*/
+		            		$countryM=new Application_Model_Country();
+		            		$countries=$countryM->getCountry(null, $continent_id);
+			            	if(count($countries)>0){	
+		            			echo '<ul>';
+		            			foreach($countries as $country_id=>$country){
+		            				echo '<li><a href="#">'.$country.'</a>';
+		            				
+		            				/*---city-----*/
+				            	/*	$cityM=new Application_Model_City();
+				            		$cities=$cityM->getCity(null, $country_id);
+					            	if(count($cities)>0){	
+				            			echo '<ul>';
+				            			foreach($cities as $city_id=>$city){
+				            				echo '<li><a href="#">'.$city.'</a>';
+				            				
+				            				
+						            		echo '</li>';
+				            			}//end of city foreach
+					            		echo '</ul>';
+					            	}*/
+					            	/*--------------------*/
+				            		echo '</li>';
+		            			}//end of country foreach
+			            		echo '</ul>';
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+	            }
+	            
+	            
+	            
+        		if($p=="Work/Study/Volunteer")
+	            {
+	            	
+	            	$mainCats=array("work"=>"Work", "study"=>"Study", "volunteer"=>"Volunteer");
+	            	if(count($mainCats)>0){
+		            	echo '<ul>';
+		            	foreach($mainCats as $identifier=>$mainCat){
+		            		echo '<li><a href="/work-study-volunteer/category-detail/category/'.$identifier.'">'.$mainCat.'</a>';
+		            		
+		            		/*---country-----*/
+		            		$categoryM=new Application_Model_Category();
+		            		$categories=$categoryM->getCategory(null,$identifier);
+			            	if(count($categories)>0){	
+		            			echo '<ul>';
+		            			foreach($categories as $category_id=>$category){
+		            				echo '<li><a href="/work-study-volunteer/detail/id/'.$category_id.'">'.$category.'</a>';
+		            				/*---city-----*/
+				            		$articleM=new Application_Model_Articles();
+				            		$articles=$articleM->getArticle(null, $category_id);
+					            	if(count($articles)>0){
+				            			echo '<ul>';
+				            			foreach($articles as $article_id=>$article){
+				            				echo '<li><a href="/work-study-volunteer/article-detail/id/'.$article_id.'">'.$article.'</a>';
+				            				
+				            				
+						            		echo '</li>';
+				            			}//end of city foreach
+					            		echo '</ul>';
+					            	}
+					            	/*--------------------*/
+				            		echo '</li>';
+		            			}//end of country foreach
+			            		echo '</ul>';
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+	            }
+	            
+	            
+	            
+	            
+	            
+	           echo '</li>', PHP_EOL;
+        	}
+        }
+    }
+    echo '</ul>';
+    
+    
+    
+    ?>
+   <br style="clear: left" />
+</div>
+    

@@ -1,0 +1,17 @@
+<?php 
+$categoryM=new Application_Model_Category();
+		$journalCategory=$categoryM->getJournalCategory();
+?>
+
+<div class="right-box-wide">
+	<h2 class="box-heading">JOURNAL CATEGORIES</h2>
+	<?php if(false!==$journalCategory){?>
+	<ul class="journal-cat-list-right">
+		<?php foreach($journalCategory as $_category){?>
+		<li><a href="/journal/index/search-filtr/<?php  echo $_category['id']; ?>"><?php echo $_category['category_name']?> (<?php echo $_category['total_blogs']?>)</a></li>
+		<?php }?>
+	</ul>
+	<?php }else{?>
+	Journal categories not found.
+	<?php }?>
+</div>

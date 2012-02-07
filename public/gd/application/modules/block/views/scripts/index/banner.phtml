@@ -1,0 +1,27 @@
+<?php
+if(count($this->banners)>0){
+	foreach($this->banners as $_banner){
+		?>
+		<div class="<?php echo $_banner->getPosition()?>-adds">
+		<?php
+                
+			if($_banner->getBannerType()=="text")
+			{
+			?>
+				<?php echo $_banner->getDescription()?>
+			<?php
+			}else{
+				
+			?>
+                    <a target="_blank" href="<?php echo $_banner->getUrl();?>">
+                        <img height="<?php echo $this->height?>" width="<?php echo $this->width?>" src="/media/banner/<?php echo $_banner->getImage();?>" alt="<?php echo $_banner->getTitle();?>" />
+                    </a>
+			<?php	
+			}
+		?>
+		</div>
+		<?php 				
+	}//end of foreach loop
+}else{
+	print "&nbsp;";
+}

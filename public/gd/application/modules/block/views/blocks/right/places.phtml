@@ -1,0 +1,43 @@
+<?php $params=$this->params;
+if(count($params)>0)
+{
+
+    if($params['controller']=="destination" && $params['action']=="country" && $params['id']<>"")
+    {
+        $country_id=$params['id'];
+        $countryM=new Application_Model_Country();
+        $country=$countryM->find($country_id);
+        if(false!==$country)
+        {
+            
+            //$city=$destinationM->fetchAll();
+            $cityM=new Application_Model_City();
+            $city=$cityM->fetchAll("country_id='$country_id'",'name asc');
+            if(count($city)>0)
+            {
+                ?>
+                <div class="right-box-wide" >
+                <h2 class="box-heading">TRAVEL GUIDES IN <?php echo strtoupper($country->getName());?></h2>
+                <?php
+                $city_ids='';
+                $arrCity=array();
+                foreach($city as $_city)
+                {
+                    $destinationM=new Application_Model_Destination();
+                    $destination=$destinationM->fetchRow("location_id ='{$_city->getId()}' and location_type='city'");
+                    if(false!==$destination)
+                    {
+                        ?>
+                       <p> <a href="<?php echo $this->seoUrl("/destination/city/id/".$destination->getLocationId())?>"><?php echo $_city->getName()?></a></p>
+                        <?
+                    }
+                }//end of foreach loop
+                ?>
+                </div>
+               <?php
+            }
+
+        }
+    }
+}
+?>

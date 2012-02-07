@@ -1,0 +1,255 @@
+<!-- Style for home page scroller -->
+<link rel="stylesheet" href="/style/sliding_panels.css" type="text/css" media="all" />
+<link rel="stylesheet" href="/style/scroller.css" type="text/css" media="all" /> 
+  
+<!-- Script for Home page slide scroller-->
+<script type="text/javascript" src="/js/latest/jquery.cycle.all.2.74.js"></script>
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+		$('.slideshow')
+		.after('<div id="nav">')
+			.cycle({
+				fx:     'fade',
+				speed:  'slow',
+				timeout: 5000,
+				pauseOnPagerHover: true,
+				before:  onBefore,
+				after:   onAfter,
+				pager:  '#nav',
+				prev:   '#prev',
+				next:   '#next'
+	});
+
+	function onBefore()
+	{
+		$('#output').html("Scrolling image:<br>" + this.src);
+	}
+	function onAfter()
+	{
+		$('#output').html("Scroll complete for:<br>" + this.src).append('<h3>' + this.alt + '</h3>');
+	}
+	//prepand & append Next/Prev links with pager
+	//$('#nav').prepend('<span class="" id="prev"> < </span>');
+	//$('#nav').append('<span class="" id="next"> > </span>');
+ });
+</script>
+<?php
+//echo strtotime("18 Jan 2011 14 hours 2 seconds");
+//facebook connect URL
+$facebook	= 	$this->facebook();
+$return_url	=	Zend_Registry::get('siteurl')."/index/facebook-connect/";
+$cancel_url	=	Zend_Registry::get('siteurl')."/index/cancel-facebook";
+$this->loginUrl	=	$loginUrl = $facebook->getLoginUrl(array("cancel_url"=>$cancel_url,"next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location","display"=>"popup"));
+?>
+<!-- Start Main Banner Area -->
+<div class="main-mdl-area">
+<div class="middlepart">
+<!-- Start Left Part -->
+<div class="leftprt">
+<!-- BOX 1 -->
+<div class="boxred">
+<?php
+$home_left_top_title =  $this->content("home_left_top_logout","title");
+$home_left_top_desc	=  $this->content("home_left_top_logout");
+if (Zend_Auth::getInstance()->hasIdentity())
+{
+	$home_left_top_title =  $this->content("home_left_top_login","title");
+	$home_left_top_desc	=  $this->content("home_left_top_login");
+}
+?>
+<div class="crnr"><img src="<?echo $this->cdnUri();?>/images/red-left-crnr.jpg" width="9" height="9" align="left" /><img src="<?echo $this->cdnUri()?>/images/red-right-crnr.jpg" width="9" height="9" align="right" /></div>
+<h2 class="heading"><?php echo $home_left_top_title;?></h2>
+<div class="txt"><?php echo $home_left_top_desc;?></div>
+<div class="crnr"><img src="<?echo $this->cdnUri();?>/images/red-btmlft-crnr.jpg" width="9" height="9" align="left" /><img src="<?echo $this->cdnUri()?>/images/red-btmrght-crnr.jpg" width="9" height="9" align="right" /></div>
+</div>
+<!-- BOX 1 -->
+<!-- BOX 2 -->
+<?php
+if (Zend_Auth::getInstance()->hasIdentity()){
+?>
+<script type="text/javascript">
+function subscribeNewsLetter()
+{
+	var params='';
+	
+	$("span#subs_loading").show();
+	$("span#subs_loading").html("<img src='/images/ajax-loader.gif'>");
+	$.ajax({
+		   type: "POST",
+		   url: "/index/newsletter-subscribe/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			
+			$("span#subs_loading").html(json.response);
+			
+			/*
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+				//$("span#subs_loading").html();				
+				//$("#newsl_subs_link").html(json.linkLabel);
+			 }*/
+		   },
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+" errpor="+e);
+			}
+		});
+}
+</script>
+<div class="boxwhite">
+<div class="white-crnr"><img src="/images/white-left-crnr.jpg" width="9" height="9" align="left" alt=""/><img src="/images/white-right-crnr.jpg" width="9" height="9" align="right" alt="" /></div>
+<h2 class="signup"><?php echo $this->content("home_left_top-bottom1", "title");?></h2>
+<?php echo $this->content("home_left_top-bottom1");?>
+<span id="subs_loading" style="display:inline; color:#FF2400; font-size: 14px; padding-left:5px;"></span>
+<div class="subscribe_btn"><a href="javascript://" onclick="subscribeNewsLetter();" id="newsl_subs_link">Subscribe</a></div>
+<div class="white-crnr"><img src="/images/white-btmlft-crnr.jpg" width="9" height="9" align="left" alt="" /><img src="/images/white-btmrght-crnr.jpg" width="9" height="9" align="right" alt="" /></div>
+</div>
+<?php
+}
+else
+{
+?>
+<div class="boxred">
+<div class="crnr"><img src="<?echo $this->cdnUri();?>/images/red-left-crnr.jpg" width="9" height="9" align="left" alt=""/><img src="<?echo $this->cdnUri()?>/images/red-right-crnr.jpg" width="9" height="9" align="right" alt="" /></div>
+<h2 class="heading"><?php echo $this->content("home_left_top-bottom2", "title");?></h2>
+<?php echo $this->content("home_left_top-bottom2");?>
+<ul>
+<li class="account"><a href="<?php echo $this->seoUrl("/index/register");?>">Create a Gap Daemon account</a></li>
+<li><a href="javascript://" onclick="fbLoginBox('<?php echo $this->loginUrl;?>')"><img src="<?echo $this->cdnUri();?>/images/fb-login.jpg" width="154" height="22" alt="" /></a></li>
+</ul>
+<div class="crnr"><img src="<?echo $this->cdnUri();?>/images/red-btmlft-crnr.jpg" width="9" height="9" align="left" alt="" /><img src="<?echo $this->cdnUri()?>/images/red-btmrght-crnr.jpg" width="9" height="9" align="right" alt="" /></div>
+</div>
+<?php }?>
+<!-- BOX 2 -->
+</div>
+<!-- End Left Part -->
+
+<!-- Start Right Part -->
+<div class="rightprt">
+<!-- START Gallery -->
+<?php
+//get home page slide widgets
+$widgetsM		= new Application_Model_Widgets();
+$whereClause	= "status=1";
+$orderClause	= "weight DESC";
+$slideLimit		= "10";
+$widgetsRes		= $widgetsM->fetchAll($whereClause, $orderClause, $slideLimit);
+$prevRight = 35;
+if(count($widgetsRes)==2)
+{
+	$prevRight = 85;
+}
+else if(count($widgetsRes)==3)
+{
+	$prevRight = 110;
+}
+else if(count($widgetsRes)==4)
+{
+	$prevRight = 135;
+}
+else if(count($widgetsRes)==5)
+{
+	$prevRight = 158;//160
+}
+else if(count($widgetsRes)==6)
+{
+	$prevRight = 182;//185
+}
+else if(count($widgetsRes)==7)
+{
+	$prevRight = 207;//210
+}
+else if(count($widgetsRes)==8)
+{
+	$prevRight = 230;
+}
+else if(count($widgetsRes)==9)
+{
+	$prevRight = 255;
+}
+else if(count($widgetsRes)==10)
+{
+	$prevRight = 285;
+}
+?>
+<a id="prev" style="right: <?php echo $prevRight;?>px;"> < </a> <a id="next"> > </a>
+<div id="gallery">
+ 
+        <div class="gallery">
+       
+        <div class="slideshow">
+		<?php
+		if(count($widgetsRes)>0)
+		{
+			foreach($widgetsRes as $slide)
+			{
+		?>
+		<div>
+             <?php
+			 if($slide->getWidgetType()=="image")
+			 {
+				 //Add links in slide images
+				 if($slide->getWidgetLinkLabel()!="" && $slide->getWidgetLinkUrl()!="")
+				 {
+					 $slideURL = $slide->getWidgetLinkUrl();
+					 $slideURLTarget = $slide->getWidgetLinkTarget();
+				 }
+				 else
+				 {
+					 $slideURL = "/";
+					 $slideURLTarget = "_self";
+				 }
+				 ?>
+				 <a href="<?php echo $slideURL;?>" target="<?php echo $slideURLTarget;?>" title="<?php echo $slide->getWidgetAltText();?>">
+				 <img src="<?echo $this->cdnUri()?>/media/picture/home/thumb_<?php echo $slide->getWidgetImage();?>" height="386" width="639" border="0" alt="<?php echo $slide->getWidgetAltText();?>" title="<?php echo $slide->getWidgetAltText();?>" />
+				 </a>
+			 <?php }else{?>
+			 <div style="width:639px; height:386px; color:#ffffff;"><?php echo $slide->getWidgetText();?></div>
+			 <?php }?>
+             <div class="text">
+            	<h1><?php echo $slide->getWidgetTitle();?></h1>
+            	<?php if($slide->getWidgetLinkLabel()!="" && $slide->getWidgetLinkUrl()!=""){?>
+				<p><a href="<?php echo $slide->getWidgetLinkUrl();?>" target="<?php echo $slide->getWidgetLinkTarget();?>"><?php echo $slide->getWidgetLinkLabel();?></a></p>
+				<?php }?>
+        	 </div>
+        </div>
+		<?php
+			}//foreach
+		}//end if
+		else
+		{	
+		?>
+        <div>
+             <img src="<?echo $this->cdnUri()?>/images/nature-photo.jpg" height="386" width="639" />
+             <div class="text">
+            	<h1>Comming Soon.</h1>
+             </div>
+        </div>
+		<?php }?>
+	    </div>
+     </div>
+</div>
+<!-- END Gallery -->
+</div>
+<!-- End Right Part  -->
+</div>
+</div>
+<!-- End Main Banner Area -->
+
+<!-- Start Home page Main Center -->
+<?php
+if (Zend_Auth::getInstance()->hasIdentity())
+{
+	echo $this->pageElement('home_login');
+}	
+else
+{
+	echo $this->pageElement('home_logout');
+}
+?>
+<!-- End Home page Main Center -->

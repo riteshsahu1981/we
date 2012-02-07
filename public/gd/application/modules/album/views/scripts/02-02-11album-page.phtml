@@ -1,0 +1,19 @@
+<span class="page_number">
+           
+        &nbsp; Page <?= $this->current; ?> of <?= $this->last; ?>
+        
+        <span>
+        <?php if (isset($this->previous)): ?>
+              <a href="<?= $this->url(array('page' => $this->previous)); ?>">&lt;&nbsp;</a> 
+        <?php else: ?>
+            <span class="disabled">&lt;&nbsp;</span> 
+        <?php endif; ?>
+        
+        <!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+               <a href="<?= $this->url(array('page' => $this->next)); ?>">&gt;</a> 
+        <?php else: ?>
+             <span class="disabled">&gt;</span> 
+        <?php endif; ?>
+    </span>
+ </span>

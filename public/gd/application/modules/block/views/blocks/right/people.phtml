@@ -1,0 +1,36 @@
+<?php
+if($this->userId=="")
+{
+    $userNs=new Zend_Session_Namespace('members');
+    $userId=$userNs->userId;
+}else{
+    $userId=$this->userId;
+}
+$user=new Application_Model_User();
+$loc=$user->getNearByUser($userId,1000,20);
+//print_r($loc);
+if(count($loc)>0){
+
+
+?>
+
+<div class="right-box">
+                <h2 class="box-head">PEOPLE WHO ARE HERE</h2>
+                <ul class="people-here">
+                <?php foreach($loc as $_people){
+          
+                 ?>
+
+                <li>
+                        <div class="people-img">
+                          <a href="/<?php echo $_people['username']?> ">
+                                <img width="86px" height="101px" src="<?php echo $_people['thumbnail']?>" alt="<?php echo $_people['firstName']?> <?php echo $_people['lastName']?>" />
+                            </a>
+                        </div>
+                        <a href="/<?php echo $_people['username']?> "> <?php echo $_people['firstName']?> <?php echo $_people['lastName']?></a>
+                </li>
+                <?}?>
+                </ul>
+                <div class="view-all-link"><a href="#">VIEW ALL</a></div>
+        </div>
+<?php } ?>

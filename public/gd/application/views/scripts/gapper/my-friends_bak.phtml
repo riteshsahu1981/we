@@ -1,0 +1,221 @@
+<script>
+function changeConnection(val,id,userid,friendid)
+{
+	var params="mode=ajax&ctype="+val+"&id="+id+"&userid="+userid+"&friendid="+friendid;
+	//$("div#response").html("processing...");
+	$("div#response-"+id).html("<img src='/images/ajax-loader.gif'>");
+	$.ajax({
+		   type: "POST",
+		   url: "/index/change-profile/",
+		   data: params,
+		   dataType: "html",
+		   success: function(html)
+		   {
+				$("span#hideRes-"+id).hide();
+				$("span#showRes-"+id).html(val);
+				$("div#response-"+id).html("sucessfully updated");
+				RAVIN_DelayedHide("response-"+id);
+				//alert("function call sucessfully");
+		   },
+		   error: function (json, status, e)
+		   {
+			   $("div#resp").html("Exception : "+e+json);						
+		   }
+	 });
+}
+
+var params="mode=ajax";
+$(function() 
+{
+	$("#searchname").autocomplete(
+	{
+		source: "/gapper/auto-friend-name/",
+		minLength: 1,
+		select: function(event, ui) 
+		{
+			$("#searchname").val(ui.item.id);
+		}
+	});
+});
+
+
+function mySubmit()
+{
+	$("#searchfrm").submit();
+}
+</script>
+<div id="center">
+	 <h2><?php echo $this->puts("MY FRIENDS")?></h2>
+         <p>Here's a list of all your friends, family members and travel mates that you've added to your My Gap Daemon account. In this section you can add and delete friends, plus change the type of friend they're saved as.</p><br />
+         <a href="<?php echo $this->seoUrl('/gapper/add-a-connection');?>" class="orange-big"><?php echo $this->puts("Add a friend")?></a><br/><br />
+         <h2>CURRENT FRIENDS, FAMILY AND TRAVEL MATES</h2><br />
+         <form action = "/gapper/my-friends" method="post" name="searchfrm" id="searchfrm" style="display:inline">
+			<div class="filter-conection">Filter by: <select name="searchkey" id="searchkey"  onchange="mySubmit();" >
+                                     <option value="">Family, Friend and Travel Mates</option>
+                                     <option value="friend" <?php echo $this->ctype=='friend'?'selected':''; ?>>Friends</option>
+                                     <option value="family" <?php echo $this->ctype=='family'?'selected':''; ?>>Family </option>
+                                     <option value="travelmate" <?php echo $this->ctype=='travelmate'?'selected':''; ?>>Travel Mates </option>
+	  
+				 </select></div>
+			 <div class="friend-results">
+				<span class="f-left">
+				<?php 
+				if($this->totalFriends>1)
+				{
+					echo $this->totalFriends." friends found";
+				}
+				else
+				{
+					echo " ";
+				}
+				/*
+				//display search type
+				$search_for ="Friends, Family and Travel Mates";
+				if(isset($this->ctype) && $this->ctype=='friend')
+				{
+					$search_for ="Friends";
+				}
+				else if(isset($this->ctype) && $this->ctype=='family')
+				{
+					$search_for ="Family";
+				}
+				else if(isset($this->ctype) && $this->ctype=='travelmate')
+				{
+					$search_for ="Travel Mates";
+				}
+				else
+				{
+					$search_for ="Friends, Family and Travel Mates";
+				}*/
+				?></span> 
+				<span class="search-results f-right"><input type="text" id="searchname" name="searchname" value="<?php echo $this->searchname!=''?$this->searchname:'Search Names'; ?>" onfocus="if(this.value=='Search Names'){this.value='';}" onblur="if(this.value==''){this.value='Search Names';}">
+			<input class="search-btn" type="submit" value="Go" name="submit1" /></span>
+			</div>
+		
+		</form>
+			
+<div id="friends_listings" style="border:0px solid #ffcc00;">
+<?php 
+//if($this->totalFriends>0)
+if(count($this->data)>0)
+{
+	//foreach($this->paginator as $row)
+	foreach($this->data as $row)
+	{
+		$_friend  = new Application_Model_Friend();
+		$_friend  = $_friend->find($row->id);
+
+		$userid=$_friend->getUserId();
+		$friendid=$_friend->getFriendId();
+		$conntype = $_friend->getConnectionType();
+
+		$_friend->getId();
+		$friendO = $_friend->getFriendObj();
+		if(!is_null($friendO))
+		{
+			$userM		= new Application_Model_User();
+			$thumb		= '';
+			if($friendObj = $userM->find($friendO->id))
+			{
+				//$thumb	= $friendObj->getThumbnail();
+			}
+			
+			if($friendO->status=="active" ) 
+			{
+				$thumb = "";
+				$thumb = $_friend->getThumbnail($friendO->image, $friendO->facebook_id, $friendO->sex);
+?>
+<div class="friends-box">
+   		<div class="friends-box-img">
+                    <a href ="/<?php echo $friendO->username?>">
+					<!--<img src="<?php echo $thumb;?>" width="86" style="float:left;margin:0 10px 5px 0;" border="0" />-->
+					<img src="/image?src=<?php echo $thumb;?>&size=friends" style="float:left;margin:0 10px 5px 0;" border="0" />
+					</a>
+         </div>
+        
+    
+    <div class="friend-box-center"> 
+		<a href ="/<?php echo $friendO->username?>"><span class="connect-name"><?php echo $friendO->first_name.' '.$friendO->last_name; ?></span></a>
+		<span id="hideRes-<?php echo  $_friend->getId()?>" class="connect-type"><?php echo ucfirst($_friend->getConnectionType()); ?></span>
+                <span id="showRes-<?php echo  $_friend->getId()?>" class="connect-type"></span>
+	 	<span  class="connect-action">
+			<a href ="/<?php echo $friendO->username?>"><b>View Profile</b></a> | <a href ="/index/delete-profile/id/<?php echo $_friend->getId();?>" onclick="return confirm('Are you sure?\r\n Do you really want to remove <?php echo $friendO->first_name.' '.$friendO->last_name; ?> from your friend connection?');">Remove</a> </span></div>
+  	 
+        
+        <div class="friend-box-right">
+		<div class="connection-you f-left">
+			Connection to you
+        	 
+		</div>
+  	    <div id="resp">
+  	         <select name="st" onchange="changeConnection(this.value,'<?php echo  $_friend->getId()?>','<?php echo $userid ?>','<?php echo $friendid ?>')" >
+                 <option value="friend" <?php echo $conntype=='friend'?'selected':''; ?>>Friends</option>
+                 <option value="family" <?php echo $conntype=='family'?'selected':''; ?>>Family </option>
+                 <option value="travelmate" <?php echo $conntype=='travelmate'?'selected':''; ?>>Travel Mates </option>
+  
+             </select>
+		</div>
+		<div id="response-<?php echo  $_friend->getId()?>"></div>   
+        </div>     
+        </div>
+     <?php
+                                }
+	 }//end of if
+  }//end of foreach
+//}
+?>
+</div>
+<div class='clear'></div>
+<?php if($this->totalFriends>$this->page_size){?>
+<span style="display: none;" id="loading">
+    <img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+</span>	
+<div class="view-link">
+	<a id="show-more-link" href="javascript: showMorefriends()">Show More</a>
+</div>
+<?php }?>  
+<?php
+}//end of if
+else
+{
+	echo "<span style='color:#ff0000;'>Try another search to find what you're looking for.</span></div>";
+}
+?>
+</div>
+<script language="javascript" type="text/javascript">
+var page=2;
+function showMorefriends()
+{
+    $("span#loading").show();
+    $("#show-more-link").hide();
+    var postData		= '';
+    var searchname	= $("#searchname").val();
+	var searchkey	= $("#searchkey").val();
+    postData += "page="+page+"&mode=ajax&searchname="+searchname+"&searchkey="+searchkey;
+    page = page+1;
+    $.ajax({
+               type: "POST",
+               url: "/gapper/show-morefriends/",
+               data: postData,
+               dataType: "html",
+               success: function(html)
+			   {
+					$("span#loading").hide();
+					$("#show-more-link").show();
+					if(html=="nodata")
+					{
+						$("#show-more-link").hide();
+						$("#friends_listings").append("<span style='color:#EF4733;'>No more friends found.</span>");
+					}
+					else
+					{
+						$("#friends_listings").append(html);
+					}
+               },
+               error: function (json, status, e)
+			   {
+                     alert(e+json+status);
+               }
+     });
+}
+</script>

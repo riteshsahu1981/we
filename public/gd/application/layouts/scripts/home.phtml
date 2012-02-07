@@ -1,0 +1,40 @@
+<?php echo $this->doctype();?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<?php
+	echo $this->headTitle();
+	echo $this->headMeta();
+	if($this->jQuery()->isEnabled())
+	{
+		echo $this->jQuery();
+	}
+	echo $this->headScript();
+	echo $this->headLink();	
+	?>   
+	<link href="/style/include.css" type="text/css" rel="stylesheet" media="all" />
+	<link href="/style/fonts.css" type="text/css" rel="stylesheet" media="all" />
+	<!--[if IE 6]>
+	<link rel="stylesheet" type="text/css" href="style/IE.css" />
+	<![endif]-->
+</head>
+
+<body>
+<!-- Start Main Div -->
+<div class="main">
+	<!-- Start Page -->
+	<div class="main-div">
+		<!-- Header -->
+		<?php echo $this->pageElement('home_header')?>
+		<!-- Header -->		
+		<?php echo $this->layout()->content ?>
+	</div>
+	<!-- End Page -->
+	
+	<!-- Footer -->
+	<?php echo $this->pageElement('footer')?>
+	<!-- Footer -->
+</div>
+<!-- End Main Div -->
+</body>
+</html>

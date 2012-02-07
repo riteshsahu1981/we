@@ -1,0 +1,98 @@
+<div class="home-left f-left">
+  <div class="box">
+    <h1>Plot Your journey</h1>
+    <img src="<?echo $this->cdnUri()?>/images/map.jpg" alt="" class="map" />
+    <div class="clear"></div>
+    <form class="home-form-journy">
+      <label>Where are you going?</label>
+      <input type="text" class="city-update f-left" value="Address, City or Country" onblur="if(this.value==''){this.value='Address, City or Country'}" onfocus="if(this.value=='Address, City or Country'){this.value=''}" />
+      <input type="submit" value="update" class="city-update-btn  f-left" />
+      <div class="clear"></div>
+      <label>Who are you following?</label>
+      <input type="text" class="following-search" value="Search Gap Daemon" onblur="if(this.value==''){this.value='Search Gap Daemon'}" onfocus="if(this.value=='Search Gap Daemon'){this.value=''}" />
+      <input type="submit" value="" class="following-search-btn" />
+    </form>
+  </div>
+  <div class="box1">
+    <h1>MEET LIKE MINDED PEOPLE</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac ipsum mi. Ne sed odio tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+    <h1>lATEST MEMBERS</h1>
+    <ul>
+      <li><img src="<?echo $this->cdnUri()?>/images/1.jpg" alt="" /></li>
+      <li><img src="<?echo $this->cdnUri()?>/images/2-1.jpg" alt="" /></li>
+      <li><img src="<?echo $this->cdnUri()?>/images/3.jpg" alt="" /></li>
+      <li><img src="<?echo $this->cdnUri()?>/images/4.jpg" alt="" /></li>
+      <li><img src="<?echo $this->cdnUri()?>/images/5.jpg" alt="" /></li>
+      <li><img src="<?echo $this->cdnUri()?>/images/6.jpg" alt="" /></li>
+    </ul>
+  </div>
+  <div class="box1">
+    <div class="home-art-left">
+      <h1>FEATURED ARTICLE</h1>
+      <h3>NAME OF ARTICLE GOES HERE</h3>
+      <p>Sed et euismod, te ullamcorper, consequat lobortis minim wisi augue, nisl diam esse. Ea consequat delenit eum iriure dolore ut ut nulla ex iusto et. Magna ex tincidunt illum luptatum eu te in in feugiat eros augue sit. Delenit, blandit, odio consequat duis vel aliquip duis at ipsum quis esse at et feugait, elit lorem velit hendrerit eum, feugiat commodo dolore ut vel.</p>
+      <a href="#" class="orange-sml">Read More</a> </div>
+    <div class="home-art-right"><img src="images/cook-img.jpg" alt="" /></div>
+  </div>
+  <div class="box1">
+    <h1>YOUR PORTABLE TRAVEL COMMUNITY</h1>
+    <p>Gap Daemon is your portable travel community and links into your social networking activity.</p>
+    <ul class="social-icons">
+      <li><a href="#"><img src="<?echo $this->cdnUri()?>/images/twitter-icon.jpg" alt="" /></a></li>
+      <li><a href="#"><img src="<?echo $this->cdnUri()?>/images/facebook-icon.jpg" alt="" /></a></li>
+      <li><a href="#"><img src="<?echo $this->cdnUri()?>/images/delicious-icon.jpg" alt="" /></a></li>
+      <li><a href="#"><img src="<?echo $this->cdnUri()?>/images/gmail-icon.jpg" alt="" /></a></li>
+      <li><a href="#"><img src="<?echo $this->cdnUri()?>/images/stumbleupon-icon.jpg" alt="" /></a></li>
+      <li><a href="#"><img src="<?echo $this->cdnUri()?>/images/digg-icon.jpg" alt="" /></a></li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="home-right f-right">
+  <div class="box">
+    <h1>GAP DAEMON</h1>
+    <h2>Australia</h2>
+    <img src="<?echo $this->cdnUri()?>/images/australia.jpg" alt="" class="gd" />
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ac ipsum mi. Ne sed odio tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+    <a href="#" class="orange-sml">Read More</a> </div>
+  <div class="featured-journal-box-home f-right">
+    <h2>FEATURED JOURNAL</h2>
+    <ul id="slides1">
+      <li>
+        <div class="featured-journal-box-home-left"><img src="images/home-fg-1.jpg" alt="" width="61" /></div>
+        <div class="featured-journal-box-home-right">
+          <h3 class="main-heading2">Relaxing in Malaysia</h3>
+          <div class="post-by">Posted by <b><a href="/">Anna C</a></b> | <span>1 minute ago</span> | <a href="#">Comment</a> | <a href="#">Like</a> </div>
+          <div class="post-by-txt">Augue qui feugait sit ex veniam erat ullamcorper nostrud vero commodo duis eu, ex, consequat at, in ullamcorper wisi elit duis iusto. Hendrerit luptatum qui vel vel nulla at te eum, accumsan molestie. Esse, eros in lorem blandit et augue luptatum, dolor in, facilisis ut ipsum. Ex odio tincidunt ea iusto molestie amet delenit odio ex nisl vulputate adipiscing et.</div>
+          <div   class="like-dislike">SDFSDGF </div>
+          <div class="clear"></div>
+          <a href="#" class="orange-sml">VIEW POST</a> <a href="#" class="button-link">SHARE</a> </div>
+      </li>
+    </ul>
+  </div>
+  <script language="javascript">
+//http://bxslider.com/
+$(document).ready(function(){
+	$('#slides1').bxSlider({
+		prev_text: 'Prev',
+		next_text: 'Next',
+		wrapper_class: 'slides1_wrap',
+                 pager: false,
+		auto: false,
+		auto_controls: false
+	});
+});
+
+</script>
+  <div class="box1">
+    <center>
+      <img src="images/feel-the-love-add.jpg" alt="" />
+    </center>
+  </div>
+</div>
+<div class="clear"></div>
+<?php
+$user=new Application_Model_User();
+var_dump($user);
+?>

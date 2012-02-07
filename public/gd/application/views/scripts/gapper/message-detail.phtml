@@ -1,0 +1,19 @@
+<?php
+	$url		=	"/gapper/my-messages";
+	$replyUrl	=	"/gapper/my-messages/reply/".$this->msgId;
+?>
+<div id="mymessage">
+
+<h1>MY MESSAGES</h1>
+
+<div class="message-box">	
+		
+		<div class="message-box-right f-left">		
+				<h3><?php print $this->subject;?></h3>
+				<span class="connect-date"><?php print $this->addedon;?></span>
+				<p><?php print $this->body;?></p>
+        </div>
+		<p><a href="<?php print $this->seoUrl($url);?>">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php print $this->seoUrl($replyUrl);?>">Reply</a></p>
+        </div>
+
+</div>

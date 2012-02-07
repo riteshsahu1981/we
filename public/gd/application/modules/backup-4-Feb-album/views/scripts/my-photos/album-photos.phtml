@@ -1,0 +1,583 @@
+<script type="text/javascript" src="/js/ext-core.js"></script>
+<script type="text/javascript" src="/js/elastic-textarea.js"></script>
+<style type="text/css">
+.comment{
+	width: 470px;
+	height: 20px !important;
+	border: 3px solid #FFFFFF;
+}
+.album-editing {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 2px solid #217273;
+    display: none;
+    left: 318px;
+    position: absolute;
+    text-align: center;
+    top: 289px;
+    width: 389px;
+    z-index: 1000;
+}
+</style>
+<div class="my-photo" id="center">
+<h2>MY PHOTOS</h2>
+<h2 class="subheading"><?php print $this->arrAlbum[0]->name;?></h2>
+<!-- Start Heading -->
+<span class="page_number"><a href="/album/my-photos">Back To My Photos</a>  | <a href="#">Albums</a>  |  <a href="#">Download Photo</a></span>
+<?php if($this->totalAlbumPhoto	>	0)
+{
+	print $this->paginationControl($this->arrAlbumPhoto, 'Sliding', 'album-page.phtml');
+?>
+
+<!-- End Heading -->
+
+<!-- Start Tagged Images -->
+<div class="viewallmyphoto">
+<?php foreach ($this->arrAlbumPhoto as $photo){?> 
+<a href="/album/my-photos/photo/id/<?php print $photo['id'];?>"><img src="/images/album/thumb/<?php print $photo['image'];?>" alt="" border="0"></a>
+<?php }?>
+</div>
+<!-- End Tagged Images -->
+
+<!-- Start Btns Area -->
+<div class="untags">
+<span id="like-album-container">
+<?php if($this->numVote == 0){?>
+<a href="javascript:void(0);" id="like-album">
+<img src="/images/fb.jpg" alt="" width="51" height="23" class="f-left">
+</a>
+<?php }else{?>
+<a href="javascript:void(0);" id="unlike-album">
+<img src="/images/fb-unlike.jpg" alt="" class="f-left">
+</a>
+<?php }?>
+</span>
+<div class="description"><?php print $this->arrAlbum[0]->description;?> </div>
+<div class="share-right"><a href="javascript:void(0);" id="album-edit" class="button">Edit</a>
+<a href="javascript:void(0);" id="photo-location" class="button">location</a>
+<div id="icon">
+<div class="sign"><a href="#" class="signin"><span>SHARE IT</span></a></div>
+<div id="signin_menu">
+<div id="signin">
+<img src="/images/facebook.jpg" width="26" height="26" alt="" />
+<img src="/images/twiiter.jpg" width="26" height="26" alt="" />
+<img src="/images/delicious.jpg" width="26" height="26" alt="" />
+<img src="/images/digg.jpg" width="25" height="26" alt="" />
+<img src="/images/google.jpg" width="26" height="26" alt="" />
+<img src="/images/stumblr-upon.jpg" width="26" height="26" alt="" />
+</div>
+</div>
+</div></div>
+</div>
+<?php }else{?>
+<div>No Photo in Album!</div>
+<?php }?>
+<!-- End Btns Area -->
+
+<!-- Start Comment Area -->
+<div class="comment-area">
+<ul>
+<li>
+	Location: <a href="#"><?php print $this->arrAlbum[0]->location;?></a>   
+<?php if($this->strTag != ""){?>
+	Tags: <a href="#"><?php print $this->strTag;?></a>
+<?php }?>
+</li>
+</ul>
+<ul id="album-comment-container">
+<span id="loading-wall"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+</ul>
+<ul>
+<li>
+<textarea id="comment" id="comment" class="comment" >Write a comment...</textarea>
+<input name="submit" id="submit-album-comment" type="button" class="button" value="Comment" />
+</li>
+</ul>
+</div>
+<!-- End Comment Area -->
+</div>
+
+<div class="album-editing" id="album-editing">
+<span id="loading-wall"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+</div>
+
+<div class="album-location" id="photo-location-box">
+	<div id="map_canvas" class="map-photo"></div>
+		<div class="map-photo-form">
+			<input type="text" class="form" value="" id="address" name="address" style="width:170px;">
+			<input type="hidden" id="latlang" class="form" value="" name="latlang">
+			<input type="button" name="find" id="find" value="FIND" onclick="searchAddress()" />
+			<input type="button" name="save" id="save" value="SAVE" onclick="return updateAlbumLocation();" />
+		</div>
+		<div class="expand-photo-map" id="expand-photo-map"><img src="/images/arow-up.png" onclick="javascript:expandMap();" alt="" /></div>
+		<div class="close-photo-map" id="close-photo-map"><img src="/images/close-grn.png" alt="" /></div>
+		<div class="photo-location-finish" id="photo-location-finish">Album location has been saved.</div>
+</div>
+
+<?php
+	$this->mapLib(null, "false")->setGear();
+    $userNs=new Zend_Session_Namespace("members");
+    $this->userId=$userNs->userId;
+?>
+
+<input type="hidden" name="album_id" id="album_id" value="<?php print $this->arrAlbum[0]->id;?>" />
+<input type="hidden" name="item_id" id="item_id" value="<?php print $this->arrAlbum[0]->id;?>" />
+<input type="hidden" name="item_type" id="item_type" value="album" />
+<input type="hidden" name="item_type1" id="item_type1" value="album_comment" />
+<script>
+
+elasticTextArea("comment");	
+
+$(document).ready(function(){
+	$("a#like-album").click(function(){
+		var album_id	=	$("#album_id").val();
+		var item_type	=	'album';
+		var requesturl	=	"/album/my-photos/like-album";
+
+			$.post(requesturl, {album_id:album_id,item_type:item_type },
+					   function(html){					
+						$("#like-album-container").html(html);
+							
+					});	
+		
+	});
+});
+
+$(document).ready(function(){
+	$("a#unlike-album").click(function(){
+		var album_id	=	$("#album_id").val();
+		var item_type	=	'album';
+		var requesturl	=	"/album/my-photos/unlike-album";
+
+		$.post(requesturl, {album_id:album_id, item_type:item_type },
+					   function(html){
+						$("#like-album-container").html(html);
+							
+					});	
+		
+	});
+});
+
+$(document).ready(function(){
+	$("a#album-edit").click(function(){
+
+		var album_id	=	$("#album_id").val();
+
+	$("#album-editing").fadeIn(500);
+		
+		var requesturl	=	"/album/my-photos/album-edit";
+
+		$.post(requesturl, {albumId:album_id },
+				   function(html){
+					$("#album-editing").html(html);
+						
+				});	
+	});
+});
+
+
+
+
+$(document).ready(function(){
+		var album_id	=	$("#album_id").val();
+		var item_type	=	$("#item_type").val();
+		var item_type1	=	$("#item_type1").val();
+		var requesturl	=	"/album/my-photos/load-album-comment";
+		
+		
+			$.post(requesturl, {album_id:album_id,item_type:item_type,item_type1:item_type1 },
+					   function(html){
+						$("#album-comment-container").html(html);							
+					});	
+		
+});
+
+$(document).ready(function(){
+	$("input#submit-album-comment").click(function(){
+		var comment		=	$("#comment").val();
+		var item_id		=	$("#item_id").val();
+		var item_type	=	$("#item_type").val();
+		var item_type1	=	$("#item_type1").val();
+		var requesturl	=	"/album/my-photos/album-photo-comment";
+		if(comment == "" || comment == "Comment..." )
+		{
+			alert("Please enter comment!");
+			return false;
+		}else{
+				$.post(requesturl, {item_id:item_id,comment:comment,item_type:item_type1 },
+						   function(html){					
+							$("#album-comment-container").prepend(html).hide().slideDown("slow");
+							$("#comment").val('Write a comment...');	
+							$("#comment").attr('style','');			 		
+								
+						});	
+		}
+	});
+	
+});
+
+$(document).ready(function(){
+	$("a#photo-location").click(function(){
+
+			$("#photo-location-box").fadeIn(800);
+
+	});
+});
+
+
+$(document).ready(function(){
+	$("div#close-photo-map").click(function(){
+
+            $("#map_canvas").animate( { height:"298px", width:"298px" }, { queue:false, duration:600 } )
+	    $("#photo-location-box").animate( { height:"300px", width:"300px", top:"375px", left:"425px" }, { queue:false, duration:600 } )
+	    $("#close-photo-map").animate( { left:"284px" }, { queue:false, duration:600 } )
+	    $("#address").animate( { width:"170px" }, { queue:false, duration:600 } )
+	    $(".map-photo-form").animate( { top:"265px" }, { queue:false, duration:600 } )
+
+	    $("div#expand-photo-map").html("");
+    	$("div#expand-photo-map").html("<img src='/images/arow-up.png' onclick='javascript:expandMap();' />");
+
+		$("#photo-location-box").fadeOut(800);
+
+	});
+});
+
+function updateAlbumLocation()
+{
+	var latlang	=	$("#latlang").val();
+	var address	=	$("#address").val();
+	var album_id	=	$("#album_id").val();
+
+	 var requesturl	=	"/album/my-photos/album-album-location-update";
+
+	 $.post(requesturl, {latlang:latlang,address:address,albumId:album_id },
+			   function(html){
+		   			$("#photo-location-finish").show();
+		 			RAVIN_DelayedHide('photo-location-finish');
+		 			RAVIN_DelayedHide('photo-location-box');
+
+			});
+
+}
+</script>
+
+
+<script type="text/javascript">
+
+var user_login_id='<?php echo $this->userId?>';
+
+
+function updateGapperLocation(latLng){
+if(user_login_id=="")
+    {
+        loginPopUp('Please Login to check in.');
+        return false;
+    }
+    $("#dialog-confirm").dialog({
+			resizable: false,
+
+			modal: false
+
+		});
+}
+function doUpdate()
+{
+    var latLng=marker.getPosition();
+      saveLocationInDatabase(latLng.lat(),latLng.lng());
+}
+function doCancel()
+{
+    $("#dialog-confirm").dialog('close');
+}
+
+//* Global variable declaration
+var geocoder = new google.maps.Geocoder();
+var marker=null;
+var map =null;
+var point="/images/point-blue.png";
+var infoWindow = new google.maps.InfoWindow();
+var siberia = new google.maps.LatLng(60, 105);
+var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
+var initialLocation;
+
+function buildMap(latLng)
+{
+     map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 8,
+    center: latLng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+
+
+  marker = new google.maps.Marker({
+    position: latLng,
+    title: 'Double Click to set your current location here.',
+    map: map,
+    icon : point,
+    draggable: true
+  });
+    geocodePosition(latLng);
+    addingEventListnerToMaker(marker);
+    var content="<div><img src='<?php echo $this->userThumb;?>' /> <?php echo $this->fullName?></div>";
+    smartInfo(content, marker,'click');
+}
+
+function smartInfo(content, marker, eventName)
+{
+
+    google.maps.event.addListener(map, 'click', function(){infoWindow.close();});
+    google.maps.event.addListener(marker, eventName, function(e) {
+
+
+
+    infoWindow.setContent(content);
+    infoWindow.close();
+
+    infoWindow.open(map, marker);
+
+    });
+
+    google.maps.event.addListener(map, 'click', function(e) {
+
+    infoWindow.close();
+
+    });
+}
+function expandMap()
+{
+    $("#show-map").hide();
+    $("#close-map").show();
+   /* $("#map_canvas").css("height", "420px");
+    $("#map_canvas").css("width", "565px");
+    $("#photo-location-box").css("height", "422px");
+    $("#photo-location-box").css("width", "567px");
+  	$("#photo-location-box").css("top", "320px");
+    $("#photo-location-box").css("left", "158px");
+    $("#close-photo-map").css("left", "551px");*/
+
+    $("#map_canvas").animate( { height:"420px", width:"565px" }, { queue:false, duration:800 } )
+    $("#photo-location-box").animate( { height:"422px", width:"567px", top:"250px", left:"158px" }, { queue:false, duration:800 } )
+    $("#close-photo-map").animate( { left:"551px" }, { queue:false, duration:800 } )
+    $("#address").animate( { width:"430px" }, { queue:false, duration:800 } )
+    $(".map-photo-form").animate( { top:"385px" }, { queue:false, duration:800 } )
+
+    $("div#expand-photo-map").html("");
+    $("div#expand-photo-map").html("<img src='/images/arow-down.png' onclick='javascript:shrinkMap();' />");
+    var latLng=marker.getPosition();
+    buildMap(latLng);
+}
+
+function shrinkMap()
+{
+    $("#show-map").show();
+    $("#close-map").hide();
+  /*  $("#map_canvas").css("height", "298px");
+    $("#map_canvas").css("width", "298px");
+    $("#photo-location-box").css("height", "300px");
+    $("#photo-location-box").css("width", "300px");
+    $("#photo-location-box").css("top", "435px");
+    $("#photo-location-box").css("left", "425px");
+    $("#close-photo-map").css("left", "284px");	*/
+
+    $("#map_canvas").animate( { height:"298px", width:"298px" }, { queue:false, duration:800 } )
+    $("#photo-location-box").animate( { height:"300px", width:"300px", top:"375px", left:"425px" }, { queue:false, duration:800 } )
+    $("#close-photo-map").animate( { left:"284px" }, { queue:false, duration:800 } )
+    $("#address").animate( { width:"170px" }, { queue:false, duration:800 } )
+    $(".map-photo-form").animate( { top:"265px" }, { queue:false, duration:800 } )
+
+    $("div#expand-photo-map").html("");
+    $("div#expand-photo-map").html("<img src='/images/arow-up.png' onclick='javascript:expandMap();' />");
+    var latLng=marker.getPosition();
+    buildMap(latLng);
+}
+
+
+
+function locateMe()
+{
+
+
+	  // Try W3C Geolocation method (Preferred)
+	  if(navigator.geolocation)
+          {
+
+	    browserSupportFlag = true;
+	    navigator.geolocation.getCurrentPosition(function(position) {
+	    initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+	      contentString = "Location found using W3C standard";
+	      //map.setCenter(initialLocation);
+
+	      buildMap(initialLocation);
+	    }, function() {
+
+	      handleNoGeolocation(browserSupportFlag);
+	    });
+	  }
+          else if (google.gears)
+          {
+
+	    // Try Google Gears Geolocation
+	    browserSupportFlag = true;
+	    var geo = google.gears.factory.create('beta.geolocation');
+	    geo.getCurrentPosition(function(position) {
+	      initialLocation = new google.maps.LatLng(position.latitude,position.longitude);
+	      contentString = "Location found using Google Gears";
+	      //map.setCenter(initialLocation);
+	      buildMap(initialLocation);
+
+	    }, function() {
+
+	      handleNoGeolocation(browserSupportFlag);
+	    });
+	  }
+          else
+          {
+
+	    // Browser doesn't support Geolocation
+	    browserSupportFlag = false;
+	    handleNoGeolocation(browserSupportFlag);
+	  }
+
+	  $("#photo-location-box").hide();
+
+}
+
+function handleNoGeolocation(errorFlag) {
+
+	  if (errorFlag == true) {
+	    initialLocation = newyork;
+	    contentString = "Error: The Geolocation service failed.";
+	  } else {
+	    initialLocation = siberia;
+	    contentString = "Error: Your browser doesn't support geolocation. Are you in Siberia?";
+	  }
+            contentString="We are unable to locate you on map. You are being located to the London, England";
+            alert(contentString);
+
+            var latLng = new google.maps.LatLng("51.5001524", "-0.1262362");
+            buildMap(latLng);
+           // buildMap(latLng);
+          ///alert(initialLocation);
+         // map.setCenter(initialLocation);
+
+
+
+	}
+
+function geocodePosition(pos) {
+  geocoder.geocode({
+    latLng: pos
+  }, function(responses) {
+    if (responses && responses.length > 0) {
+      updateMarkerAddress(responses[0].formatted_address, responses[0].geometry.location);
+    } else {
+      updateMarkerAddress('Cannot determine address at this location.');
+    }
+  });
+}
+
+
+function updateMarkerAddress(str, latlang) {
+
+  document.getElementById('address').value = str;
+  $('#latlang').val(latlang);
+  $('#album_location').val(str);
+}
+
+function searchAddress()
+{
+    var query = document.getElementById('address').value;
+    var query1= document.getElementById('album_location').value;
+    
+        if(query1 != "")
+        {
+            var request={ 'address': query1 };
+        }else{
+            var request={ 'address': query };
+        }
+
+
+    geocoder.geocode(request, locateDestination);
+
+}
+
+function locateDestination(results, status) {
+     if (status == google.maps.GeocoderStatus.OK){
+
+     //buildMap(results[0].geometry.location);
+
+     shrinkMap()
+     resetMap();
+    marker = new google.maps.Marker({
+    position: results[0].geometry.location,
+    title: 'Double Click here to set your current location.',
+    map: map,
+    draggable: true
+  });
+
+    //map.panTo(marker.getPosition());
+    buildMap(results[0].geometry.location);
+   // addingEventListnerToMaker(marker);
+    //alert(status);
+    //updateMarkerAddress(results[0].formatted_address);;
+     //alert(results[0].formatted_address);
+     }else{
+         alert("Unable to locate. Please try some other keyword.");
+     }
+
+}
+
+function resetMap() {
+
+  if (marker != null) {
+    marker.setMap(null);
+    marker= null;
+  }
+
+
+}
+
+function initialize()
+{
+	var myLatitude='<?php echo $this->myLatitude?>';
+	var myLongitude='<?php echo $this->myLongitude?>';
+	if(myLatitude=="" || myLongitude=="")
+	{
+		//locateMe();
+                $(locateMe);
+		return false;alert('non');
+	}
+
+  	var latLng = new google.maps.LatLng(myLatitude, myLongitude);
+    buildMap(latLng);
+    geocodePosition(latLng);
+    addingEventListnerToMaker(marker);
+
+    $("#photo-location-box").hide();
+}
+
+function addingEventListnerToMaker(marker)
+{
+     // Add dragging event listeners.
+  	google.maps.event.addListener(marker, 'dragstart', function() {
+
+    updateMarkerAddress('Wait...');
+
+
+  });
+
+  google.maps.event.addListener(marker, 'dragend', function() {
+
+    geocodePosition(marker.getPosition());
+
+  });
+
+  google.maps.event.addListener(marker, 'dblclick', function() {
+    updateGapperLocation(marker.getPosition());
+  });
+
+}
+// Onload handler to fire off the app.
+//
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>

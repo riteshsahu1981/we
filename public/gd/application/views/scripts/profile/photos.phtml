@@ -1,0 +1,85 @@
+<?php
+if($this->numRecord == 1){
+    $strTaggedPhoto = $this->numRecord." Photo";
+}else{
+    $strTaggedPhoto = $this->numRecord." Photos";
+}
+
+if($this->totalAlbum == 1){
+    $strNumberAlbum = $this->totalAlbum." Album";
+}else{
+    $strNumberAlbum = $this->totalAlbum." Albums";
+}
+
+?>
+<div id="center" class="my-photo">
+<h2><?php echo $this->puts("PHOTOS");?></h2>
+
+
+<!-- Start Heading -->
+<h4 class="logger_name">Tagged photos of <?php print $this->userFullName;?>: <span><?php print $strTaggedPhoto;?> </span></h4>
+<?php print $this->pagingStr;?>
+<!-- End Heading -->
+
+<!-- Start Tagged Images -->
+<div class="viewallmyphoto"><?php //print_r($this->arrTaggedUser);?>
+    <?php foreach($this->arrTaggedUser as $tagged){?>
+    <a href="/profile/tagged-photo/username/<?php print $this->userName;?>/id/<?php print $tagged->photo_id;?>"><img alt="" src="/media/album/thumb/<?php print $tagged->image;?>" /></a>
+    <?php }?>
+</div>
+<!-- End Tagged Images -->
+<p></p>
+<!-- Start Heading -->
+<h4 class="logger_name"><?php print $this->userFullName;?>'s Albums: <span><?php print $strNumberAlbum;?></span></h4>
+<?php	if($this->totalAlbum	>	0)
+{
+		print $this->paginationControl($this->arrAlbum, 'Sliding', 'album-page.phtml');
+?>
+<div class="viewallmyphoto">
+<?php
+			foreach($this->arrAlbum as $row)
+			{
+				$objModelAlbumPhoto	=	new Album_Model_AlbumPhoto();
+
+				$albumId	=	$row['id'];
+
+				$whereAlbumPhoto	=	"album_id='{$albumId}' AND ($this->relationCondition)";
+
+				$arrAlbumPhoto		=	$objModelAlbumPhoto->fetchAll($whereAlbumPhoto);
+
+				$numAlbumPhoto	=	count($arrAlbumPhoto);
+
+				if($numAlbumPhoto > 0)
+				{
+					$arrPhoto	=	array();
+					foreach ($arrAlbumPhoto as $photo)
+					{
+						$arrPhoto[]	=	$photo->image;
+					}
+					$rand_keys = array_rand($arrPhoto, 1);
+
+					$coverImg	=	"/media/album/thumb/".$arrPhoto[$rand_keys];
+				}else{
+					$coverImg	=	"/images/blank-album.jpg";
+				}
+
+		$albumPhotoUrl	=	"/profile/album-photos/username/".$this->userName."/id/".$albumId;
+?>
+<!-- End Heading -->
+
+<!-- Start Album Images -->
+
+<dd><a href="<?php print $this->seoUrl($albumPhotoUrl);?>"><img alt="" src="<?php print $coverImg;?>" /></a>
+<div class="album-title"><a href="<?php print $this->seoUrl($albumPhotoUrl);?>"><?php print $row['name'];?></a></div>
+<div class="f-left mrgn-top5"><?php print $numAlbumPhoto;?> Photos</div>
+
+</dd>
+
+<!-- End Album Images -->
+<?php } ?>
+</div>
+<?php }else{
+?>
+<!-- <div><?php //print $this->userFullName;?> hasn't album.</div> -->
+<?php }?>
+</div>

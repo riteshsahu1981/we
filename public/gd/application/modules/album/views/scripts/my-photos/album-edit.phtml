@@ -1,0 +1,87 @@
+<script type="text/javascript" src="/js/facebox.js"></script>
+<link href="/style/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        //loadingImage : '/images/facebox/loading.gif',
+        closeImage   : '/images/facebox/closelabel.png'
+      })
+    })
+  </script>
+
+<div id="album-popup-edit">
+
+<!-- Top -->
+<div class="top">
+<span style="display: none;" id="photo-saved"></span>
+<span><a id="close-album-edit-box" href="javascript:void(0);"><img src="/images/facebox/closelabel-red.png" title="close" class="close_image"></a></span>
+</div>
+<!-- Top -->
+
+<!-- Left -->
+<div class="form">
+
+<label><span class="lab">Name of Album</span> <input type="text" value="<?php print $this->name;?>" id="name" name="name"></label>
+
+<label><span class="lab">Description</span><textarea cols="25" rows="5" id="description" name="description" ><?php print $this->description;?></textarea></label>
+
+<label><span class="lab">Album Location </span><input type="button" class="button-grn" value="find" name="find" id="find" onclick="searchAddress('album_location')"><input type="text" id="album_location" name="album_location" value="<?php print $this->location;?>" class="find"></label>
+
+<label><span class="lab">Permissions</span> <select id="permissions" name="permissions">
+	<?php foreach ($this->arrFriendGroup as $key=>$value){?>
+		<option value="<?php print $key;?>" <?php if($this->permission == $key){?> selected='selected' <?php }?>><?php print $value;?></option>
+	<?php }?>
+</select></label>
+
+<label><span class="lab">Album Tags</span> <input type="text" id="album_tags" name="album_tags" value="<?php print $this->albumTag;?>"></label>
+
+<a href="javascript:void(0);" id="edit-album-detail" class="button">SAVE</a>
+<?php if($this->uploadAllowed==1){?>
+<a rel="facebox" href="/image/album-upload-photo/album_id/<?php print $this->albumId;?>" class="button">ADD PHOTOS</a>
+<?php }else{?>
+<a href="javascript://" class="button" onclick="alertBox('Wow, you\'ve been snap happy! Sorry, but you\'ve reached the maximum amount of photos we\'ll let you store on Gap Daemon.','');">ADD PHOTOS</a>
+<?php }?>
+
+</div>
+<!-- Left -->	
+</div>
+<script>
+$(document).ready(function(){
+	$("a#close-album-edit-box").click(function(){
+            location.reload();
+            $("a#album-edit").attr("style",""); //change edit button color
+		$("#album-editing").html('');
+		//$("#album-editing").fadeOut(500);
+                $("#album-editing").hide("explode", { pieces: 16 }, 1600);
+                
+	});
+});
+
+$(document).ready(function(){
+	$("a#edit-album-detail").click(function(){
+	
+          var album_id	=   $("#album_id").val();
+		  var name = $("#name").val();
+          var description     =   $("#description").val();
+          var album_location  =   $("#album_location").val();
+          var permissions     =   $("#permissions").val();
+          var album_tags      =   $("#album_tags").val();
+          var latlang         =   $("#latlang").val();
+
+                if(jQuery.trim(name) == "")
+                {
+                      alert("Please enter album name.");
+                      return false;
+                }
+
+                var requesturl	=	"/album/my-photos/album-edit-submit";
+
+		$.post(requesturl, {albumId:album_id,name:name,description:description,location:album_location,permissions:permissions,tags:album_tags,latlang:latlang },
+				   function(html){
+					$("#photo-saved").show();
+                                        $("#photo-saved").html("Album details have been saved.");
+				});
+                
+	});
+});
+</script>

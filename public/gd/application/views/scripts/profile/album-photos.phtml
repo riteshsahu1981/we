@@ -1,0 +1,230 @@
+<script type="text/javascript" src="/js/ext-core.js"></script>
+<script type="text/javascript" src="/js/elastic-textarea.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        loadingImage : '/images/facebox/loading.gif',
+        closeImage   : '/images/facebox/closelabel.png'
+      })
+    })
+  </script>
+<style type="text/css">
+.comment{
+	width: 470px; *width: 450px;
+	height: 22px;
+	float:left !important;
+	margin:0px 10px 0px 0px;
+	border: 3px solid #FFFFFF;
+}
+.comment-disable{
+	width: 470px; *width: 470px;
+	height: 22px !important;
+	float:left !important;
+	margin:0px 10px 0px 0px;
+	border: 1px solid #FFFFFF;
+        background:#fff;
+}
+.album-editing {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 2px solid #217273;
+    display: none;
+    left: 318px;
+    position: absolute;
+    text-align: center;
+    top: 289px;
+    width: 389px;
+    z-index: 1000;
+}
+</style>
+<div class="my-photo" id="center">
+<h2>PHOTOS</h2>
+<h2 class="subheading"><?php print $this->arrAlbum[0]->name;?></h2>
+<!-- Start Heading -->
+<span class="page_number"><a href="/profile/photos/username/<?php print$this->userFullName;?>/">Back To <?php print ucfirst($this->userFullName);?> Photos</a>  | <a href="/profile/photos/username/<?php print$this->userFullName;?>/">All Albums</a>
+    <?php if($this->totalAlbumPhoto>0) {?>
+    <?php if($this->loggedInUserId != ""){?>
+    |  <a href="/profile/album-download/username/<?php print$this->userFullName;?>/id/<?php print $this->albumId;?>" rel="facebox">Download Album</a>
+    <?php }?>
+    <?php }?>
+</span>
+<?php if($this->totalAlbumPhoto	>	0)
+{
+	print $this->paginationControl($this->arrAlbumPhoto, 'Sliding', 'album-page.phtml');
+?>
+
+<!-- End Heading -->
+
+<!-- Start Tagged Images -->
+<div class="viewallmyphoto">
+<?php foreach ($this->arrAlbumPhoto as $photo){?> 
+<a class="viewimg" href="/profile/photo/username/<?php print$this->userFullName;?>/album/<?php print $photo['album_id'];?>/id/<?php print $photo['id'];?>/"><img src="/media/album/thumb/<?php print $photo['image'];?>" alt="" border="0"></a>
+<?php }?>
+</div>
+<!-- End Tagged Images -->
+<?php }else{?>
+<div> &nbsp;|&nbsp;No photos in album!</div>
+<?php }?>
+<!-- Start Btns Area -->
+<div class="untags">
+<span id="fb-like-album-container">
+<iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo $this->likeSrcUrl;?>&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
+</span>
+<div class="share-right">
+<div id="icon">
+<div class="sign"><a href="#" class="signin"><span>SHARE IT</span></a></div>
+<div id="signin_menu">
+<div id="signin">
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+<a class="addthis_button_facebook"></a>
+<a class="addthis_button_twitter"></a>
+<a class="addthis_button_delicious"></a>
+<a class="addthis_button_digg"></a>
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_stumbleupon"></a>
+</div>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4d6f61ff5dc109be"></script>
+<!-- AddThis Button END -->
+
+
+</div>
+</div>
+</div></div>
+    <div class="description"><?php print stripslashes($this->arrAlbum[0]->description);?> </div>
+</div>
+
+<!-- End Btns Area -->
+
+<!-- Start Comment Area -->
+<div class="comment-area">
+<ul>
+<li>
+	Location: <a href="#"><?php print $this->arrAlbum[0]->location;?></a>   
+<?php if($this->strTag != ""){?>
+	Tags: <a href="#"><?php print $this->strTag;?></a>
+<?php }?>
+</li>
+</ul>
+<ul id="album-comment-container">
+<span id="loading-wall"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+</ul>
+<?php if($this->loggedInUserId != ""){?>
+    
+<ul>
+<li><span id="errormassage" class="redMsg"></span>
+<textarea id="comment" id="comment" class="comment" >Comment...</textarea>
+<input name="submit" id="submit-album-comment" type="button" class="button2" value="Comment" />
+<input name="submit" id="submit-album-comment-demo" type="button" class="button2" value="Comment" style="display:none;" />
+</li>
+</ul>
+    
+<?php }else{?>
+<ul>
+<li>
+<textarea id="comment" id="comment" disabled="disabled" class="comment-disable" >Comment...</textarea>
+<input name="submit" type="button" class="button2" value="Comment" onClick="loginPopUp('Please Login');" />
+</li>
+</ul>
+<?php }?>
+    <script>elasticTextArea("comment");</script>
+</div>
+<!-- End Comment Area -->
+</div>
+
+
+<input type="hidden" name="album_id" id="album_id" value="<?php print $this->arrAlbum[0]->id;?>" />
+<input type="hidden" name="item_id" id="item_id" value="<?php print $this->arrAlbum[0]->id;?>" />
+<input type="hidden" name="item_type" id="item_type" value="album" />
+<input type="hidden" name="item_type1" id="item_type1" value="album_comment" />
+<script>
+
+	
+
+$(document).ready(function(){
+	$("a#like-album").click(function(){
+		var album_id	=	$("#album_id").val();
+		var item_type	=	'album';
+		var requesturl	=	"/profile/like-album";
+
+			$.post(requesturl, {album_id:album_id,item_type:item_type },
+					   function(html){					
+						$("#like-album-container").html(html);
+							
+					});	
+		
+	});
+});
+
+$(document).ready(function(){
+	$("a#unlike-album").click(function(){
+		var album_id	=	$("#album_id").val();
+		var item_type	=	'album';
+		var requesturl	=	"/profile/unlike-album";
+
+		$.post(requesturl, {album_id:album_id, item_type:item_type },
+					   function(html){
+						$("#like-album-container").html(html);
+							
+					});		
+	});
+});
+
+
+$(document).ready(function(){
+		var album_id	=	$("#album_id").val();
+		var item_type	=	$("#item_type").val();
+		var item_type1	=	$("#item_type1").val();
+		var requesturl	=	"/album/my-photos/load-album-comment";
+		
+		
+			$.post(requesturl, {album_id:album_id,item_type:item_type,item_type1:item_type1 },
+					   function(html){
+						$("#album-comment-container").html(html);							
+					});	
+		
+});
+
+$(document).ready(function(){
+    $("input#submit-album-comment").click(function(){
+        var comment	=	$("#comment").val();
+        var item_id	=	$("#item_id").val();
+        var item_type	=	$("#item_type").val();
+        var item_type1	=	$("#item_type1").val();
+        var requesturl	=	"/album/my-photos/album-photo-comment";
+        if(comment == "" || comment == "Comment..." )
+        {
+            $("#errormassage").html("Please enter your comment.");
+            return false;
+        }else{
+            $("input#submit-album-comment-demo").show();
+             $("input#submit-album-comment").hide();
+            $.post(requesturl, {item_id:item_id,comment:comment,item_type:item_type1 },
+                   function(html){
+                        $("#album-comment-container").append(html).hide().slideDown("slow");
+                        $("#comment").val('Comment...');
+                        $("#comment").attr('style','');
+                        $("#errormassage").html("");
+                        $("input#submit-album-comment-demo").hide();
+                        $("input#submit-album-comment").show();
+                    });
+        }
+    });
+});
+
+$('textarea#comment').focus(function() {
+    var textVal = $(this).val();
+   if(textVal=='Comment...')
+       {
+            $(this).val('');
+       }
+});
+
+$('textarea#comment').focusout(function() {
+    var textVal = $(this).val();
+   if(textVal=='')
+       {
+            $(this).val('Comment...');
+       }
+});
+
+</script>

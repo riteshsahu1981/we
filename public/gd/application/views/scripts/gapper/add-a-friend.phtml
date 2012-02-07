@@ -1,0 +1,126 @@
+<script type="text/javascript">
+var params="mode=ajax";
+$(function() 
+		{
+    	$("#name").autocomplete(
+    	     {
+    		 source: "/gapper/auto-name/",
+    		 minLength: 1,
+    		select: function(event, ui) 
+    	      {
+    		$("#firstName").val(ui.item.id);
+    	      }
+    		});
+    	});
+    	
+</script>
+<div class="cmn_center">
+<h2 class="topHeadh2">ADD A FRIEND</h2>
+Use the form below to invite Friends, Family &amp; Travel Mates to connect with you.
+<div style="display:block;margin:10px 0px;width:500px;padding:10px;border:1px solid #ccc;height:110px;">
+<form action="/gapper/all-friends" method="post">
+<h3>CONNECT WITH ANOTHER GAP DEAMON MEMBER</h3><br/>
+<b>Search Name</b> &nbsp;<input type="text" id="name" name="nickname" class="inviteSearchText" />&nbsp;&nbsp;<input type="submit" value="FIND" />
+<br/>Look up another Gap<br/> Daemon Member
+</form>
+</div>
+
+<div style="display:block;margin:10px 0px;width:500px;padding:10px;border:1px solid #ccc;">
+<h3>INVITE A CONTACT TO JOIN GAP DEAMON</h3>
+Enter your email login and password below to send invitations to people in your address book. Dont worry, we wan't store your login and password
+and we won't email anyone without your permission.
+
+<form method="post" action="/gapper/add-a-connection/">
+			     
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->email_box->getLabel());?></label>
+	<?php echo $this->form->email_box;?>
+	</div>
+    
+    <div class="reg_con">
+	<label><?php echo $this->puts($this->form->name->getLabel());?></label>
+	<?php echo $this->form->name;?>
+	</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->provider_box->getLabel());?></label>
+	<?php echo $this->form->provider_box;?>
+	</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->password_box->getLabel());?></label>
+	<?php echo $this->form->password_box;?>
+	</div>
+	
+	<div class="reg_con">
+	<label></label>
+	<span style="display: none;" id="loading"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+	
+	<?php echo $this->form->load;?>
+	<span id="msg"></span>
+	</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->contacts->getLabel());?></label>
+	<div class="reg_con_span">Add more email addresses (seperate by commas)</div>
+	<?php echo $this->form->contacts;?>
+        <input type="hidden" value="" id="oi_session_id" name="oi_session_id"></input>
+	</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->message->getLabel());?></label>
+	<?php echo $this->form->message;?>
+	</div>
+	
+	<div>
+	<label style="width:175px;">&nbsp;</label>
+	<div style="float:right;padding-right:87px;"><?php echo $this->form->sendInvitataion;?>
+	<input type="button" value="SKIP" class="invite_button" onclick="window.location='/'"><!--<a href="/">SKIP</a>-->
+	</div>
+	</div>
+	
+	
+</form>
+
+</div>
+</div>
+<script language="javascript">
+$("#load").click(loadContacts);
+function loadContacts()
+{
+	var params='';
+	params+="email="+$('#email_box').val();
+	params+="&password="+$('#password_box').val();
+	params+="&provider="+$('#provider_box :selected').val();
+	$("span#loading").show();
+	$("#load").hide();
+	 $("span#msg").html("");
+	$.ajax({
+		   type: "POST",
+		   url: "/index/load-contacts/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+		   //alert(json.data);
+		   if(json.error=="1")
+		   {
+			   $("span#msg").html(json.data);	
+		   }
+		   else
+		   {
+			  	$('#contacts').val(json.data);
+                                $('#oi_session_id').val(json.oi_session_id);
+		   }
+			   
+		   	$("span#loading").hide();
+			$("#load").show();
+		   },
+		   error: function (json, status, e){
+				alert(e+"ddd");
+				$("span#loading").hide();
+				$("#load").show();
+			}
+	 });
+}
+</script>
+

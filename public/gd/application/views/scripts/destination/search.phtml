@@ -1,0 +1,92 @@
+<style>
+.resultRow
+{
+	font-size: 14px;
+}
+.resultRow:hover
+{
+	font-size: 14px;
+	background-color: #e6e6e6;
+	/*cursor:pointer;*/
+}
+.resultFound
+{
+	font-size: 14px;
+	font-weight:bold;
+	color:#000000;
+}
+.resultFound span
+{
+	font-size: 14px;
+	font-weight:bold;
+	color:#348698;
+}
+</style>
+<!--<div class="register_area_wide" style="min-height:600px;">-->
+<div id="main-left" style="min-height:600px;">
+<?php 
+if($this->total>0)
+{
+	$results = ($this->total==1) ? "result" : "results";
+?>
+<h2 style="color:#348698; font:bold 19px Arial,Helvetica,sans-serif; text-transform:uppercase;">Travel Guide Search Results</h2>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" style="border:1px solid #E6E6E6;">
+<tr><td colspan="2" class="resultFound" style="padding:10px;">
+<span><?php echo $this->total;?></span> <?php echo $results;?> found for <span><?php echo $this->search;?></span>
+</td></tr>
+<?php
+	$searchTxt = $this->searchtext;
+	$replaceTxt = "<b>".$this->searchtext."</b>";
+	foreach($this->paginator as $row)
+	{
+		$title = $row['title'];
+		//$title = str_replace($searchTxt, $replaceTxt, $title);
+		
+		$description = substr(strip_tags($row['description']),0,250);
+		//$description = str_replace($searchTxt, $replaceTxt, $description);
+		
+		$strUrl = "";
+		if($row['type']=='country')
+		{
+			$title = $row['title'];
+			$strUrl	= "/destination/country/id/".$row['id'];
+		}
+		else if($row['type']=='city')
+		{
+			$title = $row['title'];
+			$strUrl	= "/destination/city/id/".$row['id'];
+			
+			$destinationM = new Application_Model_Destination();
+			$destinationM = $destinationM->fetchRow("location_id={$row['id']} AND location_type='city'");
+			if(false!==$destinationM)
+			{
+				$description	=	$description;
+				$title			=	$destinationM->getTitle();
+			}
+		}	
+	    ?>
+		 <tr class="resultRow">
+		 	<td style="border-bottom:1px solid #e6e6e6;">
+			<div class="friends-box" style="padding:10px;">
+			<div><a href="<?php echo $this->seoUrl($strUrl);?>"><b><?php echo $title;?></b></a></div>
+			<div><?php echo $description = ($description!="NULL") ? $description."..." : "";?></div>
+			</div>
+			</td>			
+		 </tr>         
+   <?php
+   }//end of foreach
+ ?>
+ </table>
+ <?php 
+ echo $this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml', array("linkArray"=>array('search'=>$this->search))); ?>
+ <?php
+}//end of if
+else
+{
+?>
+<br class="clear" /><br class="clear" />
+<h3 class="red-alert"><?php echo $this->message;?></h1>
+<?php
+}
+?>
+</div>

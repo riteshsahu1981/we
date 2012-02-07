@@ -1,0 +1,595 @@
+<div id="myjquerymenu" class="jquerycssmenu">
+<?php
+echo '<ul>';
+
+// loop root level (only has Home, but later may have an Admin root page?)
+    foreach ($this->container as $page)
+	{
+        // check if it is active (not recursive)
+        $isActive = $page->isActive(false);
+        $liClass = $isActive ? ' class="active"' : '';
+
+        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($page->getUri()) . '">'.$this->puts($page->getLabel()).'</a></li>', PHP_EOL;
+		// loop next level
+        foreach ($page as $p)
+		{
+        	if($p<>"Login" && $p<>"Register")
+        	{
+				$url="/".$p->getController()."/".$p->getAction();
+        		
+	            // check if it is active (recursive)
+	            $isActive = $p->isActive(true);
+                    //var_dump($isActive);
+                    if($p=="Travel Guides")
+                        $liClass = $isActive ? ' class="active desti-link-2"' : ' class="main-nav-class"';
+                        else
+	            $liClass = $isActive ? ' class="active"' : '';
+                    if($p=="My Gap Daemon")
+                    {
+                        if (Zend_Auth::getInstance()->hasIdentity()){
+                        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                        else
+                        {
+                            echo '<li ' . $liClass . '><a onclick="loginPopUpExt(\'Please Login\',\''.$this->seoUrl("/gapper/where-i-am").'\')" href="javascript://">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                    }
+                    else
+                    {
+                        if($p=="Work/Study/Volunteer" || $p=="Advice")
+						{
+                            echo '<li ' . $liClass . '><a class="main-nav-class" href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+						//add new class to Travel Guides Tab, BY mahipal on 18-Jan-2011
+						else if($p=="Travel Guides")
+						{
+							echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '"  class="main-nav-class">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+						}						 
+                        else
+                        {
+                            echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                    }
+                
+				if($p=="Travel Guides")
+	            {
+                       $cache = Zend_Cache::factory("Output","File");
+
+                    if (!($cache->start('TravelGuides04042011'))) {
+                    //if (!($cache->start('TravelGuides'.rand(1,1000)))) {
+
+	            	$continentM=new Application_Model_Continent();
+	            	$continents=$continentM->getContinent();
+	            	if(count($continents)>0){
+		            	echo '<ul>';
+		            	foreach($continents as $continent_id=>$continents){
+                                    $countryM=new Application_Model_Country();
+		            		$countries=$countryM->getCountry(null, $continent_id);
+                                        $total_countries=count($countries);
+		            		//echo '<li><a href="/destination/continent/id/'.$continent_id.'"> ( '.$total_countries.' ) '.$continents.'</a>';
+							echo '<li><a href="javascript://">'.$continents.'</a>';
+		            		
+		            		/*---country-----*/
+		            		
+			            	if($total_countries>0){
+                                         $per_column=20;
+                                            if($total_countries<=$per_column  )
+                                            {
+                                                $ctr=1;
+                                            }
+                                            else
+                                            {
+                                                $rem=$total_countries/$per_column;
+                                                $q=(int)($total_countries/$per_column);
+                                                if($rem>0)
+                                                {
+                                                    $ctr=$q+1;
+                                                }
+                                                else
+                                                {
+                                                    $ctr=$q;
+                                                }
+                                            }
+                                                $ulctr=0;
+                                                
+                                                //echo "<div class='call{$ctr}'>";
+		            			echo '<ul>';
+                                                echo '<li>';
+                                                echo '<dl class="dest-box'.$ctr.'">';
+                                                echo  '<dd>';
+                                                $total_block=0;
+		            			foreach($countries as $country_id=>$country)
+                                                {
+													//check country data into lonely planet feeds if exists then will appear here
+													$destinationM	=	new Application_Model_Destination();
+													$destinationCountry = $destinationM->checkCountryData($country_id);
+													if(false!==$destinationCountry)
+													{
+														echo '<a href="'.$this->seoUrl('/destination/country/id/'.$country_id).'">'.$country.'</a>';
+                                                        $ulctr++;
+                                                        if($ulctr==$per_column)
+                                                        {
+                                                         echo '</dd>';
+                                                         $total_block++;
+                                                         if($total_block<$ctr)
+                                                            echo '<dd>';
+                                                            $ulctr=0;
+                                                        }
+													}//end of if	
+		            			}//end of country foreach
+                                                echo '</dd>';
+                                                echo '</dl>';
+                                                echo '</li>';
+			            		echo '</ul>';
+                                                
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+                        $cache->end();
+                    }//caching
+	            }
+	            
+	            
+	            
+        	 if($p=="Work/Study/Volunteer_old")
+	            {
+	            	
+	            	$mainCats=array("work"=>"Work", "study"=>"Study", "volunteer"=>"Volunteer");
+	            	if(count($mainCats)>0){
+		            	echo '<ul>';
+		            	foreach($mainCats as $identifier=>$mainCat){
+		            		//echo '<li><a href="/work-study-volunteer/category-detail/category/'.$identifier.'">'.$mainCat.'</a>';
+							//echo '<li><a href="/work-study-volunteer/'.$identifier.'">'.$mainCat.'</a>';
+                                    echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/category-detail/category/'.$identifier).'">'.$mainCat.'</a>';
+		            		
+		            		/*---country-----*/
+		            		$categoryM=new Application_Model_Category();
+		            		$categories=$categoryM->getCategory(null,$identifier);
+			            	if(count($categories)>0){	
+		            			echo '<ul>';
+		            			foreach($categories as $category_id=>$category){
+		            				echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/detail/id/'.$category_id).'">'.$category.'</a>';
+		            				/*---city-----*/
+				            		$articleM=new Application_Model_Articles();
+				            		$articles=$articleM->getArticleMore($category_id);
+                                                        //print_r($articles);
+					            	if(count($articles)>0){
+				            			echo '<ul>';
+				            			foreach($articles as $article){
+				            				//echo '<li><a href="/work-study-volunteer/article-detail/id/'.$article_id.'">'.$article.'</a>';
+				            				//echo '<li><a href="/work-study-volunteer/article-detail/id/'.$article->getId().'">'.$article->getTitle().'</a>';
+                                                                    //echo '<li><a href="/work-study-volunteer/'.$article->getIdentifire().'">'.$article->getTitle().'</a>';
+				            				echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/article-detail/id/'.$article->getId()).'">'.$article->getTitle().'</a>';
+				            				
+						            		echo '</li>';
+				            			}//end of city foreach
+					            		echo '</ul>';
+					            	}
+					            	/*--------------------*/
+				            		echo '</li>';
+		            			}//end of country foreach
+			            		echo '</ul>';
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+	            }
+	            if($p=="Work/Study/Volunteer")
+	            {
+					$categoryM		= 	new Application_Model_Category();
+					$categoryRes	=	$categoryM->fetchAll("status='published' AND type='wsv'","weight ASC");
+					if(false!==$categoryRes)
+					{
+						if(count($categoryRes)>0)
+						{
+							echo '<ul class="advice-menu">';
+							foreach($categoryRes as $category)
+							{
+								echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/category/id/'.$category->getId()).'">'.$category->getName().'</a></li>';
+							}//end foreach
+							echo '</ul>';
+						}
+					}//end if
+	            }
+	            if($p=="Advice_old")
+	            {
+					$adviceM=new Application_Model_Advice();
+					$advices=$adviceM->fetchAll("status='1'");
+					if(count($advices)>0)
+					{
+						echo '<ul class="advice-menu">';
+						foreach($advices as $_advice)
+						{
+							// echo '<li><a href="/advice/detail/id/'.$_advice->getId().'">'.$_advice->getTitle().'</a>';
+							//echo '<li><a href="/advice/'.$_advice->getIdentifire().'">'.$_advice->getTitle().'</a>';
+							echo '<li><a href="'.$this->seoUrl('/advice/detail/id/'.$_advice->getId()).'">'.$_advice->getTitle().'</a>';
+							echo '</li>';
+						}//end of continent foreach
+						echo '</ul>';
+					}
+	            }
+				if($p=="Advice")
+	            {
+					$categoryM		= 	new Application_Model_Category();
+					$categoryRes	=	$categoryM->fetchAll("status='published' AND type='advice'","name ASC");
+					if(false!==$categoryRes)
+					{
+						if(count($categoryRes)>0)
+						{
+							echo '<ul class="advice-menu">';
+							foreach($categoryRes as $category)
+							{
+								echo '<li><a href="'.$this->seoUrl('/advice/category/id/'.$category->getId()).'">'.$category->getName().'</a></li>';
+							}//end foreach
+							echo '</ul>';
+						}
+					}//end if
+	            }
+	           echo '</li>', PHP_EOL;                 
+        	}
+        }
+    }
+	echo "<li><a href='http://blog.gapdaemon.com' target='_blank'>GD Blog</a></li>";
+    echo '</ul>';   
+    ?>
+</div>
+
+
+
+
+<!--
+<div class="main-menu">
+<ul class="" id="mainNav">
+
+<li class="tab destinations current">
+<a rel="nofollow" href="#" class="navHead">
+<span>TRAVEL &nbsp;GUIDES</span>
+<img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+</a>
+  <ul class="menu hidden"> <li class="">
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#africa&quot;">
+	        Africa
+	      </a>
+	      <div class="submenu hidden col4">
+	        <ul>
+	            <li><a rel="nofollow" href="#algeria&quot;">Algeria</a></li>
+	            <li><a rel="nofollow" href="#angola&quot;">Angola</a></li>
+	            <li><a rel="nofollow" href="#benin&quot;">Benin</a></li>
+	            <li><a rel="nofollow" href="#botswana&quot;">Botswana</a></li>
+	            <li><a rel="nofollow" href="#burkina-faso&quot;">Burkina Faso</a></li>
+	            <li><a rel="nofollow" href="#burundi&quot;">Burundi</a></li>
+	            <li><a rel="nofollow" href="#cameroon&quot;">Cameroon</a></li>
+	            <li><a rel="nofollow" href="#canary-islands&quot;">Canary Islands</a></li>
+	            <li><a rel="nofollow" href="#cape-verde&quot;">Cape Verde</a></li>
+	            <li><a rel="nofollow" href="#central-african-republic&quot;">Central African Republic</a></li>
+	            <li><a rel="nofollow" href="#chad&quot;">Chad</a></li>
+	            <li><a rel="nofollow" href="#comoros&quot;">Comoros</a></li>
+	            <li><a rel="nofollow" href="#congo&quot;">Congo</a></li>
+	            <li><a rel="nofollow" href="#cote-divoire&quot;">Côte d’Ivoire</a></li>
+	            <li><a rel="nofollow" href="#democratic-republic-of-congo&quot;">Democratic Republic of Congo</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#djibouti&quot;">Djibouti</a></li>
+	            <li><a rel="nofollow" href="#egypt&quot;">Egypt</a></li>
+	            <li><a rel="nofollow" href="#equatorial-guinea&quot;">Equatorial Guinea</a></li>
+	            <li><a rel="nofollow" href="#eritrea&quot;">Eritrea</a></li>
+	            <li><a rel="nofollow" href="#ethiopia&quot;">Ethiopia</a></li>
+	            <li><a rel="nofollow" href="#gabon&quot;">Gabon</a></li>
+	            <li><a rel="nofollow" href="#ghana&quot;">Ghana</a></li>
+	            <li><a rel="nofollow" href="#guinea&quot;">Guinea</a></li>
+	            <li><a rel="nofollow" href="#guinea-bissau&quot;">Guinea-Bissau</a></li>
+	            <li><a rel="nofollow" href="#kenya&quot;">Kenya</a></li>
+	            <li><a rel="nofollow" href="#lesotho&quot;">Lesotho</a></li>
+	            <li><a rel="nofollow" href="#liberia&quot;">Liberia</a></li>
+	            <li><a rel="nofollow" href="#libya&quot;">Libya</a></li>
+	            <li><a rel="nofollow" href="#madagascar&quot;">Madagascar</a></li>
+	            <li><a rel="nofollow" href="#malawi&quot;">Malawi</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#mali&quot;">Mali</a></li>
+	            <li><a rel="nofollow" href="#mauritania&quot;">Mauritania</a></li>
+	            <li><a rel="nofollow" href="#mauritius&quot;">Mauritius</a></li>
+	            <li><a rel="nofollow" href="#morocco&quot;">Morocco</a></li>
+	            <li><a rel="nofollow" href="#mozambique&quot;">Mozambique</a></li>
+	            <li><a rel="nofollow" href="#namibia&quot;">Namibia</a></li>
+	            <li><a rel="nofollow" href="#niger&quot;">Niger</a></li>
+	            <li><a rel="nofollow" href="#nigeria&quot;">Nigeria</a></li>
+	            <li><a rel="nofollow" href="#reunion&quot;">Réunion</a></li>
+	            <li><a rel="nofollow" href="#rwanda&quot;">Rwanda</a></li>
+	            <li><a rel="nofollow" href="#sao-tome-and-principe&quot;">São Tomé &amp; Príncipe</a></li>
+	            <li><a rel="nofollow" href="#senegal&quot;">Senegal</a></li>
+	            <li><a rel="nofollow" href="#seychelles&quot;">Seychelles</a></li>
+	            <li><a rel="nofollow" href="#sierra-leone&quot;">Sierra Leone</a></li>
+	            <li><a rel="nofollow" href="#somaliland-puntland-and-somalia&quot;">Somaliland, Puntland &amp; Somalia</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#south-africa&quot;">South Africa</a></li>
+	            <li><a rel="nofollow" href="#sudan&quot;">Sudan</a></li>
+	            <li><a rel="nofollow" href="#swaziland&quot;">Swaziland</a></li>
+	            <li><a rel="nofollow" href="#tanzania&quot;">Tanzania</a></li>
+	            <li><a rel="nofollow" href="#the-gambia&quot;">The Gambia</a></li>
+	            <li><a rel="nofollow" href="#togo&quot;">Togo</a></li>
+	            <li><a rel="nofollow" href="#tunisia&quot;">Tunisia</a></li>
+	            <li><a rel="nofollow" href="#uganda&quot;">Uganda</a></li>
+	            <li><a rel="nofollow" href="#zambia&quot;">Zambia</a></li>
+	            <li><a rel="nofollow" href="#zimbabwe&quot;">Zimbabwe</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li class="">
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#antarctica&quot;">
+	        Antarctica
+	      </a>
+	      <div class="submenu hidden col1">
+	        <ul>
+	            <li><a rel="nofollow" href="#falkland-islands&quot;">Falkland Islands</a></li>
+	            <li><a rel="nofollow" href="#southern-ocean&quot;">Southern Ocean</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#asia&quot;">
+	        Asia
+	      </a>
+	      <div class="submenu hidden col2">
+	        <ul>
+	            <li><a rel="nofollow" href="#afghanistan&quot;">Afghanistan</a></li>
+	            <li><a rel="nofollow" href="#bangladesh&quot;">Bangladesh</a></li>
+	            <li><a rel="nofollow" href="#bhutan&quot;">Bhutan</a></li>
+	            <li><a rel="nofollow" href="#brunei-darussalam&quot;">Brunei Darussalam</a></li>
+	            <li><a rel="nofollow" href="#cambodia&quot;">Cambodia</a></li>
+	            <li><a rel="nofollow" href="#china&quot;">China</a></li>
+	            <li><a rel="nofollow" href="#east-timor&quot;">East Timor</a></li>
+	            <li><a rel="nofollow" href="#india&quot;">India</a></li>
+	            <li><a rel="nofollow" href="#indonesia&quot;">Indonesia</a></li>
+	            <li><a rel="nofollow" href="#japan&quot;">Japan</a></li>
+	            <li><a rel="nofollow" href="#kazakhstan&quot;">Kazakhstan</a></li>
+	            <li><a rel="nofollow" href="#kyrgyzstan&quot;">Kyrgyzstan</a></li>
+	            <li><a rel="nofollow" href="#laos&quot;">Laos</a></li>
+	            <li><a rel="nofollow" href="#malaysia&quot;">Malaysia</a></li>
+	            <li><a rel="nofollow" href="#maldives&quot;">Maldives</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#mongolia&quot;">Mongolia</a></li>
+	            <li><a rel="nofollow" href="#myanmar-burma&quot;">Myanmar/Burma</a></li>
+	            <li><a rel="nofollow" href="#nepal&quot;">Nepal</a></li>
+	            <li><a rel="nofollow" href="#north-korea&quot;">North Korea</a></li>
+	            <li><a rel="nofollow" href="#pakistan&quot;">Pakistan</a></li>
+	            <li><a rel="nofollow" href="#philippines&quot;">Philippines</a></li>
+	            <li><a rel="nofollow" href="#singapore&quot;">Singapore</a></li>
+	            <li><a rel="nofollow" href="#south-korea&quot;">South Korea</a></li>
+	            <li><a rel="nofollow" href="#sri-lanka&quot;">Sri Lanka</a></li>
+	            <li><a rel="nofollow" href="#taiwan&quot;">Taiwan</a></li>
+	            <li><a rel="nofollow" href="#tajikistan&quot;">Tajikistan</a></li>
+	            <li><a rel="nofollow" href="#thailand&quot;">Thailand</a></li>
+	            <li><a rel="nofollow" href="#turkmenistan&quot;">Turkmenistan</a></li>
+	            <li><a rel="nofollow" href="#uzbekistan&quot;">Uzbekistan</a></li>
+	            <li><a rel="nofollow" href="#vietnam&quot;">Vietnam</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#caribbean&quot;">
+	        Caribbean Islands
+	      </a>
+	      <div class="submenu hidden col2">
+	        <ul>
+	            <li><a rel="nofollow" href="#anguilla&quot;">Anguilla</a></li>
+	            <li><a rel="nofollow" href="#antigua-and-barbuda&quot;">Antigua &amp; Barbuda</a></li>
+	            <li><a rel="nofollow" href="#aruba-bonaire-and-curacao&quot;">Aruba, Bonaire &amp; Curaçao</a></li>
+	            <li><a rel="nofollow" href="#barbados&quot;">Barbados</a></li>
+	            <li><a rel="nofollow" href="#bermuda&quot;">Bermuda</a></li>
+	            <li><a rel="nofollow" href="#british-virgin-islands&quot;">British Virgin Islands</a></li>
+	            <li><a rel="nofollow" href="#cayman-islands&quot;">Cayman Islands</a></li>
+	            <li><a rel="nofollow" href="#cuba&quot;">Cuba</a></li>
+	            <li><a rel="nofollow" href="#dominica&quot;">Dominica</a></li>
+	            <li><a rel="nofollow" href="#dominican-republic&quot;">Dominican Republic</a></li>
+	            <li><a rel="nofollow" href="#grenada&quot;">Grenada</a></li>
+	            <li><a rel="nofollow" href="#guadeloupe&quot;">Guadeloupe</a></li>
+	            <li><a rel="nofollow" href="#haiti&quot;">Haiti</a></li>
+	            <li><a rel="nofollow" href="#jamaica&quot;">Jamaica</a></li>
+	            <li><a rel="nofollow" href="#martinique&quot;">Martinique</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#montserrat&quot;">Montserrat</a></li>
+	            <li><a rel="nofollow" href="#puerto-rico&quot;">Puerto Rico</a></li>
+	            <li><a rel="nofollow" href="#saba&quot;">Saba</a></li>
+	            <li><a rel="nofollow" href="#sint-eustatius&quot;">Sint Eustatius</a></li>
+	            <li><a rel="nofollow" href="#st-kitts-and-nevis&quot;">St Kitts &amp; Nevis</a></li>
+	            <li><a rel="nofollow" href="#st-lucia&quot;">St Lucia</a></li>
+	            <li><a rel="nofollow" href="#st-vincent-and-the-grenadines&quot;">St Vincent &amp; the Grenadines</a></li>
+	            <li><a rel="nofollow" href="#st-barthelemy&quot;">St-Barthélemy</a></li>
+	            <li><a rel="nofollow" href="#st-martin-sint-maarten&quot;">St-Martin/Sint Maarten</a></li>
+	            <li><a rel="nofollow" href="#the-bahamas&quot;">The Bahamas</a></li>
+	            <li><a rel="nofollow" href="#trinidad-and-tobago&quot;">Trinidad &amp; Tobago</a></li>
+	            <li><a rel="nofollow" href="#turks-and-caicos&quot;">Turks &amp; Caicos</a></li>
+	            <li><a rel="nofollow" href="#us-virgin-islands&quot;">US Virgin Islands</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#central-america&quot;">
+	        Central America
+	      </a>
+	      <div class="submenu hidden col1">
+	        <ul>
+	            <li><a rel="nofollow" href="#belize&quot;">Belize</a></li>
+	            <li><a rel="nofollow" href="#costa-rica&quot;">Costa Rica</a></li>
+	            <li><a rel="nofollow" href="#el-salvador&quot;">El Salvador</a></li>
+	            <li><a rel="nofollow" href="#guatemala&quot;">Guatemala</a></li>
+	            <li><a rel="nofollow" href="#honduras&quot;">Honduras</a></li>
+	            <li><a rel="nofollow" href="#nicaragua&quot;">Nicaragua</a></li>
+	            <li><a rel="nofollow" href="#panama&quot;">Panama</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#europe&quot;">
+	        Europe
+	      </a>
+	      <div class="submenu hidden col4">
+	        <ul>
+	            <li><a rel="nofollow" href="#albania&quot;">Albania</a></li>
+	            <li><a rel="nofollow" href="#andorra&quot;">Andorra</a></li>
+	            <li><a rel="nofollow" href="#armenia&quot;">Armenia</a></li>
+	            <li><a rel="nofollow" href="#austria&quot;">Austria</a></li>
+	            <li><a rel="nofollow" href="#azerbaijan&quot;">Azerbaijan</a></li>
+	            <li><a rel="nofollow" href="#belarus&quot;">Belarus</a></li>
+	            <li><a rel="nofollow" href="#belgium&quot;">Belgium</a></li>
+	            <li><a rel="nofollow" href="#bosnia-and-hercegovina&quot;">Bosnia &amp; Hercegovina</a></li>
+	            <li><a rel="nofollow" href="#bulgaria&quot;">Bulgaria</a></li>
+	            <li><a rel="nofollow" href="#croatia&quot;">Croatia</a></li>
+	            <li><a rel="nofollow" href="#cyprus&quot;">Cyprus</a></li>
+	            <li><a rel="nofollow" href="#czech-republic&quot;">Czech Republic</a></li>
+	            <li><a rel="nofollow" href="#denmark&quot;">Denmark</a></li>
+	            <li><a rel="nofollow" href="#england&quot;">England</a></li>
+	            <li><a rel="nofollow" href="#estonia&quot;">Estonia</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#faroe-islands&quot;">Faroe Islands</a></li>
+	            <li><a rel="nofollow" href="#finland&quot;">Finland</a></li>
+	            <li><a rel="nofollow" href="#france&quot;">France</a></li>
+	            <li><a rel="nofollow" href="#georgia&quot;">Georgia</a></li>
+	            <li><a rel="nofollow" href="#germany&quot;">Germany</a></li>
+	            <li><a rel="nofollow" href="#great-britain&quot;">Great Britain</a></li>
+	            <li><a rel="nofollow" href="#greece&quot;">Greece</a></li>
+	            <li><a rel="nofollow" href="#greenland&quot;">Greenland</a></li>
+	            <li><a rel="nofollow" href="#hungary&quot;">Hungary</a></li>
+	            <li><a rel="nofollow" href="#iceland&quot;">Iceland</a></li>
+	            <li><a rel="nofollow" href="#ireland&quot;">Ireland</a></li>
+	            <li><a rel="nofollow" href="#italy&quot;">Italy</a></li>
+	            <li><a rel="nofollow" href="#latvia&quot;">Latvia</a></li>
+	            <li><a rel="nofollow" href="#liechtenstein&quot;">Liechtenstein</a></li>
+	            <li><a rel="nofollow" href="#lithuania&quot;">Lithuania</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#luxembourg&quot;">Luxembourg</a></li>
+	            <li><a rel="nofollow" href="#macedonia&quot;">Macedonia</a></li>
+	            <li><a rel="nofollow" href="#malta&quot;">Malta</a></li>
+	            <li><a rel="nofollow" href="#moldova&quot;">Moldova</a></li>
+	            <li><a rel="nofollow" href="#montenegro&quot;">Montenegro</a></li>
+	            <li><a rel="nofollow" href="#norway&quot;">Norway</a></li>
+	            <li><a rel="nofollow" href="#poland&quot;">Poland</a></li>
+	            <li><a rel="nofollow" href="#portugal&quot;">Portugal</a></li>
+	            <li><a rel="nofollow" href="#romania&quot;">Romania</a></li>
+	            <li><a rel="nofollow" href="#russia&quot;">Russia</a></li>
+	            <li><a rel="nofollow" href="#scotland&quot;">Scotland</a></li>
+	            <li><a rel="nofollow" href="#serbia&quot;">Serbia</a></li>
+	            <li><a rel="nofollow" href="#slovakia&quot;">Slovakia</a></li>
+	            <li><a rel="nofollow" href="#slovenia&quot;">Slovenia</a></li>
+	            <li><a rel="nofollow" href="#spain&quot;">Spain</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#sweden&quot;">Sweden</a></li>
+	            <li><a rel="nofollow" href="#switzerland&quot;">Switzerland</a></li>
+	            <li><a rel="nofollow" href="#the-channel-islands&quot;">The Channel Islands</a></li>
+	            <li><a rel="nofollow" href="#the-netherlands&quot;">The Netherlands</a></li>
+	            <li><a rel="nofollow" href="#turkey&quot;">Turkey</a></li>
+	            <li><a rel="nofollow" href="#ukraine&quot;">Ukraine</a></li>
+	            <li><a rel="nofollow" href="#vatican-city&quot;">Vatican City</a></li>
+	            <li><a rel="nofollow" href="#wales&quot;">Wales</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#middle-east&quot;">
+	        Middle East
+	      </a>
+	      <div class="submenu hidden col1">
+	        <ul>
+	            <li><a rel="nofollow" href="#bahrain&quot;">Bahrain</a></li>
+	            <li><a rel="nofollow" href="#iran&quot;">Iran</a></li>
+	            <li><a rel="nofollow" href="#iraq&quot;">Iraq</a></li>
+	            <li><a rel="nofollow" href="#israel-and-the-palestinian-territories&quot;">Israel &amp; the Palestinian Territories</a></li>
+	            <li><a rel="nofollow" href="#jordan&quot;">Jordan</a></li>
+	            <li><a rel="nofollow" href="#kuwait&quot;">Kuwait</a></li>
+	            <li><a rel="nofollow" href="#lebanon&quot;">Lebanon</a></li>
+	            <li><a rel="nofollow" href="#oman&quot;">Oman</a></li>
+	            <li><a rel="nofollow" href="#qatar&quot;">Qatar</a></li>
+	            <li><a rel="nofollow" href="#saudi-arabia&quot;">Saudi Arabia</a></li>
+	            <li><a rel="nofollow" href="#syria&quot;">Syria</a></li>
+	            <li><a rel="nofollow" href="#united-arab-emirates&quot;">United Arab Emirates</a></li>
+	            <li><a rel="nofollow" href="#yemen&quot;">Yemen</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#north-america&quot;">
+	        North America
+	      </a>
+	      <div class="submenu hidden col1">
+	        <ul>
+	            <li><a rel="nofollow" href="#canada&quot;">Canada</a></li>
+	            <li><a rel="nofollow" href="#mexico&quot;">Mexico</a></li>
+	            <li><a rel="nofollow" href="#usa&quot;">USA</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#pacific&quot;">
+	        Pacific
+	      </a>
+	      <div class="submenu hidden col2">
+	        <ul>
+	            <li><a rel="nofollow" href="#american-samoa&quot;">American Samoa</a></li>
+	            <li><a rel="nofollow" href="#australia&quot;">Australia</a></li>
+	            <li><a rel="nofollow" href="#federated-states-of-micronesia&quot;">Federated States of Micronesia</a></li>
+	            <li><a rel="nofollow" href="#fiji&quot;">Fiji</a></li>
+	            <li><a rel="nofollow" href="#guam&quot;">Guam</a></li>
+	            <li><a rel="nofollow" href="#kiribati&quot;">Kiribati</a></li>
+	            <li><a rel="nofollow" href="#marshall-islands&quot;">Marshall Islands</a></li>
+	            <li><a rel="nofollow" href="#nauru&quot;">Nauru</a></li>
+	            <li><a rel="nofollow" href="#new-caledonia&quot;">New Caledonia</a></li>
+	            <li><a rel="nofollow" href="#new-zealand&quot;">New Zealand</a></li>
+	            <li><a rel="nofollow" href="#niue&quot;">Niue</a></li>
+	            <li><a rel="nofollow" href="#northern-mariana-islands&quot;">Northern Mariana Islands</a></li>
+	            <li><a rel="nofollow" href="#palau&quot;">Palau</a></li>
+	            <li><a rel="nofollow" href="#papua-new-guinea&quot;">Papua New Guinea</a></li>
+	            <li><a rel="nofollow" href="#pitcairn-island&quot;">Pitcairn Island</a></li>
+	              </ul><ul>
+	            <li><a rel="nofollow" href="#rarotonga-and-the-cook-islands&quot;">Rarotonga &amp; the Cook Islands</a></li>
+	            <li><a rel="nofollow" href="#samoa&quot;">Samoa</a></li>
+	            <li><a rel="nofollow" href="#solomon-islands&quot;">Solomon Islands</a></li>
+	            <li><a rel="nofollow" href="#tahiti-and-french-polynesia&quot;">Tahiti &amp; French Polynesia</a></li>
+	            <li><a rel="nofollow" href="#tokelau&quot;">Tokelau</a></li>
+	            <li><a rel="nofollow" href="#tonga&quot;">Tonga</a></li>
+	            <li><a rel="nofollow" href="#tuvalu&quot;">Tuvalu</a></li>
+	            <li><a rel="nofollow" href="#vanuatu&quot;">Vanuatu</a></li>
+	            <li><a rel="nofollow" href="#wallis-and-futuna&quot;">Wallis &amp; Futuna</a></li>
+	        </ul>
+	      </div>
+	    </li>
+	    <li>
+	      <img alt="More" src="http://static.lonelyplanet.com/static-ui/images/15x15_trans.gif" class="arrow">
+	      <a rel="nofollow" href="#south-america&quot;">
+	        South America
+	      </a>
+	      <div class="submenu hidden col1">
+	        <ul>
+	            <li><a rel="nofollow" href="#argentina&quot;">Argentina</a></li>
+	            <li><a rel="nofollow" href="#bolivia&quot;">Bolivia</a></li>
+	            <li><a rel="nofollow" href="#brazil&quot;">Brazil</a></li>
+	            <li><a rel="nofollow" href="#chile&quot;">Chile</a></li>
+	            <li><a rel="nofollow" href="#colombia&quot;">Colombia</a></li>
+	            <li><a rel="nofollow" href="#ecuador&quot;">Ecuador</a></li>
+	            <li><a rel="nofollow" href="#paraguay&quot;">Paraguay</a></li>
+	            <li><a rel="nofollow" href="#peru&quot;">Peru</a></li>
+	            <li><a rel="nofollow" href="#the-guianas&quot;">The Guianas</a></li>
+	            <li><a rel="nofollow" href="#uruguay&quot;">Uruguay</a></li>
+	            <li><a rel="nofollow" href="#venezuela&quot;">Venezuela</a></li>
+	        </ul>
+	      </div>
+	    </li>
+  </ul>
+</li>
+
+</ul>
+</div>-->

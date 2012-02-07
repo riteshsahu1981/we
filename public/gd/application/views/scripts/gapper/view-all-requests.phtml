@@ -1,0 +1,93 @@
+<script language="javascript" type="text/javascript">
+function acceptDeclineRequest(ctype, id, userid, friendid, status)
+{
+	$("span#req_response_"+id).html("<img src='/images/ajax-loader.gif'>");
+	var params = "mode=ajax&ctype="+ctype+"&id="+id+"&userid="+userid+"&friendid="+friendid+"&status="+status;
+	$.ajax({
+		   type: "POST",
+		   url: "/index/change-request/",
+		   data: params,
+		   dataType: "html",
+		   success: function(responseData)
+		   {
+				//alert("function call sucessfully ="+responseData);
+				$("span#req_response_"+id).html(responseData);
+				RAVIN_DelayedHide("req_response_"+id);
+				$("div#friendsProfile_"+id).hide();
+		   },
+		   error: function (json, status, e)
+		   {
+			   $("div#resp").html("Exception : "+e+json);
+		   }
+	 });
+}
+</script>
+<div id="center">
+		 <h2>View All Friend Requests</h2>
+		 <p>This section lists all pending friend request received.</p><br />
+         <a href="/gapper/add-a-connection" class="orange-big"><?php echo $this->puts("Add a friend")?></a><br/><br />
+<div>
+<?php 
+if($this->totalFriends>0)
+{
+	foreach($this->paginator as $row)
+	{
+		$_friend	= new Application_Model_Friend();
+		$_friend	= $_friend->find($row->id);
+
+		$userid		= $_friend->getUserId();
+		$friendid	= $_friend->getFriendId();
+		$conntype	= $_friend->getConnectionType();
+		$status		= $_friend->getStatus();
+
+		$userObj    = $_friend->getUserObj();
+		if(!is_null($userObj))
+		{
+			$thumb = "";
+			//$thumb		= $_friend->getThumbnail();
+			//echo "<br>img=>".$userObj->image." fac=>".$userObj->facebook_id." user id=>".$userObj->id;
+			$thumb		= $_friend->getThumbnail($userObj->image, $userObj->facebook_id, $userObj->sex);
+
+?>
+<div class="friends-box" id="friendsProfile_<?php echo $row->id;?>">
+   		<div class="friends-box-img">
+			<a href ="/<?php echo $userObj->username?>">
+			<?php //if(null != $userObj->image) { ?>
+				<!--<img src="/media/picture/profile/thumb_<?php echo $userObj->image; ?>" style="float:left;margin:0 10px 5px 0;" width="86" border="0" />-->
+			<?php //} else { ?>
+				<!--<img src="/images/noimage-86x101.jpg" width="86" style="float:left;margin:0 10px 5px 0;" border="0" />-->
+			<?php //} ?>
+			<img src="/image?src=<?php echo $thumb;?>&size=friends" border="0" />
+			</a>
+		</div>
+		<div class="friend-box-center"> 
+			<a href ="/<?php echo $userObj->username?>">
+			<span class="connect-name" style="width:300px;">
+			<?php echo $userObj->first_name.' '.$userObj->last_name;?>
+			</span>
+			</a>
+			<span class="connect-type"><?php echo ucfirst($conntype); ?></span>
+			<?php //echo "con=$conntype, id=$row->id, user=$userid, friend id=$friendid";?>
+			<span class="connect-action" id="req_response_<?php echo $row->id;?>" style="width:300px;">
+				<a href ="javascript://" onclick="acceptDeclineRequest('<?php echo $conntype;?>','<?php echo $row->id;?>','<?php echo $userid?>','<?php echo $friendid?>','accept');"><b>Accept</b></a> | <a href ="javascript://" onclick="acceptDeclineRequest('<?php echo $conntype;?>','<?php echo $row->id;?>','<?php echo $userid?>','<?php echo $friendid?>','decline');">Decline</a>
+			</span>
+			
+		</div>
+		<div class="friend-box-right">
+			<div class="connection-you f-left"></div>
+			<div><b>Status:</b> <?php echo ucwords($status);?></div>
+			<div id="resp" style="clear:both; float:right;"></div>
+		</div>   
+</div>
+<?php
+    }//end of if
+}//end of foreach
+echo  "<div class='clear'>".$this->paginationControl($this->advices, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param))."</div>";
+}//end of if
+else
+{
+	echo "<span style='color:#ff0000;'>No friend requests received.</span>";
+}
+?>
+</div>
+</div>

@@ -1,9 +1,0 @@
-
-[16:54:19] Paul: can you login to the admin of villa4cyprus and create a folder and try that one?
-[16:55:10] Paul: Login: villa4cy
-
-Username: pmchg459242
-[16:55:22] Paul: www.villa4cyprus.co.uk/cpanel
-[16:56:13] Paul: FTP
-[16:56:21] Paul: paul@villa4cyprus.co.uk
-[16:56:50] Paul: Password is Dvr1974

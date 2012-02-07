@@ -1,0 +1,85 @@
+<script type="text/javascript" src="/js/scripts.js"></script>
+<div id="main-left">
+  <div class="desitnation-name">
+    <h2 class="main-heading f-left"><b><?php echo $this->puts($this->title);?></b></h2>
+  </div>
+  <?php if(isset($this->cityImagesArr) && count($this->cityImagesArr)>0){?>
+  <div id="image-gallery">
+    <div id="slide-holder">
+      <div id="slide-runner">
+	  <?php 
+	  $city_images = $this->cityImagesArr;
+	  $slider_data = "";
+	  for($imgCnt=0; $imgCnt<count($city_images); $imgCnt++)
+	  {
+		$slider_data .= '{"id":"slide-img-'.$imgCnt.'","client":"'.$city_images[$imgCnt]['title'].'","desc":"'.$city_images[$imgCnt]['title'].'"},';
+		
+		$slideLabel		= $city_images[$imgCnt]['label'];
+		$slideUrl		= "";
+		$slideUrlTarget	= "_self";
+		
+		if($city_images[$imgCnt]['url']!="")
+		{
+			$slideUrl = $city_images[$imgCnt]['url'];
+		}
+		if($city_images[$imgCnt]['target']!="")
+		{
+			$slideUrlTarget = $city_images[$imgCnt]['target'];
+		}
+	  ?>
+		<a href="<?php echo $slideUrl;?>" target="<?php echo $slideUrlTarget;?>" title="<?php echo $slideLabel;?>">
+		<? if ($city_images[$imgCnt]['type']=="image"){?>
+		<img align="middle" id="slide-img-<?php echo $imgCnt;?>" src="<?php echo $this->cdnUri();?>/image.php?src=media/picture/home/<?php echo $city_images[$imgCnt]['image'];?>&h=347&w=625" class="slide" alt="" />
+		<? }else{?>
+		<div><?php echo $city_images[$imgCnt]['text'];?></div>
+		<? }?>
+		</a>
+	  <?php
+	  }//end for
+	  $slider_data = substr($slider_data, 0, strlen($slider_data)-1);
+	  ?>
+	  <div id="slide-controls">
+          <p id="slide-client" class="text"><strong></strong><span></span></p>
+          <p id="slide-nav"></p>
+        </div>
+      </div>
+      <!--content featured gallery here -->
+    </div>
+    <script type="text/javascript">
+		if(!window.slider) var slider={};
+		slider.data = [<?php echo $slider_data;?>];
+	</script>
+  </div>
+   <?php } //end of if?>
+  
+  <div class="tab_container_destination">
+    <!-- DIV Tab1 START -->
+	<div id="tab1" class="tab_content">
+	<h2 class="desti-heading"><?php echo $this->puts($this->subTitle);?></h2>
+    <div class="intro"><?php echo $this->puts($this->desription);?></div>
+	  	  
+	<?php if(isset($this->featuredOtherArr) && count($this->featuredOtherArr)>0){?>
+    <h2 class="desti-heading"><?php echo $this->puts("MORE TRAVEL GUIDES");?></h2>
+    <?php foreach($this->featuredOtherArr AS $cities){?>
+	<div class="desti-cat">
+        <div class="desti-cat-img">
+		<?php if(isset($cities['city_image']) && $cities['city_image']!=""){?>
+		<img align="middle" src="<?php echo $this->cdnUri();?>/image.php?src=media/picture/city/<?php echo $cities['city_image'];?>&h=130&w=220" alt="" />
+		<?php }else{?>
+		<img alt="" src="/images/dest-1.jpg">
+		<?php }?>
+		</div>
+        <div class="desti-cat-right">
+          <h3><?php echo $this->puts($cities['name']);?>, <?php echo $this->puts($cities['country']);?></h3>
+          <p><?php echo $this->puts(substr($cities['nutshell'],0,250));?> ...</p>
+          <br />
+          <a href="<?php echo $this->seoUrl('/destination/city/id/'.$cities['city_id']);?>" class="learn-more">View Travel Guide</a> </div>
+     </div>
+	<?php }//end of foreach?>
+    <?php }//end of if?>
+	
+	</div>
+	<!-- DIV Tab1 END -->
+  </div>
+</div>
+<!--<div id="journal-right"> Right </div>-->

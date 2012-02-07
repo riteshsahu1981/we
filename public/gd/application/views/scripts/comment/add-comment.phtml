@@ -1,0 +1,28 @@
+<?php 
+if($this->comment)
+{
+   $date			=	new Base_Date();
+   $objModelUser	=	new Application_Model_User();
+   
+   $objComment = $this->comment;  
+   foreach($objComment as $comment)
+   {
+		$objUser 	= 	$objModelUser->find($comment->userId);
+		$username	=	$objUser->getUsername();
+		$firstname	=	$objUser->getFirstName();
+		$lastname	=	$objUser->getLastName();
+		$image		=	$objUser->getThumbnail();
+?>
+	<div class="my-journal-view-comment-row" id="comment-list-<?php echo $comment->getId();?>">
+		<div class="my-journal-view-comment-row-l">
+		<a href="/<?php echo $username;?>"><img width="37px" height="43px" border="0" src="<?php echo $image?>" alt="" /></a>
+		</div>
+			<div class="my-journal-view-comment-row-r">
+			<p><span><a href="/<?php echo $username;?>"><?php echo $firstname.' '.$lastname;?></a></span> <?php echo $comment->comment;?></p>
+			<div class="jposted">Posted  <?php echo $date->timeAgo($comment->getAddedon())?> | <a href="" title="Remove Comment">Remove</a> </div>
+		</div>
+	</div>
+<?php 
+	}//end of foreach	   
+}//end of if
+?>

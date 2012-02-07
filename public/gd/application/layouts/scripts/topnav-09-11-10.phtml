@@ -1,0 +1,170 @@
+<div id="myjquerymenu" class="jquerycssmenu">
+<?php 
+    echo '<ul >';
+    // loop root level (only has Home, but later may have an Admin root page?)
+    foreach ($this->container as $page) {
+    	
+        // check if it is active (not recursive)
+        $isActive = $page->isActive(false);
+        $liClass = $isActive ? ' class="active"' : '';
+
+
+        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($page->getUri()) . '">'.$this->puts($page->getLabel()).'</a></li>', PHP_EOL;
+        // loop next level
+        foreach ($page as $p) {
+        	
+        	if($p<>"Login" && $p<>"Register")
+        	{
+                    $url="/".$p->getController()."/".$p->getAction();
+        		
+	            // check if it is active (recursive)
+	            $isActive = $p->isActive(true);
+                    //var_dump($isActive);
+	            $liClass = $isActive ? ' class="active"' : '';
+                    if($p=="My Gap Daemon")
+                    {
+                        if (Zend_Auth::getInstance()->hasIdentity()){
+                        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                        else
+                        {
+                            echo '<li ' . $liClass . '><a onclick="loginPopUp(\'Please Login\')" href="javascript:#;">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                    }
+                    else
+                    {
+                        if($p=="Work/Study/Volunteer" || $p=="Advice" || $p=="Destinations")
+                        echo '<li ' . $liClass . '><a class="main-nav-class" href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        else
+                        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+
+                    }
+                   
+	            if($p=="Destinations")
+	            {
+                       $cache = Zend_Cache::factory("Output","File");
+
+                       if (!($cache->start('destination_navigat'))) {
+
+	            	$continentM=new Application_Model_Continent();
+	            	$continents=$continentM->getContinent();
+	            	if(count($continents)>0){
+		            	echo '<ul>';
+		            	foreach($continents as $continent_id=>$continents){
+		            		echo '<li><a href="/destination/continent/id/'.$continent_id.'">'.$continents.'</a>';
+		            		
+		            		/*---country-----*/
+		            		$countryM=new Application_Model_Country();
+		            		$countries=$countryM->getCountry(null, $continent_id);
+                                        $total_countries=count($countries);
+			            	if($total_countries>0){
+                                         
+                                            if($total_countries<=20  )
+                                            {
+                                                $ctr=1;
+                                            }
+                                            else
+                                            {
+
+                                               $q=$total_countries/20;
+                                               $ctr=$q+1;
+                                            }
+                                                $ulctr=0;
+                                                
+                                                echo "<div class='call{$ctr}'>";
+		            			echo '<ul >';
+		            			foreach($countries as $country_id=>$country)
+                                                {
+		            				echo '<li><a href="/destination/country/id/'.$country_id.'">'.$country.'</a>';
+		            				echo '</li>';
+                                                        $ulctr++;
+                                                        if($ulctr==20)
+                                                        {
+                                                            echo '</ul>';
+                                                            echo '<ul>';
+                                                            $ulctr=0;
+                                                        }
+		            			}//end of country foreach
+			            		echo '</ul>';
+                                                
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+                        $cache->end();
+                    }//caching
+	            }
+	            
+	            
+	            
+        	 if($p=="Work/Study/Volunteer")
+	            {
+	            	
+	            	$mainCats=array("work"=>"Work", "study"=>"Study", "volunteer"=>"Volunteer");
+	            	if(count($mainCats)>0){
+		            	echo '<ul>';
+		            	foreach($mainCats as $identifier=>$mainCat){
+		            		echo '<li><a href="/work-study-volunteer/category-detail/category/'.$identifier.'">'.$mainCat.'</a>';
+		            		
+		            		/*---country-----*/
+		            		$categoryM=new Application_Model_Category();
+		            		$categories=$categoryM->getCategory(null,$identifier);
+			            	if(count($categories)>0){	
+		            			echo '<ul>';
+		            			foreach($categories as $category_id=>$category){
+		            				echo '<li><a href="/work-study-volunteer/detail/id/'.$category_id.'">'.$category.'</a>';
+		            				/*---city-----*/
+				            		$articleM=new Application_Model_Articles();
+				            		$articles=$articleM->getArticle(null, $category_id);
+					            	if(count($articles)>0){
+				            			echo '<ul>';
+				            			foreach($articles as $article_id=>$article){
+				            				echo '<li><a href="/work-study-volunteer/article-detail/id/'.$article_id.'">'.$article.'</a>';
+				            				
+				            				
+						            		echo '</li>';
+				            			}//end of city foreach
+					            		echo '</ul>';
+					            	}
+					            	/*--------------------*/
+				            		echo '</li>';
+		            			}//end of country foreach
+			            		echo '</ul>';
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+	            }
+	            
+	            if($p=="Advice")
+	            {
+                        $adviceM=new Application_Model_Advice();
+                        $advices=$adviceM->fetchAll("status='1'");
+	            	if(count($advices)>0)
+                         {
+                            echo '<ul class="advice-menu">';
+                            foreach($advices as $_advice){
+                                    echo '<li><a href="/advice/detail/id/'.$_advice->getId().'">'.$_advice->getTitle().'</a>';
+                                    echo '</li>';
+                            }//end of continent foreach
+                            echo '</ul>';
+	            	}
+	            }
+	           echo '</li>', PHP_EOL;
+        	}
+        }
+    }
+    echo '</ul>';
+    
+    
+    
+    ?>
+   <br style="clear: left" />
+</div>
+    

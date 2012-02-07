@@ -1,0 +1,120 @@
+<div>
+<div>
+<span id="photo-saved" style="display:none;"></span>
+<span><a href="javascript:void(0);" id="close-album-photo-edit-box">Close</a></span>
+</div>
+	<div>
+		<span>
+			<label>Name of Photo</label>
+			<input type="text" name="name" id="name" value="<?php print $this->name;?>" />
+		</span><br /><br />
+		<span>
+			<label>Caption</label>
+			<textarea name="caption" id="caption" rows="5" cols="25"><?php print $this->caption;?></textarea>
+		</span><br /><br />
+		<span>
+			<label>Photo Location</label>
+			<input type="text" name="photo_location" id="photo_location" value="<?php print $this->location;?>" />
+		</span><br /><br />
+		<span>
+			<label>Permissions</label>
+			<select name="permissions" id="permissions">
+				<?php foreach($this->arrFriendGroup as $key=>$value){?>
+				<option value="<?php print $key;?>" <?php if($this->permission==$key){?> selected="selected" <?php }?>><?php print $value;?></option>
+				<?php }?>
+			</select>
+			
+		</span><br /><br />
+		<span>
+			<label>Photo Tags</label>
+			<textarea name="photo_tags" id="photo_tags" rows="5" cols="25"><?php print $this->albumPhotoTag;?></textarea>
+		</span>
+	</div>
+	
+	<div>
+		<span><img src="/images/album/thumb/<?php print $this->photo;?>" alt=""></span>
+		<br />
+		<a id="album_photo_delete" href="javascript:void(0);">Delete Photo</a>
+		<span>
+			<select name="current_album_id" id="current_album_id">
+				<?php foreach ($this->arrAlbum as $id=>$name){?>
+				<option value="<?php print $id;?>" <?php if($this->albumId==$id){?> selected="selected" <?php }?>><?php print $name;?></option>
+				<?php }?>
+			</select>
+		</span>
+	</div>
+	
+	<div>
+		<span>
+			<input type="hidden" name="current_photo_id" id="current_photo_id" value="<?php print $this->current_photo_id;?>">
+			<input type="button" id="save-photo" name="save" value="SAVE" class="button" />
+		</span>
+		<span>
+			<a href="javascript:void(0);" onclick="slidePhotoEdit(<?php print $this->prevId;?>);">&lt; Previous Photo</a> 
+			<a href="javascript:void(0);" onclick="slidePhotoEdit(<?php print $this->nextId;?>);">Next Photo &gt;</a>
+		</span>
+	</div>
+	
+</div>
+<script>
+$(document).ready(function(){
+	$("a#close-album-photo-edit-box").click(function(){
+
+		$("#photo-editing").html("<span id='loading-wall'><img src='<?php echo $this->cdnUri()?>/images/loading.gif' alt=''/></span>");
+		$("#photo-editing").fadeOut(500);
+
+	});
+});
+
+$(document).ready(function(){
+	$("a#album_photo_delete").click(function(){
+
+		 var photoId	=	$("#current_photo_id").val();
+
+		 var requesturl	=	"/album/my-photos/album-photo-delete";
+
+		 $.post(requesturl, {photoId:photoId},
+				   function(html){
+			 		slidePhotoEdit(<?php print $this->nextId;?>);
+			 		$("#photo-saved").show();
+		 			$("#photo-saved").html('Photo has been deleted.');
+		 			RAVIN_DelayedHide('photo-saved');			 				
+				});
+
+	});
+});
+
+$(document).ready(function(){
+	$("input#save-photo").click(function(){
+		
+		$("#photo-loading").show();
+		var photoId		=	$("#current_photo_id").val();
+		var albumId		=	$("#current_album_id").val();
+		var name		=	$("#name").val();
+		var caption		=	$("#caption").val();
+		var location	=	$("#photo_location").val();
+		var permissions	=	$("#permissions").val();
+		var tags	=	$("#photo_tags").val();
+
+		if(name	==	""){
+			alert("Please enter Name of Photo!");
+			return false;
+		}
+
+		 var requesturl	=	"/album/my-photos/album-photo-edit-submit";
+
+		 $.post(requesturl, {photoId:photoId,albumId:albumId,name:name,caption:caption,location:location,permissions:permissions,tags:tags },
+				   function(html){
+			 			$("#photo-loading").hide();	
+			 			$("#photo-saved").show();
+			 			$("#photo-saved").html('Photo detail has been saved.');
+			 			RAVIN_DelayedHide('photo-saved');
+			 				
+				});
+		 
+		 
+
+	});
+});
+
+</script>

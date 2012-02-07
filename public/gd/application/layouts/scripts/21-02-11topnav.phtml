@@ -1,0 +1,243 @@
+<div id="myjquerymenu" class="jquerycssmenu">
+<?php
+	
+	echo '<ul>';
+//print_r($this->container);exit;
+    // loop root level (only has Home, but later may have an Admin root page?)
+    foreach ($this->container as $page)
+	{
+        // check if it is active (not recursive)
+        $isActive = $page->isActive(false);
+        $liClass = $isActive ? ' class="active"' : '';
+
+        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($page->getUri()) . '">'.$this->puts($page->getLabel()).'</a></li>', PHP_EOL;
+		// loop next level
+        foreach ($page as $p)
+		{
+        	if($p<>"Login" && $p<>"Register")
+        	{
+				$url="/".$p->getController()."/".$p->getAction();
+        		
+	            // check if it is active (recursive)
+	            $isActive = $p->isActive(true);
+                    //var_dump($isActive);
+                    if($p=="Travel Guides")
+                        $liClass = $isActive ? ' class="active desti-link-2"' : ' class="main-nav-class"';
+                        else
+	            $liClass = $isActive ? ' class="active"' : '';
+                    if($p=="My Gap Daemon")
+                    {
+                        if (Zend_Auth::getInstance()->hasIdentity()){
+                        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                        else
+                        {
+                            echo '<li ' . $liClass . '><a onclick="loginPopUpExt(\'Please Login\',\''.$this->seoUrl("/gapper/where-i-am").'\')" href="javascript://">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                    }
+                    else
+                    {
+                        if($p=="Work/Study/Volunteer" || $p=="Advice")
+						{
+                            echo '<li ' . $liClass . '><a class="main-nav-class" href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+						//add new class to Travel Guides Tab, BY mahipal on 18-Jan-2011
+						else if($p=="Travel Guides")
+						{
+							echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '"  class="main-nav-class">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+						}						 
+                        else
+                        {
+                            echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+                        }
+                    }
+                
+				if($p=="Travel Guides")
+	            {
+                       $cache = Zend_Cache::factory("Output","File");
+
+                    if (!($cache->start('TravelGuides'))) {
+                    //if (!($cache->start('TravelGuides'.rand(1,1000)))) {
+
+	            	$continentM=new Application_Model_Continent();
+	            	$continents=$continentM->getContinent();
+	            	if(count($continents)>0){
+		            	echo '<ul>';
+		            	foreach($continents as $continent_id=>$continents){
+                                    $countryM=new Application_Model_Country();
+		            		$countries=$countryM->getCountry(null, $continent_id);
+                                        $total_countries=count($countries);
+		            		//echo '<li><a href="/destination/continent/id/'.$continent_id.'"> ( '.$total_countries.' ) '.$continents.'</a>';
+							echo '<li><a href="javascript://">'.$continents.'</a>';
+		            		
+		            		/*---country-----*/
+		            		
+			            	if($total_countries>0){
+                                         $per_column=20;
+                                            if($total_countries<=$per_column  )
+                                            {
+                                                $ctr=1;
+                                            }
+                                            else
+                                            {
+                                                $rem=$total_countries/$per_column;
+                                                $q=(int)($total_countries/$per_column);
+                                                if($rem>0)
+                                                {
+                                                    $ctr=$q+1;
+                                                }
+                                                else
+                                                {
+                                                    $ctr=$q;
+                                                }
+                                            }
+                                                $ulctr=0;
+                                                
+                                                //echo "<div class='call{$ctr}'>";
+		            			echo '<ul>';
+                                                echo '<li>';
+                                                echo '<dl class="dest-box'.$ctr.'">';
+                                                echo  '<dd>';
+                                                $total_block=0;
+		            			foreach($countries as $country_id=>$country)
+                                                {
+													//check country data into lonely planet feeds if exists then will appear here
+													$destinationM	=	new Application_Model_Destination();
+													$destinationCountry = $destinationM->checkCountryData($country_id);
+													if(false!==$destinationCountry)
+													{
+														echo '<a href="'.$this->seoUrl('/destination/country/id/'.$country_id).'">'.$country.'</a>';
+                                                        $ulctr++;
+                                                        if($ulctr==$per_column)
+                                                        {
+                                                         echo '</dd>';
+                                                         $total_block++;
+                                                         if($total_block<$ctr)
+                                                            echo '<dd>';
+                                                            $ulctr=0;
+                                                        }
+													}//end of if	
+		            			}//end of country foreach
+                                                echo '</dd>';
+                                                echo '</dl>';
+                                                echo '</li>';
+			            		echo '</ul>';
+                                                
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+                        $cache->end();
+                    }//caching
+	            }
+	            
+	            
+	            
+        	 if($p=="Work/Study/Volunteer_old")
+	            {
+	            	
+	            	$mainCats=array("work"=>"Work", "study"=>"Study", "volunteer"=>"Volunteer");
+	            	if(count($mainCats)>0){
+		            	echo '<ul>';
+		            	foreach($mainCats as $identifier=>$mainCat){
+		            		//echo '<li><a href="/work-study-volunteer/category-detail/category/'.$identifier.'">'.$mainCat.'</a>';
+							//echo '<li><a href="/work-study-volunteer/'.$identifier.'">'.$mainCat.'</a>';
+                                    echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/category-detail/category/'.$identifier).'">'.$mainCat.'</a>';
+		            		
+		            		/*---country-----*/
+		            		$categoryM=new Application_Model_Category();
+		            		$categories=$categoryM->getCategory(null,$identifier);
+			            	if(count($categories)>0){	
+		            			echo '<ul>';
+		            			foreach($categories as $category_id=>$category){
+		            				echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/detail/id/'.$category_id).'">'.$category.'</a>';
+		            				/*---city-----*/
+				            		$articleM=new Application_Model_Articles();
+				            		$articles=$articleM->getArticleMore($category_id);
+                                                        //print_r($articles);
+					            	if(count($articles)>0){
+				            			echo '<ul>';
+				            			foreach($articles as $article){
+				            				//echo '<li><a href="/work-study-volunteer/article-detail/id/'.$article_id.'">'.$article.'</a>';
+				            				//echo '<li><a href="/work-study-volunteer/article-detail/id/'.$article->getId().'">'.$article->getTitle().'</a>';
+                                                                    //echo '<li><a href="/work-study-volunteer/'.$article->getIdentifire().'">'.$article->getTitle().'</a>';
+				            				echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/article-detail/id/'.$article->getId()).'">'.$article->getTitle().'</a>';
+				            				
+						            		echo '</li>';
+				            			}//end of city foreach
+					            		echo '</ul>';
+					            	}
+					            	/*--------------------*/
+				            		echo '</li>';
+		            			}//end of country foreach
+			            		echo '</ul>';
+			            	}
+			            	/*--------------------*/
+			            	
+		            		echo '</li>';
+		            	}//end of continent foreach
+		            	echo '</ul>';
+	            	}
+	            }
+	            if($p=="Work/Study/Volunteer")
+	            {
+					$categoryM		= 	new Application_Model_Category();
+					$categoryRes	=	$categoryM->fetchAll("status='published' AND type='wsv'","weight ASC");
+					if(false!==$categoryRes)
+					{
+						if(count($categoryRes)>0)
+						{
+							echo '<ul class="advice-menu">';
+							foreach($categoryRes as $category)
+							{
+								echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/category/id/'.$category->getId()).'">'.$category->getName().'</a></li>';
+							}//end foreach
+							echo '</ul>';
+						}
+					}//end if
+	            }
+	            if($p=="Advice_old")
+	            {
+					$adviceM=new Application_Model_Advice();
+					$advices=$adviceM->fetchAll("status='1'");
+					if(count($advices)>0)
+					{
+						echo '<ul class="advice-menu">';
+						foreach($advices as $_advice)
+						{
+							// echo '<li><a href="/advice/detail/id/'.$_advice->getId().'">'.$_advice->getTitle().'</a>';
+							//echo '<li><a href="/advice/'.$_advice->getIdentifire().'">'.$_advice->getTitle().'</a>';
+							echo '<li><a href="'.$this->seoUrl('/advice/detail/id/'.$_advice->getId()).'">'.$_advice->getTitle().'</a>';
+							echo '</li>';
+						}//end of continent foreach
+						echo '</ul>';
+					}
+	            }
+				if($p=="Advice")
+	            {
+					$categoryM		= 	new Application_Model_Category();
+					$categoryRes	=	$categoryM->fetchAll("status='published' AND type='advice'","name ASC");
+					if(false!==$categoryRes)
+					{
+						if(count($categoryRes)>0)
+						{
+							echo '<ul class="advice-menu">';
+							foreach($categoryRes as $category)
+							{
+								echo '<li><a href="'.$this->seoUrl('/advice/category/id/'.$category->getId()).'">'.$category->getName().'</a></li>';
+							}//end foreach
+							echo '</ul>';
+						}
+					}//end if
+	            }
+	           echo '</li>', PHP_EOL;                 
+        	}
+        }
+    }
+	echo "<li><a href='http://blog.gapdaemon.com' target='_blank'>GD Blog</a></li>";
+    echo '</ul>';   
+    ?>
+</div>

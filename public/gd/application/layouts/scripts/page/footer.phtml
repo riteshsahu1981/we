@@ -1,0 +1,178 @@
+<!-- Start Footer -->
+<div class="footer">
+<div class="footer-m">
+<div style="width:100%; float:left;">
+<div class="footer-logo">2010 Gap Daemon. All rights reserved.</div>
+<div class="bookmark">Bookmark Us<br /><img src="<?echo $this->cdnUri()?>/images/bookmark.jpg" alt="" border="0" usemap="#Map">
+  <map name="Map">
+    <area shape="rect" coords="1,1,26,24" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=googlebuzz&amp;url=<?php echo $this->cdnUri();?>&amp;title=Gap Daemon&amp;content=&amp;lng=en" target="_blank" title="Google Buzz">
+    <area shape="rect" coords="31,1,60,27" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=delicious&amp;url=<?php echo $this->cdnUri();?>&amp;title=Gap Daemon&amp;content=&amp;lng=en" target="_blank" title="Delicious">
+    <area shape="rect" coords="62,-1,92,32" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=digg&amp;url=<?php echo $this->cdnUri();?>&amp;title=Gap Daemon&amp;content=&amp;lng=en" target="_blank" title="Digg This">
+    <area shape="rect" coords="96,-3,124,33" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=google&amp;url=<?php echo $this->cdnUri();?>&amp;title=Gap Daemon&amp;content=&amp;lng=en" target="_blank" title="Google">
+    <area shape="rect" coords="130,-1,156,26" href="//www.addthis.com/bookmark.php?v=250&winname=addthis&pub=&source=tbx32-250,max-250&lng=en&s=reddit&url=<?php echo $this->cdnUri();?>&title=Gap Daemon&amp;content=&amp;lng=en" target="_blank" title="Reddit">
+    <area shape="rect" coords="159,-3,198,36" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=stumbleupon&amp;url=<?php echo $this->cdnUri();?>&amp;title=Gap Daemon&amp;content=&amp;lng=en" target="_blank" title="Stumbleupon">
+  </map>
+</div>
+<div class="bookmark">Follow Us<br /><a target="_blank" href="http://twitter.com/gapdaemon" title="Follow us on Twitter"><img alt="" src="<?echo $this->cdnUri()?>/images/twitter.jpg" border="0"><a/><a title="Follow us on Facebook" class="twitter" target="_blank" href="http://www.facebook.com/home.php?#!/GapDaemon?ref=ts"><img alt="" src="<?echo $this->cdnUri()?>/images/facebook.jpg" border="0"></a>
+<a title="Follow us on You Tube" class="twitter" target="_blank" href="http://www.youtube.com/user/GapDaemon1"><img alt="" src="<?echo $this->cdnUri()?>/images/youtube.png" border="0"></a>
+</div>
+</div>
+<div style="float: left; margin: -35px 0px 0px 295px; height:auto;">
+<div class="further-info" id="foot1">	
+<h1>Further Information</h1>
+<ul class="f-left">
+<?php
+//added by Mahipal on 23-feb-2011, testing page CMS uniform index action for all pages 
+$old = true;
+if ($old)
+{
+?>
+<li><a href="<?php echo $this->seoUrl("/index/about")?>">About Us</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/contact")?>">Contact Us</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/work-for-us")?>">Work for Us</a></li>
+<li><a href="http://blog.gapdaemon.com" target="_blank">GD Blog</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/safety-policy")?>">Safety Policy</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/terms-conditions")?>">Terms &amp; Conditions</a></li>
+<li><a href="<?php echo $this->seoURl("/index/privacy-policy")?>">Privacy Policy</a></li>
+<li><a href="<?php echo $this->seoURl("/index/press-media")?>">Press/Media</a></li>
+<li><a href="<?php echo $this->seoURl("/index/advertising-and-partnerships")?>">Advertising and <br/>Partnerships</a></li>
+<?php }else{ ?>
+<li><a href="<?php echo $this->seoUrl("/index/page/identifire/about")?>">About Us</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/contact")?>">Contact Us</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/page/identifire/work-for-us")?>">Work for Us</a></li>
+<li><a href="http://blog.gapdaemon.com" target="_blank">GD Blog</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/page/identifire/safety-policy")?>">Safety Policy</a></li>
+<li><a href="<?php echo $this->seoUrl("/index/page/identifire/terms-conditions")?>">Terms &amp; Conditions</a></li>
+<li><a href="<?php echo $this->seoURl("/index/page/identifire/privacy-policy")?>">Privacy Policy</a></li>
+<li><a href="<?php echo $this->seoURl("/index/page/identifire/press-media")?>">Press/Media</a></li>
+<li><a href="<?php echo $this->seoURl("/index/page/identifire/advertising-and-partnerships")?>">Advertising and <br/>Partnerships</a></li>
+<?php } ?>
+</ul>
+<h1>Travel Guides</h1>	
+<ul class="f-left">
+<?php
+//select featured Places/City
+$destinationM	= new Application_Model_Destination();
+$featuredPlaces = $destinationM->selectFeaturedPlaces();
+if(count($featuredPlaces)>0)
+{
+	foreach($featuredPlaces AS $cities)
+	{
+?>
+<li><a href="<?php echo $this->seoUrl('/destination/city/id/'.$cities['city_id']);?>"><?php echo $this->puts($cities['name']);?></a></li>
+<?php
+	}//foreach
+}//end if
+
+//select Featured Country
+$countryM	=	new Application_Model_Country();
+$countryArr	=	$countryM->fetchAll("featured=1", "name ASC");
+if(false!==$countryArr && count($countryArr)>0)
+{
+	foreach($countryArr AS $row)
+	{
+		?>
+		<li><a href="<?php echo $this->seoUrl('/destination/country/id/'.$row->id);?>"><?php echo $this->puts($row->name);?></a></li>		
+		<?php
+	}
+}
+?>
+</ul>
+</div>
+
+<div class="further-info" id="foot2">	
+<h1>Travel Advice</h1>
+<ul class="f-left">
+<?php
+$adviceM = new Application_Model_Advice();
+$where		=	"status='1'";
+$orderBy	=	"addedon DESC";
+$limit		=	12;
+$advices = $adviceM->fetchAll($where, $orderBy, $limit);
+if(count($advices)>0)
+{
+	foreach($advices as $_advice)
+	{
+?>
+<li><a href="<?php echo $this->seoUrl('/advice/detail/id/'.$_advice->getId());?>"><?php echo $_advice->getTitle();?></a></li>
+<?php
+	}//foreach
+}//end if
+?>
+</ul>
+</div>
+
+<div class="further-info" id="foot3">	
+<h1>Work / Study / Volunteer</h1>
+<ul class="f-left">
+<?php
+/*
+$mainCats=array("work"=>"Work", "study"=>"Study", "volunteer"=>"Volunteer");
+if(count($mainCats)>0)
+{
+	foreach($mainCats as $identifier=>$mainCat)
+	{
+		echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/category-detail/category/'.$identifier).'">'.$mainCat.'</a>';
+		            		
+		$categoryM	= new Application_Model_Category();
+		$categories	= $categoryM->getCategory(null,$identifier);
+		if(count($categories)>0)
+		{	
+			foreach($categories as $category_id=>$category)
+			{
+				echo '<li class="sub"><a href="'.$this->seoUrl('/work-study-volunteer/detail/id/'.$category_id).'">'.$category.'</a>';
+			}//end foreach
+		}//if
+   	}//end of foreach
+}//if
+*/
+$categoryM		= new Application_Model_Category();
+$categoryRes	= $categoryM->fetchAll("status='published' AND type='wsv'","weight ASC");
+if(false!==$categoryRes)
+{
+	if(count($categoryRes)>0)
+	{
+		foreach($categoryRes as $category)
+		{
+			echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/category/id/'.$category->id).'">'.$category->name.'</a></li>';
+			$articlesM	=	new Application_Model_Articles();
+			$where		=	"category_id={$category->getId()} AND status='1'";
+			$orderBy	=	"addedon DESC";
+			$limit		=	3;
+			$articlesRes = $articlesM->fetchAll($where, $orderBy, $limit);
+			if(false!==$articlesRes)
+			{
+				if(count($articlesRes)>0)
+				{	
+					foreach($articlesRes AS $article)
+					{
+						echo '<li class="sub"><a href="'.$this->seoUrl('/work-study-volunteer/article-detail/id/'.$article->id).'">'.$article->title.'</a></li>';
+					}//end foreach
+				}//if
+			}//if	
+		}//end foreach
+	}//if
+}//end if
+?>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- End Footer -->
+
+<!-- Google Analytics Code -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-18161261-1']);
+  _gaq.push(['_setDomainName', '.gapdaemon.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>

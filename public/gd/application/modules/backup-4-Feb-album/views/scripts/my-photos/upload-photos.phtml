@@ -1,0 +1,47 @@
+ 
+<link href="/uploadify/uploadify.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="/uploadify/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="/uploadify/swfobject.js"></script>
+<script type="text/javascript" src="/uploadify/jquery.uploadify.v2.1.4.min.js"></script>
+      <script type="text/javascript">
+      $(document).ready(function() {
+        $('#file_upload').uploadify({
+          'uploader'  : '/uploadify/uploadify.swf',
+          'buttonText'  : 'BROWSE',
+          'script'    : '/uploadify/uploadify.php',
+          'cancelImg' : '/uploadify/cancel.png',
+          'folder'    : '/images/uploads',
+		 // 'buttonImg'   : '/uploadify/button.jpg',
+          'displayData' : 'percentage', // 'speed'
+          'expressInstall' : '/uploadify/expressInstall.swf', // The path to the expressInstall.swf file.
+          'fileDataName' : 'filename',	// The name of your files array in the back-end script.
+          'fileExt'     : '*.jpg;*.jpeg;*.gif;*.png',
+          'fileDesc'    : 'Web Image Files (.JPG, .GIF, .PNG)',
+          'removeCompleted' : false,	// The size limit in bytes for each file upload.
+          //'scriptData'  : {'firstName':'Ronnie','age':30}
+          'sizeLimit'   : 102400000,	// The size limit in bytes for each file upload.
+          'auto'      : false,	//Automatically upload files as they are added to the queue.
+        });
+      });
+</script> 
+<div id="center">
+	 <h2>Browse photos, select quality and upload</h2>
+	 <p>To add photos, you need to either select an existing album or create<br /> a new one. Then browse, selct and upload the photos to that album</p>
+	 <div>
+	 <label>Select Album</label>
+		 <select name="album" id="album">
+			 <?php foreach ($this->arrAlbum as $album){?>
+			 	<option value="<?php print $album->id;?>"><?php print $album->name;?></option>
+			 <?php }?>
+		 </select>
+	 </div>
+	 
+	 <div>
+	 <label>Add Photos to album</label>
+		 
+	 </div><?= $this->form ?>
+	 <!-- <input type="file" id="file_upload" name="file_upload" />
+      <a href="javascript:$('#file_upload').uploadifyUpload();">Upload Files</a> -->
+</div>
+
+       

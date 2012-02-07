@@ -1,0 +1,166 @@
+<script>
+function removeTravelWallPostComment(postCommentId)
+{
+	var divId	=	"my-travel-wall-post-comment-"+postCommentId;
+	var response = confirm("Are you sure you want to delete this comment?");
+
+		if (response == false)
+		{			
+			return false;
+		}else{
+		
+			$.ajax({
+				type: "POST",
+				url: "/gapper/remove-travel-wall-post-comment/",
+				data: "postId="+postCommentId,
+				cache: false,
+				success: function(html){
+					$('#'+divId).slideUp("slow");
+				}
+				});
+		}
+}
+</script>
+<div style="border:0px solid #ffcc00;" id="my_travel_wall_wallupdates">
+<?php
+if(count($this->data)>0)
+{
+    echo "<br/>";
+    foreach($this->data as $row)
+    {
+       $userM=new Application_Model_User();
+       $user=$userM->find($row->getUserId());
+      if(false!==$user){
+          
+		  $commentedPersonId = $user->getId();
+          $username=$user->getUsername();
+          $firstname=$user->getFirstName();
+          $lastname=$user->getLastName();
+          $image=$user->getThumbnail();
+		  
+		  $strFullName = $firstname." ".$lastname;  
+      }
+       $date=new Base_Date();
+
+       $voteM=new Application_Model_Vote();
+       $total_likes=$voteM->getTotalVotes($row->getId(),"status", 1,null);
+    ?>
+        <div class="feed-box posrel" id="<?php echo "my-travel-wall-post-".$row->getId();?>">
+		<?php if($this->userId != "" && ($commentedPersonId == $this->userId)){?>
+		<span class="close-img f-right"><img src="/images/delete.png" alt="Remove Post" onclick="removeWallPost('<?php echo $row->getId();?>');" /></span>
+		<?php }else{?>
+		<span class="close-img f-right"><img src="/images/delete.png" alt="Remove Post" /></span>
+		<?php }?>
+            <div class="feed-by-img">
+                <a href="<?php echo $this->seoUrl("/$username"); ?>">
+                    <img height="80" width="65" src="<?php echo $image?>" width="61" height="72" alt=""/></a></div>
+            <div class="feed-content">
+                    <div class="userntxt"><a href="<?php echo $this->seoUrl("/$username"); ?>"><?php echo $firstname ?> <?php echo $lastname ?></a> <?php echo $row->getStatus();?></div>
+                    <div class="feed-posted">Posted <?php echo $date->timeAgo($row->getAddedon());?> |  <a href="javascript: showCommentBox(<?php echo $row->getId()?>);">Comment</a>  |
+
+                
+                <?php if($this->userId==""){?>
+                 <a href="javascript: loginPopUp('Please login to like');">Like</a>
+                <?php }else{
+                    $userVote=$voteM->getTotalVotes($row->getId(),"status", 1,$this->userId);
+                    if($userVote>0){
+                       $likeStyle="display:none";
+                       $unlikeStyle="";
+
+                    }else{
+                        $likeStyle="";
+                        $unlikeStyle="display:none";
+                    }
+
+                    ?>
+                        <span style="display: none;" id="loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                        <span style="<?php echo $unlikeStyle?>" id="unlike_<?php echo $row->getId();?>">
+                        <a href="javascript: like('<?php echo $row->getId();?>', -1);">Unlike</a>
+                        </span>
+
+                        <span style="<?php echo $likeStyle?>"  id="like_<?php echo $row->getId();?>">
+                        <a href="javascript: like('<?php echo $row->getId();?>', 1);">Like</a>
+                        </span>
+                    <?php
+
+                }?>
+
+               
+
+                    </div>
+
+                    <?php
+                            $item_id= $row->getId();
+                            $commentM=new Application_Model_Comment();
+                            $where="item_id='{$item_id}' and publish='1' and item_type='status'";
+                            $order="addedon ASC";
+                            $comments=$commentM->fetchAll($where,$order,10);
+                            $styleComment="";
+                            if(count($comments)==0){
+                                $styleComment="display:none";
+                            }
+							
+							if($total_likes > 1){
+								$textPrint	=	"Members";
+							}else{
+								$textPrint	=	"Member";
+							}
+                     ?>
+                    <div class="feed-comment" id="comment-main-<?php echo $row->getId();?>"  style="<?php echo $styleComment?>">
+					
+                    <div id="you-like-this-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>"  class="like-unline-feed">
+					<?php if($total_likes > 0){?>
+					<span class="f-left"><img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like"/></span>
+                        
+                        <span class="f-left">You liked this (<a href="#"><span><span id="total_likes_<?php echo $row->getId();?>"><?php echo $total_likes ?></span> <?php  print $textPrint;?> Like This</span> </a>)</span>
+						<?php } ?>
+                    </div>
+                        <div id="comment-list-<?php echo $row->getId();?>" >
+
+                         <?php
+
+                            if(count($comments)>0){
+                                foreach($comments as $_comment)
+                                    echo $this->partial('comment/comment.phtml', array('comment'=>$_comment, 'type'=>'status_comment', 'userId'=>$this->userId, 'item_id'=>$item_id));
+                            }
+                         ?>
+                        </div>
+                    <div class="commet-frm-feed" id="comment-form-<?php echo $row->getId();?>">
+                    <form action="">
+                            <input type="text" id="status-comment-<?php echo $row->getId();?>"  name="status-comment-<?php echo $row->getId();?>" class="feed-comment-txt" value="Comment..." onfocus="if(this.value=='Comment...'){this.value=''}" onblur="if(this.value==''){this.value='Comment...'}"  />
+                            <input id="saveComment_<?php echo $row->getId();?>" name="saveComment_<?php echo $row->getId();?>" type="button" value="share" class="feed-comment-btn" onclick="statusComment('<?php echo $row->getId();?>','<?php echo $commentedPersonId ?>')"/>
+                            <span style="display: none;" id="comment_loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                    </form>
+
+                    </div>
+
+                    </div>
+            </div>
+        </div>
+    <?
+    }//end of foreach
+?>
+</div>
+<?php 
+//display view more link if not viewing particular wall information
+if (!isset($this->wall_id) && $this->wall_id=="")
+{
+?>
+<!-- View More DIV START -->
+<div class="feed-box posrel" id="travel_wall_showmore_div" style="border-top:none;">
+	<span style="display: none;" id="travel_wall_loading_img">
+		<img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+	</span>	
+	<div class="view-link">
+		<a id="show_more_travelwall_link" href="javascript: moreTravelWall()">VIEW MORE</a>
+	</div>
+</div>
+<!-- View More DIV END -->
+<?php }//end of if?>
+<?php
+}//end of if
+else
+{
+    echo "no status found";
+}
+?>

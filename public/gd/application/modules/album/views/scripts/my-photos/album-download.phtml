@@ -1,0 +1,34 @@
+
+<div id="archive-loader" class="archive-loader">
+    <div align="center"><img src="/images/ajax-loader.gif" alt="" /></div>
+    <div align="center">Creating Archive...</div>
+</div>
+
+<div id="archive-download" class="archive-loader" style="display:none;">
+    <span>Album is now downloading. If the download doesn't start automatically,
+        <a href="" id="album-download">click here</a>
+    </span>
+</div>
+
+<script>
+
+$(document).ready(function(){
+	
+		var album_id	=	<?php print $this->albumId?>;
+		var requesturl	=	"/album/my-photos/archive";
+
+			$.post(requesturl, {albumId:album_id },
+					   function(html){
+                                              
+						$("#archive-loader").hide();
+                                                $("#archive-download").show();
+                                                $("#album-download").attr('href',html);
+                                                window.location.href = html;
+					});
+
+	
+});
+
+
+
+</script>

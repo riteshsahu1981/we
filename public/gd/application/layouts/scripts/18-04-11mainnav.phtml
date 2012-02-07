@@ -1,0 +1,262 @@
+<div class="navigation">
+<?php
+echo "<ul class='topnav'>";
+// loop root level (only has Home, but later may have an Admin root page?)
+foreach ($this->container as $page)
+{
+	// check if it is active (not recursive)
+	$isActive = $page->isActive(false);
+	$liClass = $isActive ? ' class="active"' : '';
+
+	echo '<li ' . $liClass . '><a href="' . $this->seoUrl($page->getUri()) . '">'.$this->puts($page->getLabel()).'</a></li>', PHP_EOL;
+	// loop next level
+	foreach ($page as $p)
+	{
+		if($p<>"Login" && $p<>"Register")
+		{
+			$url="/".$p->getController()."/".$p->getAction();
+
+			// check if it is active (recursive)
+			$isActive = $p->isActive(true);
+			
+			if($p=="Work/Study/Volunteer" || $p=="Advice" || $p=="Travel Guides")
+			$liClass = $isActive ? ' class="active nav"' : ' class="nav"';
+			else
+			$liClass = $isActive ? ' class="active"' : '';
+			if($p=="My Gap Daemon")
+			{
+				if (Zend_Auth::getInstance()->hasIdentity())
+				{
+					echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+				}
+				else
+				{
+					echo '<li ' . $liClass . '><a onclick="loginPopUpExt(\'Please Login\',\''.$this->seoUrl("/gapper/where-i-am").'\')" href="javascript://">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+				}
+			}
+			else
+			{
+				if($p=="Work/Study/Volunteer" || $p=="Advice" || $p=="Travel Guides")
+				{
+					echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '" class="dd-topnav">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+				}
+				else
+				{
+					echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>',PHP_EOL;
+				}
+			}
+
+			if($p=="Travel Guides")
+			{
+				$cache = Zend_Cache::factory("Output","File");
+				//if (!($cache->start('TravelGuides04042011')))
+				//{
+				if (!($cache->start('TravelGuides'.rand(1,1000))))
+				{
+					$continentM = new Application_Model_Continent();
+					$continents = $continentM->getContinent();
+					if(count($continents)>0)
+					{
+						echo '<ul class="subnav" style="display: none;">';
+						$cntSubMenu = 0;
+						foreach($continents as $continent_id=>$continents)
+						{
+							$countryM = new Application_Model_Country();
+							$countries = $countryM->getCountry(null, $continent_id);
+							$total_countries=count($countries);
+							
+							echo '<li><a href="javascript://" class="sub f-left">'.$continents.'</a>';
+							echo '<img src="/images/15x15_trans.gif" class="f-right showsub" />';
+							if($total_countries>0)
+							{
+								$per_column = 20;
+								if($total_countries<=$per_column)
+								{
+									$ctr = 1;
+								}
+								else
+								{
+									$rem = $total_countries/$per_column;
+									$q = (int)($total_countries/$per_column);
+									if($rem>0)
+									{
+										$ctr = $q+1;
+									}
+									else
+									{
+										$ctr = $q;
+									}
+								}
+								$ulctr = 0;
+								//set class as per
+								$columnCls = "col1";
+								if($total_countries > 40)
+								{
+									$columnCls = "col3";
+								}
+								else if($total_countries > 20 && $total_countries<=40)
+								{
+									$columnCls = "col2";
+								}
+								$calTop = $cntSubMenu*10;
+								$shiftTop = "-{$calTop}%";
+								
+								$cntSubMenu ++;
+								//echo "<ul class='subnav1 ".$columnCls."' style='display: none; top:".$shiftTop.";'>";
+								echo "<ul class='subnav1 ".$columnCls."' style='display: none;'>";
+								echo '<ul class="submenu">';
+								echo '<div class="submenu-div" style="float:left;">';
+								$total_block = 0;
+								foreach($countries as $country_id=>$country)
+								{
+									//check country data into lonely planet feeds if exists then will appear here
+									$destinationM	=	new Application_Model_Destination();
+									$destinationCountry = $destinationM->checkCountryData($country_id);
+									if(false!==$destinationCountry)
+									{
+										echo '<li><a href="'.$this->seoUrl('/destination/country/id/'.$country_id).'">'.$country.'</a></li>';
+										$ulctr++;
+										if($ulctr==$per_column)
+										{
+											echo '</div>';
+											echo '</ul>';
+											echo '<ul class="submenu">';
+											echo '<div class="submenu-div" style="float:left;">';
+										    $total_block++;
+											//if($total_block<$ctr)
+											//echo '<ul class="submenu">';
+											//echo '<div class="submenu-div" style="float:left;">';
+											$ulctr=0;
+										}
+									}//end of if	
+								}//end of country foreach
+								echo '</div>';
+								echo '</ul>';
+								echo '</ul>';
+							}//end of if total_countries
+						echo '</li>';
+					}//end of continent foreach
+					echo '</ul>';
+				}//end if continents
+				$cache->end();
+			}//caching
+		}//end of if Travel Guides
+	 
+		if($p=="Work/Study/Volunteer")
+		{
+			$categoryM		= 	new Application_Model_Category();
+			$categoryRes	=	$categoryM->fetchAll("status='published' AND type='wsv'","weight ASC");
+			if(false!==$categoryRes)
+			{
+				if(count($categoryRes)>0)
+				{
+					echo '<ul class="subnav" style="display: none;">';
+					foreach($categoryRes as $category)
+					{
+						echo '<li><a href="'.$this->seoUrl('/work-study-volunteer/category/id/'.$category->getId()).'">'.$category->getName().'</a></li>';
+					}//end foreach
+					echo '</ul>';
+				}
+			}//end if
+		}//end of Work/Study/Volunteer
+	
+		if($p=="Advice")
+		{
+			$categoryM		= 	new Application_Model_Category();
+			$categoryRes	=	$categoryM->fetchAll("status='published' AND type='advice'","name ASC");
+			if(false!==$categoryRes)
+			{
+				if(count($categoryRes)>0)
+				{
+					echo '<ul class="subnav" style="display: none;">';
+					foreach($categoryRes as $category)
+					{
+						echo '<li><a href="'.$this->seoUrl('/advice/category/id/'.$category->getId()).'">'.$category->getName().'</a></li>';
+					}//end foreach
+					echo '</ul>';
+				}
+			}//end if
+		}//end if Advice
+		echo '</li>', PHP_EOL;
+		}//end if Login
+	}//end if foreach page
+}//end if foreach container
+echo "<li><a href='http://blog.gapdaemon.com' target='_blank'>GD Blog</a></li>";
+echo "</ul>";
+?>
+</div>
+<script type="text/javascript"> 
+$(document).ready(function(){
+
+	$("ul.subnav").parent().append("<span></span>"); //Only shows drop down trigger when js is enabled - Adds empty span tag after ul.subnav
+	
+	$("ul.topnav li span").click(function() { //When trigger is clicked...
+		
+		//Following events are applied to the subnav itself (moving subnav up and down)
+		$(this).parent().find("ul.subnav").slideDown('fast').show(); //Drop down the subnav on click
+
+		$(this).parent().hover(function() {
+		}, function(){	
+			$(this).parent().find("ul.subnav").slideUp('slow'); //When the mouse hovers out of the subnav, move it back up
+			$("ul.subnav1").slideUp('slow').removeClass('show');
+		});
+
+		//Following events are applied to the trigger (Hover events for the trigger)
+		},
+		function(){
+				$(this).parent().find("ul.subnav").slideUp('slow'); //When the mouse hovers out of the subnav, move it back up
+				$("ul.subnav1").slideUp('slow').removeClass('show');
+		}
+		
+		).hover(function() { 
+			$(this).addClass("subhover"); //On hover over, add class "subhover"
+		}, function(){	//On Hover Out
+		
+			$(this).removeClass("subhover"); //On hover out, remove class "subhover"
+	});
+	
+	
+	//sub menus
+	$("ul.subnav li img.showsub").click(function() //When trigger is clicked...
+	{
+           
+		if($(this).parent().hasClass('subnav1'))
+		{
+			var href = $(this).children().attr('href')
+			if(href!='' && href!='undefined')
+			{
+				window.location = href;
+			}
+			return false;
+		}
+
+                var vHeight = $(window).height()
+                var mHeight = $(this).offset().top;
+                var innerHeight = $(this).parent().find("ul.subnav1").height();
+
+		var ctrl = $(this).parent().find("ul.subnav1");
+		$("ul.subnav1").not(ctrl).fadeOut('fast').removeClass('show');
+		//alert($(this).parent().find("ul.subnav1").height())
+		if($(this).parent().find("ul.subnav1").hasClass('show'))
+		{
+			$(this).parent().find("ul.subnav1").slideDown('fast').fadeOut('slow').removeClass('show');			
+			return false;
+		}
+		
+		$(this).parent().find("ul.subnav1").slideDown('fast').show().addClass('show'); //Drop down the subnav on click
+
+		$(this).hover(function() {
+		}, function(){	
+			//$(this).find("ul.subnav1").slideUp('slow').removeClass('show'); //When the mouse hovers out of the subnav, move it back up
+		});
+
+		//Following events are applied to the trigger (Hover events for the trigger)
+		}).hover(function() { 
+			//$(this).addClass("subhover"); //On hover over, add class "subhover"
+		}, function(){	//On Hover Out
+			//$(this).find("ul.subnav1").slideUp('slow');
+			//$(this).removeClass("subhover"); //On hover out, remove class "subhover"
+	});
+
+});
+</script>

@@ -1,0 +1,79 @@
+<script type="text/javascript" src="/js/facebox.js"></script>
+<link href="/style/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        //loadingImage : '/images/facebox/loading.gif',
+        closeImage   : '/images/facebox/closelabel.png'
+      })
+    })
+  </script>
+
+<div id="album-popup-edit">
+
+<!-- Top -->
+<div class="top">
+<span style="display: none;" id="photo-saved"></span>
+<span><a id="close-album-edit-box" href="javascript:void(0);"><img src="/images/facebox/closelabel-red.png" title="close" class="close_image"></a></span>
+</div>
+<!-- Top -->
+
+<!-- Left -->
+<div class="form">
+
+<label>Name of Album <input type="text" value="<?php print $this->name;?>" id="name" name="name"></label>
+
+<label>Description<textarea cols="25" rows="5" id="description" name="description" ><?php print $this->description;?></textarea></label>
+
+<label>Album Location <input type="text" id="album_location" name="album_location" value="<?php print $this->location;?>" class="find"><input type="button" class="button-grn" value="find" name="find" id="find" onclick="searchAddress()"></label>
+
+<label>Permissions <select id="permissions" name="permissions">
+	<?php foreach ($this->arrFriendGroup as $key=>$value){?>
+		<option value="<?php print $key;?>" <?php if($this->permission == $key){?> selected='selected' <?php }?>><?php print $value;?></option>
+	<?php }?>
+</select></label>
+
+<label>Album Tags <input type="text" id="album_tags" name="album_tags" value="<?php print $this->albumTag;?>"></label>
+
+<a href="javascript:void(0);" id="edit-album-detail" class="button">SAVE</a>
+<a rel="facebox" href="/image/album-upload-photo/album_id/<?php print $this->albumId;?>" class="button">ADD PHOTOS</a>
+
+
+</div>
+<!-- Left -->	
+</div>
+<script>
+$(document).ready(function(){
+	$("a#close-album-edit-box").click(function(){
+		$("#album-editing").html('');
+		$("#album-editing").fadeOut(500);
+	});
+});
+
+$(document).ready(function(){
+	$("a#edit-album-detail").click(function(){
+                album_id	=   $("#album_id").val();
+		name            =   $("#name").val();
+                description     =   $("#description").val();
+                album_location  =   $("#album_location").val();
+                permissions     =   $("#permissions").val();
+                album_tags      =   $("#album_tags").val();
+                latlang         =   $("#latlang").val();
+
+                if(jQuery.trim(name) == "")
+                {
+                      alert("Please enter album name.");
+                      return false;
+                }
+
+                var requesturl	=	"/album/my-photos/album-edit-submit";
+
+		$.post(requesturl, {albumId:album_id,name:name,description:description,location:album_location,permissions:permissions,tags:album_tags,latlang:latlang },
+				   function(html){
+					$("#photo-saved").show();
+                                        $("#photo-saved").html("Album has been updated.");
+				});
+                
+	});
+});
+</script>

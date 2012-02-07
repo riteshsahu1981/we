@@ -1,0 +1,57 @@
+<div id="friend_request_sent">
+<?php 
+//if($this->totalFriends>0)
+if(count($this->reqSent)>0)
+{
+	//foreach($this->paginator as $row)
+	foreach($this->reqSent as $_friend)
+	{
+		//$_friend	= new Application_Model_Friend();
+		//$_friend	= $_friend->find($row->id);
+
+		$userid		= $_friend->getUserId();
+		$friendid	= $_friend->getFriendId();
+		$conntype	= $_friend->getConnectionType();
+		$status		= $_friend->getStatus();
+
+		$_friend->getId();
+		$friendO = $_friend->getFriendObj();
+		
+		if(!is_null($friendO))
+		{
+			$thumb = "";
+			//$thumb		= $_friend->getThumbnail();
+			$thumb		= $_friend->getThumbnail($friendO->image, $friendO->facebook_id, $friendO->sex);
+
+?>
+<div class="friends-box">
+   		<div class="friends-box-img">
+			<a href ="/<?php echo $friendO->username?>">
+			<img src="/image?src=<?php echo $thumb;?>&size=friends" border="0" />
+			</a>
+		</div>
+		<div class="friend-box-center"> 
+			<a href ="/<?php echo $friendO->username?>"><span class="connect-name"><?php echo $friendO->first_name.' '.$friendO->last_name; ?></span></a>
+			<span class="connect-type"><?php echo ucfirst($_friend->getConnectionType()); ?></span>
+			<span class="connect-action">
+				<span id="resend_link_id_<?php echo $_friend->getId()?>"><a href ="javascript://" onclick="sendRequest(<?php echo $_friend->getId()?>,'pending');"><b>Re-Send Request</b></a> |</span> <a href ="/gapper/remove-requests/id/<?php echo $_friend->getId();?>" onclick="return confirm('Are you sure?\r\n Do you really want to remove this friend request?');">Remove Request</a>
+			</span>
+			
+		</div>
+		<div class="friend-box-right">
+			<div class="connection-you f-left"></div>
+			<div id="req_status_<?php echo $_friend->getId()?>"><b>Status:</b> <?php echo ucwords($status);?></div>
+			<div id="req_response_<?php echo  $_friend->getId()?>" style="clear:both; float:right;"></div>
+		</div>   
+</div>
+<?php
+    }//end of if
+}//end of foreach
+//echo  "<div class='clear'>".$this->paginationControl($this->advices, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param))."</div>";
+}//end of if
+else
+{
+	echo "<span style='color:#ff0000;'>No friend requests sent.</span>";
+}
+?>
+</div>

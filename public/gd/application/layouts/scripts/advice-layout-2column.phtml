@@ -1,0 +1,53 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<?php echo $this->headTitle(); ?>   
+	<?php echo $this->headMeta(); ?>
+	
+  
+	  <?php 
+	  /*-------------- jquery ui----------------------*/
+	  if($this->jQuery()->isEnabled())
+		echo $this->jQuery();
+	  /*-----------------------------------------------*/
+	 ?>
+  
+  <?php echo $this->headScript(); ?>
+  
+  <?php echo $this->headLink(); ?>
+  <script src="<?php echo $this->cdnUri()?>/js/menu.js" type="text/javascript"></script>
+</head>
+
+
+
+
+<body  >
+
+
+
+
+
+<div id="mainwrapper">
+	<div id="main" >
+	<!-- Header -->
+	<?php echo $this->pageElement('header')?>
+	<!-- Header -->
+	
+	<!-- Sub-Header -->
+	<?php //echo $this->pageElement('sub-header')?>
+	<!-- Sub-Header -->
+
+	<div id="contentArea">
+		<?php echo $this->layout()->content ?>
+		<?php echo $this->pageElement('advice-right')?>
+	</div>
+	</div>
+	<!-- Footer -->
+	<?php echo $this->pageElement('footer')?>
+	<!-- Footer -->
+
+</div>
+
+</body>
+</html>

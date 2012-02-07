@@ -1,0 +1,74 @@
+<script language="javascript" type="text/javascript">
+$(document).ready(function()
+{
+	<?php if(isset($this->cookie_password) && $this->cookie_password!=""){?>
+	$('#password-clear').hide();
+	$('#password-password').show();
+	<?php }else{ ?>
+	$('#password-clear').show();
+	$('#password-password').hide();
+	<?php }?>
+	$('#password-clear').focus(function() {
+		$('#password-clear').hide();
+		$('#password-password').show();
+		$('#password-password').focus();
+	});
+	$('#password-password').blur(function() {
+		if($('#password-password').val() == '') {
+			$('#password-clear').show();
+			$('#password-password').hide();
+		}
+	});
+});
+</script>
+<div class="banner">
+	<div class="welcome">
+		<h2>WELCOME TO  GAP DAEMON</h2>
+		<p>Gap Daemon is a brand new website for gap year travellers and backpackers. Create a free account and become part of our growing community of young, independent travellers.</p>
+		<?php
+                 if (Zend_Auth::getInstance()->hasIdentity()==false){
+                ?>
+                <a href="/index/register"><div class="Join">Create An Account</div></a>
+                <? } ?>
+	</div>
+
+        <?php
+	 if (Zend_Auth::getInstance()->hasIdentity()){
+	?>
+        <!--<div class="login-banner">
+            <span class="logout">
+            <a href="/index/logout/"><?=$this->puts("Logout")?></a>
+            </span>
+        </div>
+		-->
+	<?php
+	}else{?>
+	<div class="login-banner">
+		<h2>Log in to Gap Daemon</h2>
+		<p class="reg-sign"><span>Not a member?</span>
+                    <span><a href="<?php echo $this->seoUrl("/index/register/");?>" class="register">CREATE ACCOUNT</a></span>
+                    <span>Sign in with</span> <span>
+
+                        <a  onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" href="javascript://" class="connect-log"><img src="<?echo $this->cdnUri()?>/images/f_connect-1-1.gif" alt="" /></a>
+                        
+                        
+                        </span></p>
+
+		<p>Already got a Gap Daemon account?</p>
+                <div class="clear mart5 orange"><?php if($this->hlmsg<>""){echo $this->hlmsg;}?></div>
+                <form id="frmHomeLogin" method="post" action="/index">
+
+                    
+		<div class="log-input"><input type="text" id="email" name="email" class="log-user" value="<?php echo $this->cookie_username;?>" onblur="replaceText(this);" onfocus="clearText(this);" />
+		<input id="password-clear" name="password-clear" type="text" class="log-pass" value="Enter your password" autocomplete="off" style="display: none;" />
+		<input id="password-password" name="password-password" type="password" name="password" class="log-pass" value="<?php echo $this->cookie_password;?>" autocomplete="off" />
+		<!--<input type="text" name="password" id="password" class="log-pass" value="Enter your password" onblur="replaceText(this);" onfocus="clearText(this);" onkeyup="this.type='password'" />--></div>
+		<input type="submit" name="cmdSubmit" class="f-left" value="Sign In" />
+        <input type="hidden" id="homeLogin"  name="homeLogin" value="homeLogin">
+		<div class="log-checkbox"><input type="checkbox" value="1" name="rememberMe" id="rememberMe" class="user-check" <?php echo $this->cookie_remember;?> />Remember me</div>
+        </form>
+        </div>
+        <?php }?>
+	
+</div>
+

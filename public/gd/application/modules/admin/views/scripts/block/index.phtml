@@ -1,0 +1,90 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+
+	<div id="rightsideheading" class="headingblack"><span style='float: right; margin: 0 15px 0 0;'>
+	
+	<img src='/images/admin-images/newobject.gif' width='20px'><a class="add f-right" href='/admin/block/add'>Add Block</a></span>Blocks - <span class='msg'>Total <?php echo $this->total?> block(s) found! </span></div>
+	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+	
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+<br />
+<br />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>Title</th>
+    <th>Alias</th>
+    <th>Block Region</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+  
+	<?
+	
+	
+	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+		$status_image='false.gif';
+		$status="1";
+		$status_popup='publish';
+		if($row['status']=="1")
+		{
+			$status_image='true.gif';
+			$status="0";
+			$status_popup='unpublish';
+		}
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			if($row['block_region_id']==0){
+				$blockRegionId="All";
+			}else{
+				$blockRegionM=new Block_Model_BlockRegion();
+				$blockRegion=$blockRegionM->find($row['block_region_id']);
+				$blockRegionId=$blockRegion->getTitle();
+			}?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['title']?></td>
+    		<td><?=$row['alias']?></td>
+    		<td><?=$blockRegionId?></td>
+    		<td>
+				<a href='/admin/block/changestatus/id/<?=$row['id']?>/status/<?=$status?>' onclick='return confirm("Are sure you want to <?=$status_popup?> the block?")'><img src='/images/admin-images/<?=$status_image?>' border='0' title='<? echo "Click here to $status_popup the block."?> '/></a>
+    		</td>
+    		
+    		<td>
+	    		<a href='/admin/block/edit/id/<?=$row['id']?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+</div>

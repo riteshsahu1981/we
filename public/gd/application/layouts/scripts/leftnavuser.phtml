@@ -1,0 +1,36 @@
+<?php 
+
+    echo '<ul class="accord" id="menu">';
+    // loop root level (only has Home, but later may have an Admin root page?)
+    foreach ($this->container as $pages) {
+
+        // loop next level
+        foreach ($pages as $page) {
+        	
+        	if($page=="My Gap Deamon User" )
+        	{
+        		//print_r(get_class_methods($page));
+        		foreach($page as $p)
+        		{
+	            	// check if it is active (recursive)
+	            	$isActive = $p->isActive(true);
+	            	$liClass = $isActive ? ' class="active"' : '';
+	            	echo '<li ' . $liClass . '>'. $this->menu()->htmlify($p) ;
+	            
+		            	foreach($p as $p1){
+			
+	            			echo '<ul >';		            		
+			            	$isActive = $p1->isActive(true);
+			            	$liClass = $isActive ? ' class="active"' : '';
+			            	echo '<li ' . $liClass . '>'. $this->menu()->htmlify($p1) . '</li>', PHP_EOL;
+			            	echo '</ul>';
+								
+		            	}
+	            	}
+	            	echo "</li>";
+	            	
+	            	
+        	}
+        }
+    }
+    echo '</ul>';

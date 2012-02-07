@@ -1,0 +1,22 @@
+
+<?php 
+$userNs=new Zend_Session_Namespace('members');
+$userM=new Application_Model_User();
+$user=$userM->find($userNs->userId);
+
+?>
+
+<div class="avatar-profile">
+<!--<img src="<?php //echo $user->getThumbnail()."?".rand(1,100000);?>" id="profile_image" onerror="this.src='/images/no-image.jpg';"/>-->
+<img src="/image?src=<?php echo $user->getThumbnail();?>&size=profile_left&<?php echo rand(1,100000);?>" id="profile_image" />
+</div>
+
+<div class="avatar-name">Hello <span class="orange"><?php echo $user->getFirstName().' '.$user->getLastName();?></span></div>
+<br /><br />
+<?php
+	
+	$this->navigation()->menu()->setPartial(array('leftnav.phtml','default'));
+	echo $this->navigation()->menu()->render(); 
+?>
+
+<?php $this->blocks("left-profile");?>

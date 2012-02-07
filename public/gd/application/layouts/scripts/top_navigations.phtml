@@ -1,0 +1,118 @@
+<!-- Start Main Menu -->
+<?php
+//set active class
+$homeActiveCls = "";
+$myGdActiveCls = "";
+$journalsActiveCls = "";
+$travelGuidesActiveCls = "";
+$wsvActiveCls = "";
+$adviceActiveCls = "";
+$travelShopActiveCls = "";
+$gdBlogActiveCls = "";
+//echo "controller=>".$this->controllerName;
+if($this->controllerName=='index')
+{
+	$homeActiveCls = "active";
+}
+else if($this->controllerName=='gapper')
+{
+	$myGdActiveCls = "active";
+}
+else if($this->controllerName=='journal')
+{
+	$journalsActiveCls = "active";
+}
+else if($this->controllerName=='destination')
+{
+	$travelGuidesActiveCls = "active";
+}
+else if($this->controllerName=='work-study-volunteer')
+{
+	$wsvActiveCls = "active";
+}
+else if($this->controllerName=='advice')
+{
+	$adviceActiveCls = "active";
+}
+else if($this->controllerName=='shop')
+{
+	$travelShopActiveCls = "active";
+}
+else
+{
+	$gdBlogActiveCls = "active";
+}
+?>
+<div class="main-menu">
+<ul id="mainNav" class="notReady">
+<li><a href="<?php echo $this->cdnUri()?>" class="<?php echo $homeActiveCls;?>">HOME</a></li>
+<?php if (Zend_Auth::getInstance()->hasIdentity()){ ?>
+<li><a href="<?php echo $this->cdnUri()?>/where-i-am" class="<?php echo $myGdActiveCls;?>">MY &nbsp;GAP &nbsp;DAEMON</a></li>
+<?php }else{?>
+<li><a href="javascript://" onclick="loginPopUpExt('Please Login','<?php echo $this->seoUrl('/gapper/where-i-am')?>')">MY &nbsp;GAP &nbsp;DAEMON</a></li>
+<?php }?>
+<li><a href="<?php echo $this->cdnUri();?>/journals" class="<?php echo $journalsActiveCls;?>">JOURNALS</a></li>
+<!--<li><a href="<?php echo $this->cdnUri()?>/travelguides">TRAVEL &nbsp;GUIDES</a></li>-->
+<li class="tab tabNotReady destinations current">
+<a class="<?php echo $travelGuidesActiveCls;?> navHead" href="<?php echo $this->cdnUri()?>/travelguides" rel="nofollow">
+<span>TRAVEL &nbsp;GUIDES</span>
+<img class="arrow invisible" src="/images/15x15_trans.gif" alt="More" />
+</a>
+</li>
+<!--<li><a href="<?php echo $this->cdnUri()?>/work-study-volunteer">WORK/STUDY/VOLUNTEER</a></li>
+<li><a href="<?php echo $this->cdnUri()?>/advice">ADVICE</a></li>-->
+<li class="tab tabNotReady workstudy current">
+<a class="<?php echo $wsvActiveCls;?> navHead" href="<?php echo $this->cdnUri()?>/work-study-volunteer" rel="nofollow">
+<span>WORK/STUDY/VOLUNTEER</span>
+<img class="arrow invisible" src="/images/15x15_trans.gif" alt="More" />
+</a>
+</li>
+<li class="tab tabNotReady advice current">
+<a class="<?php echo $adviceActiveCls;?> navHead" href="<?php echo $this->cdnUri()?>/advice" rel="nofollow">
+<span>ADVICE</span>
+<img class="arrow invisible" src="/images/15x15_trans.gif" alt="More" />
+</a>
+</li>
+<li><a href="<?php echo $this->cdnUri()?>/shop/amazon" class="<?php echo $travelShopActiveCls;?>">TRAVEL &nbsp;SHOP</a></li>
+<li><a href="http://blog.gapdaemon.com/" target="_blank">GD &nbsp; BLOG</a></li>
+</ul>
+
+<script language="javascript" type="text/javascript">
+// <![CDATA[
+   _destinationsGlobalNav = function(data) {
+        new DestinationsGlobalNav(data['nav'], "#mainNav > li.destinations");
+    };
+	
+	_adviceGlobalNav = function(data) {
+        new DestinationsGlobalNav(data['nav'], "#mainNav > li.advice");
+    };
+	
+	_workstudyGlobalNav = function(data) {
+        new DestinationsGlobalNav(data['nav'], "#mainNav > li.workstudy");
+    };
+// ]]>
+
+<?php
+$travelGuides = $this->pageElement('header_travelguides_navigations');	
+$travelAdvice = $this->pageElement('header_advice_navigations');
+$workstudyTab = $this->pageElement('header_wsv_navigations');
+?>
+var travelGuides = {"nav":<?php echo $travelGuides;?>};
+var travelAdvice = {"nav":<?php echo $travelAdvice;?>};
+var workstudyTab = {"nav":<?php echo $workstudyTab;?>};
+jQuery(document).ready(function()
+{
+    if (typeof(_destinationsGlobalNav) != 'undefined') {
+        _destinationsGlobalNav(travelGuides);
+    }
+	if (typeof(_adviceGlobalNav) != 'undefined') {
+        _adviceGlobalNav(travelAdvice);
+    }
+	if (typeof(_workstudyGlobalNav) != 'undefined') {
+        _workstudyGlobalNav(workstudyTab);
+    }
+});
+</script>
+</div>
+<div class="clear"></div>
+<!-- End Main Menu -->

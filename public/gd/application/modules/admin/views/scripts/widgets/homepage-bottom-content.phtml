@@ -1,0 +1,47 @@
+<?php
+	$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+	$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded .
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">Home Page Bottom Content: Logged Out Section</div>
+	<div id="rightsidecontentpart">
+	<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+    <?php }?>
+	<?php
+	if(isset($this->backgroundImage) && $this->backgroundImage!="")
+	{
+	?>
+	<!--<div><b>Background Image:</b> <img src="/media/picture/home/thumb_<?php echo $this->backgroundImage;?>" width="150" height="100"/></div>-->
+	<?php }?>
+	
+  	<?php //echo $this->form;?>
+	<form method="post" action="" enctype="multipart/form-data">
+	<table align="center" cellspacing="5" cellpadding="5" border="0" width="100%">
+		<tr>
+			<td valign="top"><?php echo $this->form->backgroundImage->getLabel();?><br /><span class="span-field-note">(Upload 641x299 dimensions image)</span></td>
+			<td>
+			<?php
+			if(isset($this->backgroundImage) && $this->backgroundImage!="")
+			{
+			?>
+			<img src="/media/picture/home/thumb_<?php echo $this->backgroundImage;?>" width="150" height="100"/>
+			<!--<img src="<?echo $this->cdnUri();?>/image?src=<?echo $this->cdnUri();?>/media/picture/home/<?php //echo $this->backgroundImage;?>&w=150&h=100" />-->
+			<?php }?><br />
+			<?php echo $this->form->backgroundImage;?></td>
+		</tr>
+		<tr><td><?php echo $this->form->leftTitle->getLabel();?></td><td><?php echo $this->form->leftTitle;?></td></tr>
+		<tr><td><?php echo $this->form->leftText->getLabel();?></td><td><?php echo $this->form->leftText;?></td></tr>
+		<tr><td><?php echo $this->form->rightTitle->getLabel();?></td><td><?php echo $this->form->rightTitle;?></td></tr>
+		<tr><td><?php echo $this->form->rightText->getLabel();?></td><td><?php echo $this->form->rightText;?></td></tr>
+		<tr><td>&nbsp;</td><td><?php echo $this->form->cmdSubmit;?></td></tr>
+	</table>
+	</form>	
+	</div>
+  </div>
+</div>
+<?php 
+echo $this->setupEditor('leftText');
+echo $this->setupEditor('rightText');
+?>

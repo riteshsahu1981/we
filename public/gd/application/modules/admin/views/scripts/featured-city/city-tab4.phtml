@@ -1,0 +1,32 @@
+<?php
+$practicalities = $this->practicalities;
+?>
+<form name="frmDestinationPrac" id="frmDestinationPrac" enctype="multipart/form-data" method="post">
+	<input type="hidden" name="update_action" value="prac">
+	<input type="hidden" name="destinationId" value="<?php echo $this->destinationId;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" id="table_prac">
+	<tr><td colspan="2"><div class="form-sub-head">Practicalities</div><span class="orange" id="prac_msg"></span></td></tr>
+	<?php
+	if(count($practicalities)>0){
+	$pracCount = 1;
+	foreach($practicalities AS $pracRow){?>
+	<input type="hidden" name="pracId[]" value="<?php echo $pracRow->getId();?>">
+	<tr><td valign="top">Title <?php //echo $pracCount;?></td><td><input type="text" name="pracTitle[]" value="<?php echo $pracRow->getTitle();?>" class="title-input-box" maxlength="250"></td></tr>
+	<tr><td valign="top">Copy <?php //echo $pracCount;?></td><td><textarea cols="40" rows="4" name="pracCopy[]" class="title-input-box"><?php echo $pracRow->getCopy();?></textarea></td></tr>
+	<tr><td colspan="2" class="button_right"><input type="button" value="Remove" onclick="deletePracRow(this);"></td></tr>
+	<?php 
+		$pracCount++;
+		}//end foreach
+	}//end if
+	?>
+	<!--<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave" ></td></tr>-->
+	</table>
+	<table align="center" cellspacing="0" cellpadding="2" border="0" width="100%">
+		<tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" value="Save" name="btnSave" id="btnSaveTab4"></td>
+			<td><input type="button" value="Add New Item" onclick="addMoreRowsPrac();"></td>
+			<!--<td><input type="button" value="Remove Item" onclick="removeMoreRowsPrac();" id="remove_button_tab4"></td>-->
+		</tr>
+	</table>
+</form>

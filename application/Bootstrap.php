@@ -169,11 +169,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 //        
 //        $monitor->addWriter($writer);
         /*mail writer*/
-        
-        
-        
-        
-        
+               
         //if you want to monitor php errors
         $monitor->registerErrorHandler();
 

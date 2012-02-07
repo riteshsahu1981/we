@@ -1,0 +1,18 @@
+<div class="clear"></div>
+  <div id="content">
+    <div id="left-inner"> 
+    
+    <?php echo $this->action("banner","index","cms",array('position'=>'left', 'width'=>'162', 'height'=>'602'))?>
+    
+    </div>
+    <div id="right-inner">
+      <div class="breadcrum"><a href="javascript:history.back();">Back</a> &gt; <?php echo $this->escape($this->title); ?> </div>
+      <div class="left-static">
+        <h2><?php echo $this->escape($this->title); ?></h2>
+        <?php echo $this->content; ?>
+      </div>
+      <div class="right-static">
+
+      </div>
+    </div>
+  </div>

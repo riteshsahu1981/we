@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+	<head>  
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<?php echo $this->headTitle(); ?>   
+	<?php echo $this->headMeta(); ?> 
+	
+	<?php echo $this->headLink()->appendStylesheet("/style/admin-style.css"); ?>
+	<?php
+	  /*-------------- jquery ui----------------------*/
+	  if($this->jQuery()->isEnabled())
+	  {
+		 $this->jQuery()->setLocalPath($this->baseUrl()."/js/jqueryui/js/jquery-1.4.2.min.js")
+						->setUiLocalPath($this->baseUrl()."/js/jqueryui/js/jquery-ui-1.8.2.custom.min.js")
+						->addStylesheet($this->baseUrl()."/js/jqueryui/themes/base1/jquery.ui.all.css");
+						echo $this->jQuery();
+	  }
+	  /*-----------------------------------------------*/
+	
+	
+  	//$this->headScript()->appendFile('/js/ajaxfileupload.js');
+  	echo $this->headScript()->appendFile('/js/accordian.menue.js');
+	//echo $this->headScript()->appendFile('/js/script.js');
+	?>
+	<?php if ($this->custom_head) {echo $this->custom_head;}?>
+	<link rel="SHORTCUT ICON" HREF="<?php echo Zend_Registry::get('siteurl')?>/favicon.ico" type="image/x-icon"/>
+	<link rel="icon" href="<?php echo Zend_Registry::get('siteurl')?>/favicon.ico" type="image/x-icon" />
+	
+	<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        loadingImage : '/images/facebox/loading.gif',
+        closeImage   : '/images/facebox/closelabel.png'
+      })
+    })
+  </script>
+	
+	
+	</head>
+		<body<?php if ($this->custom_body) {echo $this->custom_body;}?>>
+			<div class="wrapper">
+				<!-- Header Start -->
+				<?php $path="/layouts/scripts/page/admin"?>
+				<?php echo $this->pageElement('admin-header',$path)?>
+				
+				<!-- Header End -->
+				
+				<div id="mainbody"> 
+
+				<?php echo $this->pageElement('admin-left', $path)?>
+				
+				<?php 	echo $this->layout()->content ?>
+				</div>
+	
+				<!-- footer start -->     
+				<?php echo $this->pageElement('admin-footer', $path)?>
+				<!-- footer end -->
+			</div>
+	</body>
+</html>
+

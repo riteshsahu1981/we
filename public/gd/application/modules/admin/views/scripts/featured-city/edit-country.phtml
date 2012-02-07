@@ -1,0 +1,485 @@
+<?php
+	$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+	$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded.
+?>
+<script language="javascript" type="text/javascript">
+$(function()
+{
+	$("#country_tabs").tabs();
+	
+	//selected default tabs
+	$("#country_tabs").tabs({ selected: "<?php echo $this->selTab;?>" });
+	
+	//global wait message
+	var waitMsg = "<img src='/images/loading.gif' alt='' />&nbsp;&nbsp;&nbsp;&nbsp;wait...";
+	
+	//update TAB1
+	$("#frmOverview111").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		params += "&rnd="+Math.random();
+		$("span#tab1_msg").html(waitMsg);
+		
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-country-tab1-data/rand/"+Math.random(),
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab1_msg").html(json.response);
+				reloadDontLeaveWithoutArea(<?php echo $this->id;?>);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update TAB2
+	$("#frmPracticalInfo222").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#tab2_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-country-tab2-data",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab2_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update TAB3
+	$("#frmTravel333").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#tab3_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-country-tab3-data",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab3_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update TAB4
+	$("#frmCulture444").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#tab4_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-country-tab4-data",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab4_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update TAB5
+	$("#frmPoi555").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#tab5_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-country-tab5-data",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab5_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	//update TAB6
+	$("#frmTheknowledge").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#tab6_msg").html(waitMsg);
+		//Scroll to location of loading msg
+		var SupportDiv = document.getElementById('rightsideheading');
+		window.scroll(0,findPos(SupportDiv));
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-country-tab6-data",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab6_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});
+	
+	//update TAB8
+	$("#frmMetaData").validate({
+	submitHandler: function(form)
+	{
+		var params = $(form).serialize();
+		$("span#tab8_msg").html(waitMsg);
+		
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/update-metadata",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				$("span#tab8_msg").html(json.response);
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+ 	   }
+ 	});	
+	
+});
+</script>
+<?php
+$countryimages			= array();
+if(isset($this->countryimages) && count($this->countryimages)>0)
+{
+	$countryimages = $this->countryimages;
+}
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+		<a class="add f-right" href="/admin/featured-city/manage-country/page/<?php echo $this->page;?>">Back</a></span>
+	Edit Country Contents</div>
+<div id="rightsidecontentpart">
+	<div id="country_tabs" class="no-brdr-top no-top-padd">
+	<ul>
+		<li><a href="#tabs-1">Overview</a></li>
+		<li><a href="#tabs-2">Practical Info</a></li>
+		<li><a href="#tabs-3">Travel</a></li>
+		<li><a href="#tabs-4">Culture</a></li>
+		<li><a href="#tabs-5">Points Of Interest</a></li>
+		<li><a href="#tabs-6">The Knowledge</a></li>
+		<li><a href="#tabs-7">Images</a></li>
+		<li><a href="#tabs-8">Meta Data</a></li>		
+	</ul>
+	<div class="orange" style="padding: 5px;text-align: center;"><?php echo $this->errorMsg;?></div>
+	<div id="tabs-1" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/country-tab1.phtml',array('countryId'=>$this->id, 'page'=>$this->page));?>
+	</div>
+	<div id="tabs-2" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/country-tab2.phtml',array('countryId'=>$this->id, 'page'=>$this->page));?>
+	</div>
+	<div id="tabs-3" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/country-tab3.phtml',array('countryId'=>$this->id, 'page'=>$this->page));?>
+	</div>
+	<div id="tabs-4" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/country-tab4.phtml',array('countryId'=>$this->id, 'page'=>$this->page));?>
+	</div>
+	<div id="tabs-5" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/country-tab5.phtml',array('countryId'=>$this->id, 'page'=>$this->page));?>
+	</div>
+	<div id="tabs-6" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/country-tab6.phtml',array('countryId'=>$this->id, 'page'=>$this->page));?>
+	</div>
+	<div id="tabs-7" class="no-bordr-all">
+	<form name="frmCountryImg" id="frmCountryImg" enctype="multipart/form-data" method="post">
+		<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<tr>
+		<td colspan="2"><div class="form-sub-head">Images</div><span class="orange" id="tab7_msg"><?php echo $this->errorMsg;?></span></td>
+		<td align="right" style="text-align:right;"><a href="javascript://" onclick="adminPopupWin('/admin/featured-city/add-country-image/id/<?=$this->id?>/page/<?=$this->page?>');">Add New Image</a></td>
+		</tr>
+		</table>
+	</form>	
+	<?php
+	//$countryImages = unserialize($lonelyPlanetCountry->getImages());
+	//print_r($countryImages);
+	?>
+		<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" class="dataTable" style="margin:10px 5px 0 5px;">		
+		<?php if(count($countryimages)>0){?>
+		<tr><th>S. No.</th><th>Title</th><th>Image</th><th>Order</th><th>Action</th></tr>
+		<?php
+		$imgCount = 1;
+		foreach($countryimages AS $imgRow){?>
+		<tr class="trbg" id="tr_image_row_<?php echo $imgRow->getId();?>">
+		<td valign="top" width="10%"><?php echo $imgCount;?></td>
+		<td valign="top" width="60%"><?php echo $imgRow->getSlideTitle();?></td>
+		<td valign="top" width="15%"><img src="<?echo $this->cdnUri();?>/media/picture/country/images/<?php echo $imgRow->getCountryImage();?>" height="50" width="50"></td>
+		<td valign="top" width="5%"><?php echo $imgRow->getWeight();?></td>
+		<td valign="top" width="10%">
+		<a href="javascript://" onclick="adminPopupWin('/admin/featured-city/edit-country-image/id/<?=$this->id?>/page/<?=$this->page?>/img_id/<?php echo $imgRow->getId();?>');"><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;&nbsp;
+		<a href="javascript://" onclick="deleteCountryImage(<?php echo $imgRow->getId();?>);"><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+		</td>
+		</tr>
+		<?php 
+			$imgCount++;
+			}//end foreach
+		}//end if
+		else
+		{
+			echo "<tr><td>No image found.</td></tr>";
+		}
+		?>
+		</table>	
+	</div>
+	<div id="tabs-8" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/travel-guides-metadata.phtml',array('itemId'=>$this->id, 'itemType'=>'country'));?>
+	</div>
+</div>
+	
+	</div>
+  </div>
+</div>
+<script language="javascript" type="text/javascript">
+function deleteCountryImage(image_id)
+{
+	if(confirm('Are you sure? You want to delete this image?.'))
+	{
+		var params = "image_id="+image_id;
+		$.ajax({
+		   type: "POST",
+		   url: "/admin/featured-city/delete-country-image/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+				if(json.error==0)
+				{
+					$("#tr_image_row_"+image_id).hide();
+					$("span#tab7_msg").html(json.response);
+				}
+				else
+				{
+					alert(json.response);
+				}
+			},
+		   error: function (json, status, e){
+				alert("json="+json+", status="+status+", e="+e);
+			}
+		 });
+	}
+}
+
+function addMoreRowsKnowledge()
+{
+	//var table = document.getElementById("table_the_knowledge");
+	//var rowCount = table.rows.length;
+	//alert("rowCount="+rowCount);
+	var tabRow ="<tr><td valign='top'>Question </td><td valign='top'><input type='text' name='question[]' class='title-input-box' value=''></td></tr>";
+	tabRow +="<tr><td valign='top'>Answer </td><td valign='top'><textarea cols='40' rows='5' name='answer[]' class='title-input-box'></textarea></td></tr>";
+	tabRow +="<tr><td colspan='2' class='button_right_know'><input type='button' value='Remove' onclick='deleteKnowledgeRow(this);'></td></tr>";
+	//$("#table_the_knowledge").last().append("<tr><td>New row</td></tr>");
+	$('#table_the_knowledge > tbody:last').append(tabRow);
+	//$("#remove_button_tab6").show();
+	$("#btnSaveTab6").show();
+}
+
+function removeMoreRowsKnowledge()
+{
+	var table = document.getElementById("table_the_knowledge");
+	var rowCount = table.rows.length;
+	//alert("rowCount="+rowCount);
+	if(rowCount>4)
+	{
+		$('#table_the_knowledge > tbody:last tr:last').remove();
+		$('#table_the_knowledge > tbody:last tr:last').remove();
+		$('#table_the_knowledge > tbody:last tr:last').remove();
+		if(rowCount==7)
+		{
+			$("#remove_button_tab6").hide();
+		}	
+	}	
+}
+
+function deleteKnowledgeRow(r)
+{
+	if(confirm("Are you sure you want to delete this record?"))
+	{
+		var row3 = r.parentNode.parentNode.rowIndex;
+		var row2 = row3-1;
+		var row1 = row2-1;
+		document.getElementById('table_the_knowledge').deleteRow(row3);
+		document.getElementById('table_the_knowledge').deleteRow(row2);
+		document.getElementById('table_the_knowledge').deleteRow(row1);
+		
+		var table = document.getElementById("table_the_knowledge");
+	    var rowCount = table.rows.length;
+		//alert("rowCount=="+rowCount);
+		if(rowCount==1)
+		{
+			$("#btnSaveTab6").hide();
+		}
+	}	
+}
+
+function addMoreRowsDontLeave()
+{
+	var tabRow ="<tr><td valign='top'>Title </td><td valign='top'><input type='text' name='pracTitle[]' class='title-input-box' value=''></td></tr>";
+	tabRow +="<tr><td valign='top'>Copy </td><td valign='top'><textarea cols='40' rows='5' name='pracCopy[]' class='title-input-box'></textarea></td></tr>";
+	tabRow +="<tr><td colspan='2' class='button_right_dont'><input type='button' value='Remove' onclick='deleteDontLeaveRow(this);'></td></tr>";
+	$('#table_dontleave > tbody:last').append(tabRow);
+	//$("#remove_button_tab1").show();
+	//$("#btnSaveTab1").show();
+}
+
+function removeMoreRowsDontLeave()
+{
+	var table = document.getElementById("table_dontleave");
+	var rowCount = table.rows.length;
+	if(rowCount>2)
+	{
+		$('#table_dontleave > tbody:last tr:last').remove();
+		$('#table_dontleave > tbody:last tr:last').remove();
+		if(rowCount==4)
+		{
+			$("#remove_button_tab1").hide();
+		}	
+	}	
+}
+
+function deleteDontLeaveRow(r)
+{
+	var table = document.getElementById("table_dontleave");
+	var rowCount = table.rows.length;
+	//alert("rowCount=="+rowCount);
+	
+	if(rowCount==3)
+	{
+		//$("#btnSaveTab1").hide();
+		alert("You can not delete all items.");
+		return false;
+	}
+	if(confirm("Are you sure you want to delete this record?"))
+	{
+		var row3 = r.parentNode.parentNode.rowIndex;
+		var row2 = row3-1;
+		var row1 = row2-1;
+		document.getElementById('table_dontleave').deleteRow(row3);
+		document.getElementById('table_dontleave').deleteRow(row2);
+		document.getElementById('table_dontleave').deleteRow(row1);
+	}	
+}
+
+function addMoreRowsPOI()
+{
+	var tabRow ="<tr><td valign='top'>POI Name </td><td valign='top'><input type='text' name='poiName[]' class='title-input-box' value=''></td></tr>";
+	tabRow +="<tr><td valign='top'>Review Summary </td><td valign='top'><textarea cols='40' rows='5' name='reviewSummary[]' class='title-input-box'></textarea></td></tr>";
+	tabRow +="<tr><td valign='top'>Review Full </td><td valign='top'><textarea cols='40' rows='5' name='reviewFull[]' class='title-input-box'></textarea></td></tr>";
+	tabRow +="<tr><td colspan='2'>&nbsp;</td></tr>";
+	$('#table_poi > tbody:last').append(tabRow);	
+}
+
+function removeMoreRowsPOI()
+{
+	var table = document.getElementById("table_poi");
+	var rowCount = table.rows.length;
+	//alert("rowCount=="+rowCount);
+	if(rowCount>5)
+	{
+		$('#table_poi > tbody:last tr:last').remove();
+		$('#table_poi > tbody:last tr:last').remove();
+		$('#table_poi > tbody:last tr:last').remove();
+		$('#table_poi > tbody:last tr:last').remove();
+		if(rowCount==5)
+		{
+			$("#remove_button_tab5").hide();
+		}	
+	}	
+}
+//Finds y value of given object
+function findPos(obj)
+{
+	var curtop = 0;
+	if (obj.offsetParent)
+	{
+		do
+		{
+			curtop += obj.offsetTop;
+		}
+		while (obj = obj.offsetParent);
+		return [curtop];
+	}
+}
+
+function reloadDontLeaveWithoutArea(countryId)
+{
+	
+	var params = "countryId="+countryId;
+	$.ajax({
+	   type: "POST",
+	   url: "/admin/featured-city/country-dontleavewithout-reload/",
+	   data: params,
+	   dataType: "html",
+	   success: function(responseData){
+			$("#dont_leave_without_reload").html(responseData);
+		},
+	   error: function (json, status, e){
+			alert("json="+json+", status="+status+", e="+e);
+		}
+	 });
+}
+
+reloadDontLeaveWithoutArea(<?php echo $this->id;?>);
+</script>
+<?php
+//echo $this->setupEditor("introMini");
+echo $this->setupEditor("introShort");
+echo $this->setupEditor("visasOverview");
+echo $this->setupEditor("dangersAndAnnoyances");
+echo $this->setupEditor("weatherOverview");
+echo $this->setupEditor("gettingThereAndAway");
+echo $this->setupEditor("gettingAround");
+echo $this->setupEditor("historyRecent");
+echo $this->setupEditor("historyModern");
+echo $this->setupEditor("historyPre20c");
+?>

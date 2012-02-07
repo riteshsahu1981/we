@@ -26,6 +26,7 @@ class Base_Application_Resource_Modulesetup  extends Zend_Application_Resource_R
         foreach (array_keys($modules) as $module) {
             $configPath  = $front->getModuleDirectory($module) 
                          . DIRECTORY_SEPARATOR . 'configs';
+                 
             if (file_exists($configPath)) {
                 $cfgdir = new DirectoryIterator($configPath);
                 $appOptions = $this->getBootstrap()->getOptions();
@@ -33,7 +34,7 @@ class Base_Application_Resource_Modulesetup  extends Zend_Application_Resource_R
                 foreach ($cfgdir as $file) {
                     if ($file->isFile()) {
                         $filename = $file->getFilename();
-                      
+                      //Zend_Debug::dump($filename);
                         $options = $this->_loadOptions($configPath 
                                  . DIRECTORY_SEPARATOR . $filename);
                                  

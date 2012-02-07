@@ -1,0 +1,37 @@
+<h3>My Photos</h3>
+Here you can manage, add &amp; give permissions for all your photos.
+<br /><a href="/album/index/create-album">Create A Photo Album</a>
+<h3>CURRENT PHOTO ALBUMS</h3>
+<b>Filter albums by:&nbsp;</b><select><option value="">Please select</option></select>
+<?php 
+foreach($this->paginator as $album)
+
+{
+	?>
+	<div style="display:block;margin:10px 0px;padding:10px;border:1px solid #ccc;height:110px;">
+	<div style="float:left;margin:5px;border:1px solid #ccc;height:100px;width:100px;">Empty Album</div>
+	<div style="text-align:left;">
+	<div style="float:right;"><a href=""><input type="button" value="PERMISSIONS"/></a><br /></div>
+		<h4><?php echo $album->name;?></h4>
+		<b>Location:</b><?php echo $album->location;?><br />
+		<b>Edit: </b><a>Album</a>|<a>Photos</a><br /><br />
+		<a href=""><input type="button" value="SLIDESHOW"/></a>
+		<a href="/album/index/add-photo/<?php echo $album->id;?>"><input type="button" value="ADDPHOTOS"/></a>
+		<a href=""><input type="button" value="SHARE"/></a>
+		<a href=""><input type="button" value="RENAME"/></a>
+	<div style="float:right;"><a href=""><input type="button" value="DELETE"/></a></div>	
+	</div>
+	
+	</div>
+	<div style="clear:both;"></div>
+	<?php 
+	
+	
+}
+?>
+<br class="clear"/>
+<br class="clear"/>
+<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+
+

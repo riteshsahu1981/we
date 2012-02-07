@@ -1,0 +1,29 @@
+<div id="center">
+<script type="text/javascript">
+$(function check() 
+{
+   $("#toEmail").autocomplete(
+	{
+	   source: "/gapper/auto-email/",
+	   minLength: 1,
+	   select: function(event, ui) 
+		{
+		//alert(ui.item.id);
+		$("#toId").val(ui.item.id);
+		}
+			});
+});
+</script>
+<h2>Create Message</h2>
+<?php if(isset($_SESSION["flash_msg"]) && $_SESSION["flash_msg"]!=""){?>
+<h3><?php echo $_SESSION["flash_msg"];?></h3>
+<?php unset($_SESSION["flash_msg"]);}?>
+<?php 
+$createmsg = $this->form;
+echo $createmsg;
+?>
+
+</div>
+<script language="javascript" type="text/javascript">
+document.getElementById("toEmail").readOnly=true;
+</script>

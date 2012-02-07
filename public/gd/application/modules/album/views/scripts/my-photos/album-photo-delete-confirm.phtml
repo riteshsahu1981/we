@@ -1,0 +1,59 @@
+<div class="quality2">
+<h3 class="heading">Are you sure you want to delete?</h3>
+<input type="button" name="yes" value="Yes" id="yes" />
+<input type="button" name="no" value="No" id="no" />
+<p></p>
+</div>
+<script>
+$(document).ready(function(){
+	$("input#no").click(function(){
+		
+		 $(document).trigger('close.facebox');
+	});
+});
+
+$(document).ready(function(){
+	$("input#yes").click(function(){
+
+		var photoId	=	$("#current_photo_id").val();
+		
+                var albumId = $("#current_album_id").val();
+
+		 var requesturl	=	"/album/my-photos/album-photo-delete";
+
+		 $.post(requesturl, {photoId:photoId,id:albumId},
+				   function(html){
+					if(html == 'yes')
+					{
+                                            //$("a#close-album-photo-edit-box").trigger('click');
+                                                slideImage(<?php print $this->nextId;?>,'right');
+						//slidePhotoEdit(<?php //print $this->nextId;?>);
+						$("#photo-saved").show();
+						$("#photo-saved").html('Photo has been deleted.');
+						RAVIN_DelayedHide('photo-saved');
+                                                $("a#photo-edit-button").attr("style",""); //change edit button color
+                                                window.location="/album/my-photos/album-photos/id/"+albumId;
+					}else if(html == 'no'){
+						window.location="/album/my-photos/album-photos/id/"+albumId;
+					}
+				});
+		
+		
+		$(document).trigger('close.facebox');
+	});
+});
+
+function slidePhotoEdit(photoId)
+{
+var albumId = $("#current_album_id").val();
+
+	$("#photo-loading").show();
+	 var requesturl	=	"/album/my-photos/album-photo-edit";
+	 
+	 $.post(requesturl, {photoId:photoId,albumId:albumId },
+			   function(html){
+				$("#photo-editing").html(html);		
+				$("#photo-loading").hide();				
+			});
+}
+</script>

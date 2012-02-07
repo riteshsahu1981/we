@@ -1,0 +1,27 @@
+<?php
+$id = $this->countryId;
+$lonelyPlanetCountry	= array();
+
+//select details from lonely_planet_country table
+$lonelyPlanetCountryM	=	new Application_Model_LonelyPlanetCountry();
+$lonelyPlanetCountryM	=	$lonelyPlanetCountryM->fetchRow("country_id={$id}");
+	
+if(false!==$lonelyPlanetCountryM)
+{
+	$lonelyPlanetCountry = $lonelyPlanetCountryM;
+}
+?>
+<form name="frmCulture" id="frmCulture" enctype="multipart/form-data" method="post" action="/admin/featured-city/update-country-tab4-data">
+<input type="hidden" name="lonelyPlanetCountryId" value="<?php echo $lonelyPlanetCountry->getId();?>">
+<input type="hidden" name="countryId" value="<?php echo $id;?>">
+<input type="hidden" name="page" value="<?php echo $this->page;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<tr><td colspan="2"><div class="form-sub-head">Culture</div><span class="orange" id="tab4_msg"></span></td></tr>
+		<tr><td valign="top">Recent</td><td valign="top"><textarea cols="40" rows="10" name="historyRecent" class="title-input-box" style="width:795px !important;"><?php echo $lonelyPlanetCountry->getHistoryRecent();?></textarea></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td valign="top">Modern</td><td valign="top"><textarea cols="40" rows="10" name="historyModern" class="title-input-box" style="width:795px !important;"><?php echo $lonelyPlanetCountry->getHistoryModern();?></textarea></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td valign="top">Pre-20th Century</td><td valign="top"><textarea cols="40" rows="10" name="historyPre20c" class="title-input-box" style="width:795px !important;"><?php echo $lonelyPlanetCountry->getHistoryPre20c();?></textarea></td></tr>
+		<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave" ></td><td></td></tr>
+	</table>
+</form>

@@ -1,0 +1,453 @@
+<div id="mymessage">
+<link rel="stylesheet" href="/style/fcbkcomplete.css" type="text/css" media="screen" title="Selector Stylesheet" charset="utf-8" />
+<script src="/js/fcbkcomplete/jquery.fcbkcomplete.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+		
+    function checkAll(flag)
+	{	
+		if ( document.frmms.del.length )
+		{
+		for (var x = 0; x < document.frmms.del.length; x++)
+		{	
+			if(flag	==	1)
+			{
+				document.frmms.del[x].checked = true;    
+				$("span.checkboxSelect").html("<a href=\"javascript://\" id=\"checkboxall\" onclick=\"checkAll(0);\">Deselect All</a>");
+			}else{
+				document.frmms.del[x].checked = false;    
+				$("span.checkboxSelect").html("<a href=\"javascript://\" id=\"checkboxall\" onclick=\"checkAll(1);\">Select All</a>");
+			}
+		}
+		}else{
+			if(flag	==	1)
+			{
+				document.getElementById('del').checked = true;  
+				$("span.checkboxSelect").html("<a href=\"javascript://\" id=\"checkboxall\" onclick=\"checkAll(0);\">Deselect All</a>");
+			}else{
+				document.getElementById('del').checked = false;    
+				$("span.checkboxSelect").html("<a href=\"javascript://\" id=\"checkboxall\" onclick=\"checkAll(1);\">Select All</a>");
+			}
+		}
+	}
+	
+	function markRead()
+	{
+		var messagesIds	=	"";
+		 $("#del:checked").each(function() {
+	            //alert("value = " + $(this).val());
+				aId	=	"";
+				msgBoxId = "";
+				messagesIds	=	messagesIds+','+$(this).val();
+				aId			= "message-subject-"+$(this).val();
+				msgBoxId	= "message-box-"+$(this).val();
+				$("#"+aId).removeClass('unreaded').addClass('readed');
+				$("#"+msgBoxId).removeClass('msg-unread').addClass('msg-read');
+	 
+          });
+	
+		if(messagesIds != ""){
+			var messagesId	=	messagesIds.substr(1,messagesIds.length);
+			$.ajax({
+				type: "POST",
+				url: "/gapper/read-message/",
+				data: "messagesId="+messagesId,
+				cache: false,
+				success: function(html){
+					//$('#'+divId).slideUp("slow");
+					//alert('Done');
+				}
+				});
+		}else{
+			alert("Please select message!");
+		}	
+	}
+	
+	function deleteSelected()
+	{
+		var messagesIds	=	"";	
+		$("#del:checked").each(function() {
+				messagesIds	=	messagesIds+','+$(this).val();
+          });
+		  
+		  if(messagesIds != "")
+		  {
+			var response = confirm("Are you sure you want to delete message?");
+			if (response == false)
+			{			
+				return false;
+			}else{
+			
+			var messagesId	=	messagesIds.substr(1,messagesIds.length);
+			$.ajax({
+				type: "POST",
+				url: "/gapper/delete-message/",
+				data: "messagesId="+messagesId,
+				cache: false,
+				success: function(html){
+					$("#del:checked").each(function() {	                   
+						divId	=	"";					
+						divId	=	"message-box-"+$(this).val();
+						$("#"+divId).slideUp(400);	 
+					});
+				}
+				});
+					
+			}
+		  }else{
+			alert("Please select message!");
+		  }
+	
+	}
+	  
+	$(function check()    	    	
+	{
+		/*
+		$("#toEmail").autocomplete(
+		{
+			source: "/gapper/auto-email/",
+			minLength: 1,
+			select: function(event, ui) 
+			{
+				$("#toId").val(ui.item.id);
+			}
+		});
+		*/	
+		
+	});
+	
+	function markReadUnread(readStatus)
+	{
+		var messagesIds	=	"";
+		var readStatus = parseInt(readStatus);
+		
+		//if not selected read or Unread
+		if(isNaN(readStatus))
+		{
+			return false;
+		}
+		$("#del:checked").each(function()
+		{
+			aId	=	"";
+			msgBoxId = "";
+			messagesIds	=	messagesIds+','+$(this).val();
+			aId			= "message-subject-"+$(this).val();
+			msgBoxId	= "message-box-"+$(this).val();
+			$("#"+aId).removeClass('unreaded').addClass('readed');
+			
+			//set status as per read status
+			if(readStatus==1)
+			{
+				$("#"+msgBoxId).removeClass('msg-unread').addClass('msg-read');
+			}
+			else
+			{
+				$("#"+msgBoxId).removeClass('msg-read').addClass('msg-unread');
+			}	
+		});
+		
+		if(messagesIds != "")
+		{
+			var messagesId	=	messagesIds.substr(1,messagesIds.length);
+			$.ajax({
+				type: "POST",
+				url: "/gapper/read-message/",
+				data: "messagesId="+messagesId+"&status="+readStatus,
+				cache: false,
+				success: function(html)
+				{
+					//$('#'+divId).slideUp("slow");						
+					//uncheck all check boxes
+					$("INPUT[type='checkbox']").attr('checked', false);
+					$("span.checkboxSelect").html("<a href=\"javascript://\" id=\"checkboxall\" onclick=\"checkAll(1);\">Select All</a>");
+					//set default option
+					$('select[name=message_status_t]').val('');
+					$('select[name=message_status_b]').val('');
+				}
+				});
+		}
+		else
+		{
+			//set default option
+			$('select[name=message_status_t]').val('');
+			$('select[name=message_status_b]').val('');
+			alert("Please select message!");
+		}
+	}
+<?php if($this->msg!=''){?>
+ 
+<?php } ?>
+</script>
+
+<h1>MY MESSAGES</h1>
+<p class="error"><?php print $this->msg;?></p>
+
+<?php 
+//$createmsg = $this->form;
+$createmsg  = "<form action='' onsubmit='return fncSubmitMessageForm(this);' method='post' enctype='application/x-www-form-urlencoded'>";
+$createmsg .= "<input type='hidden' id='toId' class='form' value='' name='toId'>";
+$createmsg .= "<table cellspacing='4' cellpadding='2' border='0'>";
+$createmsg .= "<tr><td>To</td>";
+$createmsg .= "<td><select id='toEmail' name='toEmail'>";
+if(isset($this->receipentArr) && count($this->receipentArr)>0)
+{
+	$createmsg .= "<option value='".$this->receipentArr['receipent_id']."' class='selected'>".$this->receipentArr['receipent_name']."</option>";
+}
+else
+{
+	$createmsg .= "<option value=''>Select Receipents</option>";
+}	
+$createmsg .= "</select></td></tr>";
+if(isset($this->receipentArr) && count($this->receipentArr)>0)
+{
+	$createmsg .= "<tr><td>Subject</td><td><input type='text' value='".$this->receipentArr['msg_subject']."' id='subject' name='subject'></td></tr>";
+}
+else
+{
+	$createmsg .= "<tr><td>Subject</td><td><input type='text' value='' id='subject' name='subject'></td></tr>";
+}	
+
+$createmsg .= "<tr><td>Message</td><td><textarea cols='40' rows='4' id='body' name='body'></textarea></td></tr>";
+$createmsg .= "<tr><td>&nbsp;</td><td><input type='submit' value='Send Message' id='submit' name='submit'></td></tr>";
+$createmsg .= "</table></form>";
+
+$value = $this->msgsearch!=''?$this->msgsearch:'Search Messages';
+$table="<div id=\"search-msg\">
+	<form method=\"post\" action=\"\" name='frmSearchMsg'>
+		<input type=\"text\" onblur=\"if (this.value == '') this.value = 'Search Messages';\" id=\"msg\" onfocus=\"if( this.value=='Search Messages') value = '';\" value='".$value."' class=\"search-input\" name=\"msgsearch\"><input type=\"button\" class=\"search-button\" name=\"Search\" onclick='frmSearchMsg.submit();'>
+	</form>
+</div>";
+if($this->total>0)
+{
+	$table .= "<form name='frmms' id='frmms' action='/gapper/delete-messages' method='post' onSubmit ='return confirm(\"Are you sure you want to delete these messages\");'>";
+	$table .= "<div class=\"message-nav\">";
+	$table .= "<div class=\"message-nav-l f-left\">";
+	$table .= "<span class=\"checkboxSelect\"><a href=\"javascript://\" id=\"checkboxall\" onclick=\"checkAll(1);\">Select All</a></span>";
+	$table .= "<a href=\"javascript://\" onclick=\"deleteSelected();\">Delete</a>";
+	//$table .= "<a href=\"javascript://\" onclick=\"markRead();\">Mark As Read</a>";
+	$table .= "<select name='message_status_t' id='message_status_t' onchange='markReadUnread(this.value);'>";
+	$table .= "<option value=''>Mark As</option>";
+	$table .= "<option value='1'>Read</option>";
+	$table .= "<option value='0'>Unread</option>";
+	$table .= "</select>";
+	//$table .= "<input type='submit' value='Delete Checked' />";
+	$table .= "</div>";
+	$table .= "<div class=\"message-nav-r f-right\">";
+	//$table .= "<select name=\"sort\" id=\"sort\" onchange=\"sortMessage();\">";
+	//$table .= "<option value='newest'>Newest</option>";
+	//$table .= "<option value='oldest'>Oldest</option>";
+	//$table .= "</select>";
+	$table .= "</div>";
+	$table .= "</div>";
+	
+	foreach($this->messages as $row)
+	{
+	    $userM = new Application_Model_User(); 
+		$user=$userM->find($row->from_id);
+		
+		$messageUrl	=	"/gapper/message-detail/id/".base64_encode($row->id);
+		
+		$divId	=	"message-box-".$row->id;
+		$msgClassRead = "msg-unread";
+		if($row->read==1)
+		{
+			$msgClassRead = "msg-read";
+		}
+		$table .="<div class=\"message-box {$msgClassRead}\" id=\"{$divId}\">
+		<div class=\"message-box-chkbx f-left\"><input type='checkbox' value='".$row->id."' name='del[]' id='del'/></div> 
+	   	<div class=\"message-box-img f-left\">";
+		$table .= "<img src='/image?src=".$user->getThumbnail()."&size=friends'  />";
+		if($row->subject != "")
+		{
+			$subject	=	"<h3><a href='{$this->seoUrl($messageUrl)}' id=\"message-subject-{$row->id}\">".$row->subject."</a></h4>";
+		}
+		else
+		{
+			$subject	=	"<h3><a href='{$this->seoUrl($messageUrl)}' id=\"message-subject-{$row->id}\">no subject</a></h4>";
+		}			 
+			 
+		$table .="</div> 
+		<div class=\"message-box-center f-left\"> 
+		<span class=\"connect-name\"><a href='/{$user->username}'>".$user->firstName." ".$user->lastName."</a></span>
+		<span class=\"connect-date\">".date("dS M Y",$row->addedon)."</span>
+		</div>
+		
+		<div class=\"message-box-right f-left\" >".$subject.
+				"<p>".substr( stripslashes($row->body), 0, 300)."...</p>
+	        	 
+		
+		
+        </div>     
+        </div>";  
+	}
+	$table .= "</form>";
+	$table .= "<div class=\"message-nav bdr-tp\">";
+	$table .= "<div class=\"message-nav-l f-left\">";
+	$table .= "<span class=\"checkboxSelect\"><a href=\"javascript://\" id=\"checkboxall\" onclick=\"checkAll(1);\">Select All</a></span>";
+	$table .= "<a href=\"javascript://\" onclick=\"deleteSelected();\">Delete</a>";
+	//$table .= "<a href=\"javascript://\" onclick=\"markRead();\">Mark As Read</a>";
+	$table .= "<select name='message_status_b' id='message_status_b' onchange='markReadUnread(this.value);'>";
+	$table .= "<option value=''>Mark As</option>";
+	$table .= "<option value='1'>Read</option>";
+	$table .= "<option value='0'>Unread</option>";
+	$table .= "</select>";
+	$table .= "</div>";
+	$table .= " {$this->paginationControl($this->messages, 'Sliding', 'pagination-message.phtml', array('linkArray'=>$this->param))}";
+	$table .= "</div>";
+	//$table .= 
+}else{
+	$table= "Your inbox is empty.";
+}
+?>
+
+<?php 
+$table1="";
+
+if(count($this->friend)>0)
+{	
+	foreach($this->friend as $_friend)
+	{
+		$friendO = $_friend->getUserObj();//print_r($friendO);
+		$friend_name = "";
+		$friend_name = $friendO->first_name." ".$friendO->last_name;
+		
+		$table1 .= "<div class='friend-resquests'>";
+		$table1 .= "<div class='fr-img'>";
+		$table1 .= "<a href='/".$friendO->username."'>";
+		$table1 .= "<img src='/image?src=".$_friend->getThumbnail($friendO->image, $friendO->facebook_id, $friendO->sex)."&size=friends' border='0' />";
+		$table1 .= "</a>";
+		$table1 .= "</div>";
+		$table1 .= "<div class='fr-right'>";
+		$table1 .= "<div class='fr-by'>";
+		$table1 .= "<a href='/".$friendO->username."'><span class='fr-by-name'>".$friend_name."</span></a><span class='fr-by-rel'>".ucwords($_friend->getConnectionType())."</span>";
+		$table1 .= "</div>";
+		//$table1 .= "<div class='fr-connect'><span>Connection to you:</span><span><select name=''><option>Friend</option></select></span></div>"; 
+		//$table1.= "&nbsp;&nbsp;".$_friend->getStatus()."<br/>";
+		$table1 .= "<br style='clear:both;'/>";
+		$table1 .= "<div class='fr-btns'>";
+		$table1 .= "<a href='/".$friendO->username."'>View Profile</a>";
+		$table1 .= "<a href='/gapper/accept-f/id/".$_friend->getId()."'>Accept</a>";
+		$table1 .= "<a href='/gapper/decline/id/".$_friend->getId()."'>Decline</a>";
+		$table1 .= "<a href='/profile/messages/username/{$friendO->username}'>Send Message</a>";
+		$table1 .= "</div>";
+		$table1 .= "</div>";
+		$table1 .= "</div>";
+	}
+}
+else
+{
+	 $table1.= "<div>No friend request found.</div>";	
+}
+?>
+
+<?php
+/*------------------------ START SENT MESSAGE --------------------------------*/
+$sentmsg	=	"";
+if($this->totalSent > 0)
+{
+	 foreach($this->sentMessages as $row)
+	{
+	    $userM = new Application_Model_User(); 
+		$user=$userM->find($row->to_id);
+		
+		$sentMessageUrl	=	"/gapper/sent-message-detail/id/".base64_encode($row->id);
+		
+		$sentmsg .="<div class=\"message-box\">
+		<div class=\"message-box-chkbx f-left\">&nbsp;</div> 
+	   	<div class=\"message-box-img f-left\">";
+		     
+		$sentmsg .= "<img src='/image?src=".$user->getThumbnail()."&size=friends'  />";
+		
+		if($row->subject != "")
+		{
+			$subject	=	"<h3><a href='{$this->seoUrl($sentMessageUrl)}'>".$row->subject."</a></h4>";
+		}
+		else
+		{
+			$subject	=	"<h3><a href='{$this->seoUrl($sentMessageUrl)}'>no subject</a></h4>";
+		}
+		$sentmsg .="</div>
+		<div class=\"message-box-center f-left\"> 
+		<span class=\"connect-name\"><a href='/{$user->username}'>".$user->firstName." ".$user->lastName."</a></span>
+		<span class=\"connect-date\">".date("dS M Y",$row->addedon)."</span>
+		</div>
+		
+		<div class=\"message-box-right f-left\" >".$subject.
+				"<p>".substr( stripslashes($row->body), 0, 300)."...</p>
+	        	 
+		
+		
+        </div>     
+        </div>";
+		
+  
+	}
+
+}else{
+	$sentmsg	=	"Sent box is empty.";
+}
+/*------------------------ END SENT MESSAGE --------------------------------*/
+?>
+
+<?= $this->tabContainer()
+    ->addPane("tab1", "INBOX",$table)
+    ->addPane("tab1", "FRIEND REQUESTS",$table1)
+    ->addPane("tab1", "CREATE MESSAGE",$createmsg)
+	->addPane("tab1", "SENT",$sentmsg)
+    ->tabContainer("tab1", array(), array("class" => "flora")); ?>
+</div>
+
+<script language="JavaScript">
+$( ".flora" ).tabs({ selected: <?php print $this->selectedTab;?> });
+</script>
+
+<script language="JavaScript">
+$(document).ready(function() 
+{        
+  $("#toEmail").fcbkcomplete({
+	json_url: "/gapper/select-friends/",
+	cache: false,
+	filter_case: false,
+	filter_hide: true,
+	firstselected: true,
+	//onremove: "testme",
+	//onselect: "testme",
+	filter_selected: true,
+	newel: false ,
+	complete_text: 'Type your friends name here....'       
+  });
+  
+});
+
+function testme(item)
+{	if ($.browser.mozilla) 
+	{
+		console.log(item);
+	}
+	else
+	{
+		alert(item);
+	}		  	
+}
+function fncSubmitMessageForm(frmObj)
+{
+	//validate form
+	//if(trim($('#toEmail').val())=="null")
+	if($('#toEmail').val()==null)
+	{
+		alertBox("Warning","Receipent address can not be left blank.");
+		return false;
+	}
+	if(trim($('#subject').val())=="")
+	{
+		alertBox("Warning","Subject can not be left blank.");
+		return false;
+	}
+	if(trim($('#body').val())=="")
+	{
+		alertBox("Warning","Message can not be left blank.");
+		return false;
+	}
+	$('#msg').val("Search Messages");
+	return true;
+}    
+</script>

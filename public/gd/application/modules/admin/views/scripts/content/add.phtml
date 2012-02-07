@@ -1,0 +1,16 @@
+<?php
+	$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+	$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded .
+?>
+<div id="rightsidemain">
+	<div id="rightcontentpart">
+		<div id="rightsideheading" class="headingblack">
+		<span style="margin: 0pt 15px 0pt 0pt; float: right;"><a class="add f-right" href="/admin/content">Back</a></span>
+		Add New Module
+		</div>
+		<div id="rightsidecontentpart">
+		<?php echo $this->form;?>
+		</div>
+	</div>
+</div>  
+<?php echo $this->setupEditor( 'body' ); ?>

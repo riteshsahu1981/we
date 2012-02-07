@@ -1,0 +1,174 @@
+<?php
+	$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+	$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded .
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">Home Page Mid Content: Logged Out Section</div>
+	<div id="rightsidecontentpart">
+	<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+    <?php }?>
+	<?php
+	if(isset($this->editorPic) && $this->editorPic!="")
+	{
+	?>
+	<!--<div><b>Editor Picture:</b> <img src="/media/picture/home/thumb_<?php echo $this->editorPic;?>" width="150" height="100"/></div>-->
+	<?php }?>
+	
+  	<?php //echo $this->form;?>
+	<form method="post" action="" enctype="multipart/form-data">
+	<table align="center" cellspacing="5" cellpadding="5" border="0" width="100%">
+		<tr>
+			<td><?php echo $this->form->title->getLabel();?></td><td><?php echo $this->form->title;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-sub-head">Editor Section</div></td></tr>
+		<tr>
+			<td valign="top"><?php echo $this->form->editorPic->getLabel();?><br /><span class="span-field-note">(Upload 138x125 dimensions image)</span></td>
+			<td>
+			<?php
+			if(isset($this->editorPic) && $this->editorPic!="")
+			{
+			?>
+			<!--<img src="/media/picture/home/thumb_<?php echo $this->editorPic;?>" width="138" height="125"/>-->
+			<img src="<?echo $this->cdnUri();?>/image?src=<?echo $this->cdnUri();?>/media/picture/home/<?php echo $this->editorPic;?>&w=138&h=125" />
+			<?php }?><br />
+			<?php echo $this->form->editorPic;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->editorPicTitle->getLabel();?></td><td><?php echo $this->form->editorPicTitle;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->editorPicText->getLabel();?></td><td><?php echo $this->form->editorPicText;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->editorPicUrlLabel->getLabel();?></td><td><?php echo $this->form->editorPicUrlLabel;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->editorPicUrlLink->getLabel();?></td><td><?php echo $this->form->editorPicUrlLink;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->editorPicUrlTarget->getLabel();?></td><td><?php echo $this->form->editorPicUrlTarget;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-sub-head">Shared Section</div></td></tr>
+		<tr>
+			<td><?php echo $this->form->subTitle1->getLabel();?></td><td><?php echo $this->form->subTitle1;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink1Text->getLabel();?></td><td><?php echo $this->form->sharedLink1Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink1Url->getLabel();?></td><td><?php echo $this->form->sharedLink1Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink1Target->getLabel();?></td><td><?php echo $this->form->sharedLink1Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink2Text->getLabel();?></td><td><?php echo $this->form->sharedLink2Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink2Url->getLabel();?></td><td><?php echo $this->form->sharedLink2Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink2Target->getLabel();?></td><td><?php echo $this->form->sharedLink2Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink3Text->getLabel();?></td><td><?php echo $this->form->sharedLink3Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink3Url->getLabel();?></td><td><?php echo $this->form->sharedLink3Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink3Target->getLabel();?></td><td><?php echo $this->form->sharedLink3Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink4Text->getLabel();?></td><td><?php echo $this->form->sharedLink4Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink4Url->getLabel();?></td><td><?php echo $this->form->sharedLink4Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink4Target->getLabel();?></td><td><?php echo $this->form->sharedLink4Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink5Text->getLabel();?></td><td><?php echo $this->form->sharedLink5Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink5Url->getLabel();?></td><td><?php echo $this->form->sharedLink5Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->sharedLink5Target->getLabel();?></td><td><?php echo $this->form->sharedLink5Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-sub-head">Read Section</div></td></tr>
+		<tr>
+			<td><?php echo $this->form->subTitle2->getLabel();?></td><td><?php echo $this->form->subTitle2;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink1Text->getLabel();?></td><td><?php echo $this->form->readLink1Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink1Url->getLabel();?></td><td><?php echo $this->form->readLink1Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink1Target->getLabel();?></td><td><?php echo $this->form->readLink1Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->readLink2Text->getLabel();?></td><td><?php echo $this->form->readLink2Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink2Url->getLabel();?></td><td><?php echo $this->form->readLink2Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink2Target->getLabel();?></td><td><?php echo $this->form->readLink2Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->readLink3Text->getLabel();?></td><td><?php echo $this->form->readLink3Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink3Url->getLabel();?></td><td><?php echo $this->form->readLink3Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink3Target->getLabel();?></td><td><?php echo $this->form->readLink3Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->readLink4Text->getLabel();?></td><td><?php echo $this->form->readLink4Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink4Url->getLabel();?></td><td><?php echo $this->form->readLink4Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink4Target->getLabel();?></td><td><?php echo $this->form->readLink4Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td><?php echo $this->form->readLink5Text->getLabel();?></td><td><?php echo $this->form->readLink5Text;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink5Url->getLabel();?></td><td><?php echo $this->form->readLink5Url;?></td>
+		</tr>
+		<tr>
+			<td><?php echo $this->form->readLink5Target->getLabel();?></td><td><?php echo $this->form->readLink5Target;?></td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td>&nbsp;</td><td><?php echo $this->form->cmdSubmit;?></td>
+		</tr>
+	</table>
+	</form>
+	</div>
+  </div>
+</div>
+<?php 
+echo $this->setupEditor('subTitle1Text');
+echo $this->setupEditor('subTitle2Text');
+?>

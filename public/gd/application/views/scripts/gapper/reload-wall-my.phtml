@@ -1,0 +1,195 @@
+<script>
+function removeTravelWallPostComment(postCommentId)
+{
+	var divId	=	"my-travel-wall-post-comment-"+postCommentId;
+	var response = confirm("Are you sure you want to delete this comment?");
+
+		if (response == false)
+		{			
+			return false;
+		}else{
+		
+			$.ajax({
+				type: "POST",
+				url: "/gapper/remove-travel-wall-post-comment/",
+				data: "postId="+postCommentId,
+				cache: false,
+				success: function(html){
+					$('#'+divId).slideUp("slow");
+				}
+				});
+		}
+}
+</script>
+<div style="border:0px solid #ffcc00;" id="my_travel_wall_wallupdates_my">
+
+<?php
+if(count($this->data)>0)
+{
+    echo "<br/>";
+    foreach($this->data as $row)
+    {
+		$userM	=	new Application_Model_User();
+		$user	=	$userM->find($row->getUserId());
+		if(false!==$user)
+		{
+			$commentedPersonId = $user->getId();
+			$username=$user->getUsername();
+			$firstname=$user->getFirstName();
+			$lastname=$user->getLastName();
+			$image=$user->getThumbnail();		  
+			$strFullName = $firstname." ".$lastname;  
+		}
+		$date	=	new Base_Date();
+		$voteM	=	new Application_Model_Vote();
+		
+		$total_likes = $voteM->getTotalVotes($row->getId(),"status", 1,null);
+?>
+        <div class="feed-box posrel <?php print $commentedPersonId;?>" id="<?php echo "my-travel-wall-post-".$row->getId();?>" onmouseover="show_close_button('<?php echo "close-img-".$row->getId();?>');" onmouseout="hide_close_button('<?php echo "close-img-".$row->getId();?>');">
+		<?php if($this->userId != "" && ($commentedPersonId == $this->userId)){?>
+		<span class="close-img-wall f-right">
+		<img id="<?php echo "close-img-".$row->getId();?>" src="/images/delete.png" alt="Remove Post" onclick="removeWallPost('<?php echo $row->getId();?>');" style="display:none;" /></span>
+		<?php }else{?>
+		<span class="close-img-wall f-right">
+		<img id="<?php echo "close-img-".$row->getId();?>" src="/images/delete.png" alt="Remove Post" onclick="show_post_hide_block('<?php echo $row->getId();?>', '<?php print $commentedPersonId;?>');" style="display:none;" />
+		</span>
+        <div class="spam-box" id="<?php echo "spam-box-".$row->getId();?>" style="display:none;"> </div>
+		<?php }?>
+            <div class="feed-by-img">
+                <a href="<?php echo $this->seoUrl("/$username"); ?>">
+                    <!--<img height="80" width="65" src="<?php echo $image?>" width="61" height="72" alt=""/>-->
+					<img border="0" src="/image?src=<?php echo $image;?>&size=journal" alt="" />
+				</a>
+			</div>
+            <div class="feed-content">
+				<div class="userntxt"><a href="<?php echo $this->seoUrl("/$username"); ?>"><b><?php echo $firstname ?> <?php echo $lastname ?></b></a> <?php echo $this->textModifier($row->getStatus());?></div>
+                <div class="feed-posted">Posted <?php echo $date->timeAgo($row->getAddedon());?> |  <a href="javascript: showCommentBox(<?php echo $row->getId()?>);">Comment</a>  |
+                
+                <?php 
+				$likeStyle="";
+                $unlikeStyle="display:none";
+				if($this->userId=="")
+				{?>
+                 <a href="javascript: loginPopUp('Please login to like');">Like</a>
+                <?php
+				}
+				else
+				{
+                    $userVote=$voteM->getTotalVotes($row->getId(),"status", 1, $this->userId);
+                    if($userVote>0)
+					{
+                       $likeStyle="display:none";
+                       $unlikeStyle="";
+
+                    }
+				?>
+					<span style="display: none;" id="loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+					<span style="<?php echo $unlikeStyle?>" id="unlike_<?php echo $row->getId();?>">
+					<a href="javascript: like(<?php echo $row->getId();?>, -1);">Unlike</a>
+					</span>
+
+					<span style="<?php echo $likeStyle?>" id="like_<?php echo $row->getId();?>">
+					<a href="javascript: like(<?php echo $row->getId();?>, 1);">Like</a>
+					</span>
+					<?php
+					} //end of else?>
+				</div>
+
+                    <?php
+                            $item_id= $row->getId();
+                            $commentM=new Application_Model_Comment();
+                            $where="item_id='{$item_id}' AND publish='1' AND item_type='status'";
+                            $order="addedon ASC";
+                            $comments=$commentM->fetchAll($where,$order,10);
+                            $styleComment="";
+                            if(count($comments)==0){
+                                $styleComment="display:none";
+                            }
+							//added by mahipal on 25-Feb-2011, to display 'yuo like this' if comment is 0 and Like is greater than 0
+							if($total_likes>0)
+							{
+								$styleComment="";
+							}							
+                     ?>
+                    <div class="feed-comment" id="comment-main-<?php echo $row->getId();?>"  style="<?php echo $styleComment?>">
+					
+                    <!-- Tags and likes DIV starts here -->
+					<?php
+					//set total likes text
+					$textPrint	=	$this->language("like_singular");
+					if($total_likes > 1)
+					{
+						$textPrint	=	$this->language("like_plural");
+					}
+
+					//set main DIV style
+					$mainDivStyle	= "display: none;";			
+					if($total_likes > 0)
+					{
+						$mainDivStyle	= "display: block;";
+					}
+					?>
+					<div style="<?php echo $mainDivStyle;?> border-bottom: 1px solid #FFFFFF; height: 30px;" id="travel_tag_div_<?php echo $row->getId();?>">
+					 <?php if ($total_likes>0){$totalLikeDisplay="";}else{$totalLikeDisplay="display:none";}?>
+						<span class="like-dislike-l f-left">
+						<span id="you-like-this-thumb-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>">
+						<img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like" class="f-left" />
+						<span id="you-like-this-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>"><?php echo $this->language("like_you");?></span>
+						</span>
+						<a href="<?php echo $this->seoUrl('/journal/user-like-this/type/status/item_id/'.$row->getId());?>" class="like-this-l-link">
+						<span id="total_likes_<?php echo $row->getId();?>" style="<?php echo $totalLikeDisplay?> padding-left:5px !important;">
+						<?php echo $total_likes.' '.$textPrint;?>
+						</span>
+						</a>
+						</span>
+					</div>
+					<div class="clear"></div>
+					<!-- Tags and likes DIV ends here -->
+                    <div id="comment-list-<?php echo $row->getId();?>" >
+                    <?php
+                     if(count($comments)>0)
+					 {
+						foreach($comments as $_comment)
+                        echo $this->partial('comment/comment.phtml', array('comment'=>$_comment, 'type'=>'status_comment', 'userId'=>$this->userId, 'item_id'=>$item_id));
+                     }
+                     ?>
+                    </div>
+                    <div class="commet-frm-feed" id="comment-form-<?php echo $row->getId();?>">
+                    <form action="">
+                            <input type="text" id="status-comment-<?php echo $row->getId();?>"  name="status-comment-<?php echo $row->getId();?>" class="feed-comment-txt" value="Comment..." onfocus="if(this.value=='Comment...'){this.value=''}" onblur="if(this.value==''){this.value='Comment...'}"  />
+                            <input id="saveComment_<?php echo $row->getId();?>" name="saveComment_<?php echo $row->getId();?>" type="button" value="share" class="feed-comment-btn" onclick="statusComment('<?php echo $row->getId();?>','<?php echo $commentedPersonId ?>')"/>
+                            <span style="display: none;" id="comment_loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                    </form>
+
+                    </div>
+
+                    </div>
+            </div>
+        </div>
+    <?php
+    }//end of foreach
+?>
+</div>
+<?php 
+//display view more link if not viewing particular wall information
+if (!isset($this->wall_id) && $this->wall_id=="")
+{
+?>
+<!-- View More DIV START -->
+<div class="feed-box posrel" id="travel_wall_showmore_div_my" style="border-top:none;">
+	<span style="display: none;" id="travel_wall_loading_img_my">
+		<img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+	</span>	
+	<div class="view-link">
+		<a id="show_more_travelwall_link_my" href="javascript: moreTravelWallMy()">VIEW MORE</a>
+	</div>
+</div>
+<!-- View More DIV END -->
+<?php }//end of if?>
+<?php
+}//end of if
+else
+{
+    echo "No status found. You have not updated your travel wall yet.";
+}
+?>
