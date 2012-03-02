@@ -1,0 +1,29 @@
+<a href="javascript:void(0);" id="unlike-album" onclick="javascript:unlikeAlbum('<?php print $this->album_id;?>');">Unlike</a>
+<script>
+function unlikeAlbum(album_id)
+{
+        var item_type	=	'album';
+        var requesturl	=	"/profile/unlike-album";
+        var container = "like-album-container_"+album_id;
+
+        $.post(requesturl, {album_id:album_id, item_type:item_type },
+                                   function(html){
+                                        countTotalLike(album_id)
+                                        $("#"+container).html(html);
+                                });
+
+}
+
+function countTotalLike(album_id)
+{
+    var item_type = 'album';
+    var requesturl = "/profile/count-total-like";
+    var container = "total_likes_"+album_id;
+
+    $.post(requesturl, {album_id:album_id, item_type:item_type },
+                               function(html){
+                                    $("#"+container).html(html);
+
+                            });
+}
+</script>

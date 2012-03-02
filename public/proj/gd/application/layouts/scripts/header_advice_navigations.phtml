@@ -1,0 +1,20 @@
+<?php
+$adviceM = new Application_Model_Advice();
+$advices = $adviceM->fetchAll("status='1'");
+		
+$travelAdvices = "";
+if(count($advices)>0)
+{
+	$travelAdvices .= "<ul class=\"menu hidden\">";
+	
+	foreach($advices as $_advice)
+	{
+		$adviceDetailURL = $this->seoUrl('/advice/detail/id/'.$_advice->getId());
+		$travelAdvices .= "<li>\n\t";
+		$travelAdvices .= "<a href=\"{$adviceDetailURL}\" rel=\"nofollow\">\n\t".$_advice->getTitle()."\n\t</a>\n\t";
+		$travelAdvices .= "</li>\n";
+	}//foreach
+	$travelAdvices .= "</ul>";
+}//end of if
+echo Zend_Json::encode($travelAdvices);
+?>

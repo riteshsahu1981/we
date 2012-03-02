@@ -1,0 +1,87 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+
+	<div id="rightsideheading" class="headingblack"><span style='float: right; margin: 0 15px 0 0;'>
+	
+	<img src='/images/admin-images/newobject.gif' width='20px'><a class="add f-right" href='/admin/banner/add'>Add Banner</a></span>Banner Management - <span class='msg'>Total <?php echo $this->total?> banner(s) found! </span></div>
+	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+	
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+<br />
+<br />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>Title</th>
+    <th>Url</th>
+    <th>Position</th>
+    <th>Image</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+  
+	<?
+	$rowsNs = new Zend_Session_Namespace("members");
+	
+	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+		$status_image='false.gif';
+		$status="1";
+		$status_popup='publish';
+		if($row['Published']=="1")
+		{
+			$status_image='true.gif';
+			$status="0";
+			$status_popup='unpublish';
+		}
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['Title']?></td>
+    		<td><?=$row['Url']?></td>
+    		<td><?=ucfirst($row['Position'])?></td>
+    		<td><img src="/index/resize-image/path/<?php echo base64_encode("media/banner/".$row['Image']) ?>" /></td>
+    		<td>
+				<a href='/admin/banner/changestatus/id/<?=$row['Id']?>/page/<?=$page?>/status/<?=$status?>' onclick='return confirm("Are sure you want to <?=$status_popup?> the banner ?")'><img src='/images/admin-images/<?=$status_image?>' border='0' title='<? echo "Click here to $status_popup the banner."?> '/></a>
+    		</td>
+    		
+    		<td>
+	    		<a href='/admin/banner/edit/id/<?=$row['Id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>
+	    		<a onclick="return confirm('Are sure you want to delete the banner?')" href='/admin/banner/delete/id/<?=$row['Id']?>/page/<?=$page?>'><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+</div>

@@ -1,0 +1,31 @@
+<div class="register_area">
+<?php 
+if($this->skipInvite != "")
+{
+	//Display meesage to users according to thir registration process
+	$heading = "THANK YOU FOR REGISTERING WITH GAP DAEMON";
+	$message = "Please check your email to verify your account.";
+
+	$usersNs = new Zend_Session_Namespace("app");
+	if($usersNs->facebookId!="")
+	{
+		$heading = "Please log in to Gap Daemon using the drop-down to your right.";
+		$message = "";
+		//Zend_Session::namespaceUnset("app");
+	}	
+	?>
+	<h1 class="green_heading"><?php echo $this->puts($heading);?></h1>    
+	<p class="green_heading_dis"><?php echo $this->puts($message);?></p>
+	<br /><br />	
+<?php
+}
+else
+{
+?>
+	<h1 class="green_heading"><?php echo $this->puts("INVITE CONTACTS")?></h1>    
+	<p class="green_heading_dis"><?php echo $this->puts("Thank you for inviting your friends to Gap Daemon!")?></p>
+	<br /><br />
+    <a href="/index/invite" class="invite_button">INVITE MORE CONTACTS?</a>
+    <a href="/index/thanks/skip-invite/1" class="invite_button">NO THANKS FINISH REGISTERING ME</a>
+<?php } ?>
+</div>

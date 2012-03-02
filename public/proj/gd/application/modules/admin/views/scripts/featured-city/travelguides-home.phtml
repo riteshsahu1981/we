@@ -1,0 +1,15 @@
+<?php
+	$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+	$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded.
+?>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">
+	Manage Travel Guides Home Page Content</div>
+		<div id="rightsidecontentpart">
+			<span class='red'><? echo $this->errorMsg;?></span>
+			<?php echo $this->form?>
+		</div>
+	</div>
+</div>
+<?php echo $this->setupEditor( 'description' );?>

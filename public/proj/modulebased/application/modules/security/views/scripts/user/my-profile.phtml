@@ -1,0 +1,19 @@
+<?php $date=new Base_Date();?>
+<?php
+//echo $this->user->row->findParentDesignation();
+?>
+<table>
+    <tbody>
+        <tr ><td colspan="2"><img src="<?php echo $this->user->getProfileImage()?>"></img> <?php echo $this->form ?></td></tr>
+        <tr ><td>Name : </td><td><?php echo $this->user->getFirstName()." ".$this->user->getLastName() ?></td></tr>
+              <tr ><td>Mobile No. :</td><td><?php //echo $this->user->getMobile()?></td></tr>
+ <!--<tr ><td>Group : </td><td><?php //echo $this->user->getGroup() ?></td></tr>-->
+        <tr ><td>SubGroup : </td><td><?php echo $this->user->getSubgroup() ?></td></tr>
+        <tr ><td>Email :</td><td><?php echo $this->user->getEmail()?></td></tr>
+        <tr ><td>Username :</td><td><?php echo $this->user->getUsername()?></td></tr>
+        <tr ><td>Date of Birth :</td><td><?php echo $this->formatDate(strtotime($this->user->getDob()), false)?></td></tr>
+        
+        <tr ><td>Gender :</td><td><?php echo ucfirst( $this->user->getSex())?></td></tr>
+        <tr ><td>Correspondence Address :</td><td><?php echo  $this->user->getCorrespondenceAddress()?></td></tr>
+    </tbody>
+</table>

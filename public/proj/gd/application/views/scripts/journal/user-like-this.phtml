@@ -1,0 +1,39 @@
+<?php
+if($this->totalUsers > 1)
+{
+	$textPrint	=	"Members";
+}
+else
+{
+	$textPrint	=	"Member";
+}
+?>
+<div id="center-member">
+<h2 class="main-heading4"><?php echo $textPrint;?> Who Likes This <?php echo $this->itemTypeText;?></h2>
+<div class="friend-results">
+	<span class="f-left"><?php echo $this->totalUsers;?> <?php print $textPrint;?></span> 
+</div>
+<?php 
+if($this->totalUsers	>	0)
+{
+	foreach($this->userData as $user)
+	{
+?>
+	<div class="member-box">
+   		<div class="member-box-img">
+			<a href="javascript://" onclick="commonUserLogin('/<?php echo $user->username;?>',<?php echo $user->id;?>);">
+			<img src="/image?src=<?php echo $user->getThumbnail();?>&size=friends" border="0" style="float:left;margin:0 10px 5px 0;" alt="<?php echo $username;?>" />
+			</a>
+		</div>
+		<div class="member-box-right"> 
+			<div class="member-name"><a href="javascript://" onclick="commonUserLogin('/<?php echo $user->username;?>',<?php echo $user->id;?>);"><span class="connect-name" style="width:300px;"><?php echo $user->getFirstName().' '.$user->getLastName(); ?></span></a></div>
+			<div class="member-action"><a href="javascript://" onclick="commonUserLogin('/<?php echo $user->username;?>',<?php echo $user->id;?>);"><b>View Profile</b></a></div>
+		</div>
+		  
+	</div>
+<?php 
+	}//end foreach
+echo  "<div class='clear'>".$this->paginationControl($this->advices, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param))."</div>";
+}//end if
+?>
+</div>

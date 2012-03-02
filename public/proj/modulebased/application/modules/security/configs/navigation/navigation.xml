@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>           
+<configdata>
+<weight>500</weight>    
+<nav>
+<security_nav>
+<label>Security</label>
+<module>security</module>
+<controller>user</controller>       
+<action>index</action>
+<resource>security:user</resource>
+<privilege>user</privilege>
+<pages>
+<security>
+    <label>Security</label>
+    <module>security</module>
+    <controller>user</controller>       
+    <action>index</action>
+    <resource>security:user</resource>
+    <privilege>user</privilege>
+    <pages>
+        <manage_users>
+        <label>Manage Users</label>
+        <module>security</module>
+        <controller>user</controller>       
+        <action>index</action>
+        <resource>security:user</resource>
+        <privilege>index</privilege>   
+        <pages>
+            <add_new_user>
+                <label>Add New User</label>
+                <module>security</module>
+                <controller>user</controller>       
+                <action>add-new-user</action>
+                <resource>security:user</resource>
+                <privilege>add-new-user</privilege>
+                <display_in_sub>Yes</display_in_sub>
+            </add_new_user>
+            <edit_employee>
+                <label>Edit User Profile</label>
+                <module>security</module>
+                <controller>user</controller>       
+                <action>edit-user</action>
+                <resource>security:user</resource>
+                <privilege>edit-user</privilege>
+                <display_in_sub>No</display_in_sub>
+            </edit_employee>
+        </pages>
+        </manage_users>
+        <maganage_privilege>
+            <label>Manage Privilege</label>
+            <module>security</module>
+            <controller>privilege</controller>       
+            <action>index</action>
+            <resource>security:privilege</resource>
+            <privilege>index</privilege>   
+             
+        </maganage_privilege>
+        <maganage_legend>
+            <label>Manage Legends</label>
+            <module>security</module>
+            <controller>legend</controller>       
+            <action>index</action>
+            <resource>security:legend</resource>
+            <privilege>index</privilege>   
+             
+        </maganage_legend>
+        
+        
+         <manage_menu>
+        <label>Manage Menu</label>
+        <module>security</module>
+        <controller>menu</controller>       
+        <action>index</action>
+        <resource>security:menu</resource>
+        <privilege>index</privilege>   
+        <pages>
+            <add_new_user>
+                <label>Add Menu Item</label>
+                <module>security</module>
+                <controller>menu</controller>       
+                <action>add-menu-item</action>
+                <resource>security:menu</resource>
+                <privilege>add-menu-item</privilege>
+                <display_in_sub>Yes</display_in_sub>
+            </add_new_user>
+            <edit_employee>
+                <label>Edit Menu Item</label>
+                <module>security</module>
+                <controller>menu</controller>       
+                <action>edit-menu-item</action>
+                <resource>security:menu</resource>
+                <privilege>edit-menu-item</privilege>
+                <display_in_sub>No</display_in_sub>
+            </edit_employee>
+        </pages>
+        </manage_menu>
+        
+    </pages>
+</security>
+</pages>
+</security_nav>
+ </nav>
+</configdata>
+
+
+            

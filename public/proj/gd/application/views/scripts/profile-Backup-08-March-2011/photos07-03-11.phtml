@@ -1,0 +1,291 @@
+<script type="text/javascript" src="/js/ext-core.js"></script>
+<script type="text/javascript" src="/js/elastic-textarea.js"></script>
+<script>
+jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        loadingImage : '/images/facebox/loading.gif',
+        closeImage   : '/images/facebox/closelabel.png'
+      })
+    })
+
+</script>
+<style type="text/css">
+.comment{
+	width: 470px; *width: 450px;
+	height: 22px;
+	float:left !important;
+	margin:0px 10px 0px 0px;
+	border: 3px solid #FFFFFF;
+}
+.album-editing {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 2px solid #217273;
+    display: none;
+    left: 318px;
+    position: absolute;
+    text-align: center;
+    top: 289px;
+    width: 389px;
+    z-index: 1000;
+}
+</style>
+<?php
+
+
+?>
+
+<div class="my-photo" id="center">
+    
+    <h2> PHOTOS</h2>
+    <div id="public-album-box">
+    <?php
+            $objModelVote = new Application_Model_Vote();
+            $objModelAlbumPhoto = new Album_Model_AlbumPhoto();
+            $objModelAlbumTag = new Album_Model_AlbumTag();
+            $objModelTag = new Application_Model_Tags();
+            
+    if($this->countAlbum > 0)
+    {
+        foreach($this->arrAlbum as $myAlbum)
+        {
+            $albumId = $myAlbum->id;
+
+            $commentTextBoxId = "comment_".$albumId;
+            $albumCommentContainer = "album-comment-container_".$albumId;
+            $albumCommentTextbox = "album-comment-textbox_".$albumId;
+            $likeAlbumContainer = "like-album-container_".$albumId;
+            $totalLikes = "total_likes_".$albumId;
+
+            $whereAlbumPhoto	=	"album_id='{$albumId}'";
+
+				$arrAlbumPhoto		=	$objModelAlbumPhoto->fetchAll($whereAlbumPhoto);
+
+				$numAlbumPhoto	=	count($arrAlbumPhoto);
+
+				if($numAlbumPhoto > 0)
+				{
+					$arrPhoto	=	array();
+					foreach ($arrAlbumPhoto as $photo)
+					{
+						$arrPhoto[]	=	$photo->image;
+					}
+					$rand_keys = array_rand($arrPhoto, 1);
+
+					$coverImg	=	"/media/album/thumb/".$arrPhoto[$rand_keys];
+				}else{
+					$coverImg	=	"/images/blank-album.jpg";
+				}
+
+                            $albumPhotoUrl	=	"/album/my-photos/album-photos/id/".$albumId;
+            /*--------------------------------------------------------------------------------*/
+                             $date = new Base_Date();
+                             $strTime = $date->timeAgo($myAlbum->addedon);
+            /*------------------ CHECK LIKED-UNLIKED ALBUM BY CURRENT USER ------------------*/
+		$whereVotePublic	=	"item_type='album' AND item_id='{$albumId}' AND user_id='{$this->loggedInUserId}' AND vote='1'";
+                $arrVote	=	$objModelVote->fetchAll($whereVotePublic);
+
+                if(count($arrVote) > 0){
+                        $numVote	=	1;
+                }else{
+                        $numVote	=	0;
+                }
+           /*----------------- GET TOTAL VOTE FOR ALBUM -------------------------------------------*/
+                $whereVoteAlbumPublic = "item_type='album' AND item_id='{$albumId}' AND vote='1'";
+                $arrVote = $objModelVote->fetchAll($whereVoteAlbumPublic);
+                $totalVote = count($arrVote);
+          /*------------------ START GET ALBUM TAGS -----------------------------------------------*/
+                $whereAlbumTag = "album_id='{$albumId}'";
+		$arrTagId = $objModelAlbumTag->fetchAll($whereAlbumTag);
+
+		$strTag	=	"";
+		if(!empty($arrTagId))
+		{
+			foreach($arrTagId as $tagId)
+			{
+				$tId	= $tagId->tagId;
+				$valTag	= $objModelTag->find($tId);
+				$strTag	= $strTag.','.$valTag->getTag();
+			}
+			$strTag	=	substr($strTag, 1, strlen($strTag));
+		}
+		
+          /*------------------ END GET ALBUM TAGS -----------------------------------------------*/
+    ?>
+
+        <div class="user-journal-box">
+            <a href="#"><img alt="" src="<?php print $coverImg;?>" /></a>
+            <h3><a href="#"><?php print $myAlbum->name;?>(<?php print $numAlbumPhoto;?>)</a></h3>
+            <div><strong>Location</strong>: New Delhi, India</div>
+            <div class="post-by">                
+		  Posted  <span><?php print $strTime;?></span> | <span><a onclick="showComment('<?php print $albumCommentTextbox;?>')" href="javascript:void(0)">Comment</a></span> |
+                            
+                  <span id="<?php print $likeAlbumContainer;?>">
+                            <?php if($numVote == 0){?>
+                            <a href="javascript:void(0);" id="like-album" onclick="javascript:likeAlbum('<?php print $albumId;?>');">Like</a>
+                            <?php }else{?>
+                            <a href="javascript:void(0);" id="unlike-album" onclick="javascript:unlikeAlbum('<?php print $albumId;?>');">Unlike</a>
+                            <?php }?>
+                  </span>
+            </div>
+            
+            <div style="margin-bottom: 5px;" class="user-txt"><?php print stripslashes($myAlbum->description);?></div>
+            <div style="display: none;" id="extra_35"></div>
+
+
+
+            <div class="clear"></div>
+            <a class="orange-sml" href="/profile/album-slide-show/album_id/<?php print $albumId;?>" rel="facebox">Slideshow</a>
+            <span class="share-id-option">
+                <a class="share-link-dd" id="share-link-dd-35" href="javascript://">Share It</a>
+                <span class="share-link-dd_menu" id="share-link-dd_menu-35" style="display: none;">
+                    <a title="Send to Facebook" target="_blank" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=facebook&amp;url=http://gd.pbodev.info/journal/view-post/blog_id/35&amp;title=Marry Happpy Christmas&amp;content=&amp;lng=en"><img alt="" src="/images/facebook-icon-sml.png"></a>
+                    <a title="Send to Twitter" target="_blank" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=twitter&amp;url=http://gd.pbodev.info/journal/view-post/blog_id/35&amp;title=Marry Happpy Christmas&amp;content=&amp;lng=en"><img alt="" src="/images/twitter-icon-sml.png"></a>
+                    <a title="Send to Social" target="_blank" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=delicious&amp;url=http://gd.pbodev.info/journal/view-post/blog_id/35&amp;title=Marry Happpy Christmas&amp;content=&amp;lng=en"><img alt="" src="/images/social_03.png"></a>
+                    <a title="Digg This" target="_blank" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=digg&amp;url=http://gd.pbodev.info/journal/view-post/blog_id/35&amp;title=Marry Happpy Christmas&amp;content=&amp;lng=en"><img alt="" src="/images/digg-icon-sml.png"></a>
+                    <a title="Send to Google" target="_blank" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=google&amp;url=http://gd.pbodev.info/journal/view-post/blog_id/35&amp;title=Marry Happpy Christmas&amp;content=&amp;lng=en"><img alt="" src="/images/gmail-icon-sml.png"></a>
+                    <!--<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=delicious&amp;url=&amp;title=&amp;content=&amp;lng=en" target="_blank" title="Send to Delicious"><img src="/images/delicious-icon-sml.png" alt="" /></a>-->
+                    <a title="Send to Stumbleupon" target="_blank" href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=stumbleupon&amp;url=http://gd.pbodev.info/journal/view-post/blog_id/35&amp;title=Marry Happpy Christmas&amp;content=&amp;lng=en"><img alt="" src="/images/stumbleupon-icon-sml.png"></a>
+                </span>
+            </span>
+
+            <div class="comment-area">
+                <ul>
+                    <li>
+                        <img class="f-left" alt="Like" src="http://gd.pbodev.info/images/like-icon-2.jpg">
+                        <span style="" id="<?php print $totalLikes;?>"><?php print $totalVote;?> members like this</span>
+                        <?php if($strTag != ""){?>| Tags: <a href="#"><?php print $strTag;?></a> <?php }?>
+                    </li>
+                </ul>
+           </div>
+
+            <div class="comment-area-container" id="<?php print $albumCommentTextbox;?>" style="display:none;">
+                <ul id="<?php print $albumCommentContainer;?>">
+                    <span id="loading-wall"><img src="<?php echo $this->cdnUri() ?>/images/loading.gif" alt=""/></span>
+                </ul>
+                <ul>
+                    <li><span id="errormassage" class="redMsg"></span>
+                        <textarea id="<?php print $commentTextBoxId;?>" class="comment" >Comment...</textarea>
+                        <input name="submit" id="submit-album-comment" type="button" class="button2" value="Share" />
+                    </li>
+                </ul>
+            </div>
+
+            <script>
+                $(document).ready(function(){
+		var album_id =	<?php print $albumId;?>;
+                var item_type = 'album';
+		var item_type1 = 'album_comment';
+		var requesturl = "/profile/load-album-comment";
+
+
+			$.post(requesturl, {album_id:album_id,item_type:item_type,item_type1:item_type1 },
+					   function(html){
+						$("#<?php print $albumCommentContainer;?>").html(html);
+					});
+
+                });
+            </script>
+        </div>
+    <script>
+    elasticTextArea("<?php print $commentTextBoxId;?>");
+    </script>
+<?php }?>
+    </div>
+<?php if($this->nextAlbumCount > 0){?>
+        <span id="loading" style="display: none;">
+            <img src="http://gd.pbodev.info/images/ajax-loader.gif" alt="">
+        </span>
+        <div class="view-link" id="more-button">
+            <a href="javascript: moreAlbum('<?php print $this->user_id;?>', <?php print $this->nextOffsetAlbum;?>)" id="show-more-link">VIEW MORE POSTS</a>
+        </div>
+<?php }?>
+    <?php }else{?>
+    <div class="user-journal-box">No album found. </div>
+    <?php }?>
+</div>
+
+<script>
+$('textarea').focus(function() {
+    var textVal = $(this).val();
+   if(textVal=='Comment...')
+       {
+            $(this).val('');
+       }
+});
+
+$('textarea').focusout(function() {
+    var textVal = $(this).val();
+   if(textVal=='')
+       {
+            $(this).val('Comment...');
+       }
+});
+
+function moreAlbum(user_id, album_offset)
+{
+    var requesturl	=	"/profile/more-photos";
+
+	 $.post(requesturl, {user_id:user_id,album_offset:album_offset },
+			   function(html){
+                            $("#public-album-box").append(html);
+                            moreButton(user_id, album_offset);
+			});
+}
+
+function moreButton(user_id, album_offset)
+{
+    var requesturl	=	"/profile/more-button-photo";
+    
+    $.post(requesturl, {user_id:user_id,album_offset:album_offset },
+			   function(html){
+                                $("#more-button").html(html);
+                            });
+}
+
+function showComment(albumCommentTextbox)
+{
+    //$("#"+albumCommentTextbox).toggle("slide", { direction: "down" }, 1000);
+    $("#"+albumCommentTextbox).toggle();
+    
+}
+
+function likeAlbum(album_id)
+{
+		var item_type	=	'album';
+		var requesturl	=	"/profile/like-album";
+                var container = "like-album-container_"+album_id;
+
+			$.post(requesturl, {album_id:album_id,item_type:item_type },
+					   function(html){
+                                                countTotalLike(album_id);
+						$("#"+container).html(html);
+					});
+}
+
+function unlikeAlbum(album_id)
+{
+		var item_type	=	'album';
+		var requesturl	=	"/profile/unlike-album";
+                var container = "like-album-container_"+album_id;
+
+		$.post(requesturl, {album_id:album_id, item_type:item_type },
+					   function(html){
+                                                countTotalLike(album_id);
+						$("#"+container).html(html);
+					});
+
+}
+
+function countTotalLike(album_id)
+{
+    var item_type = 'album';
+    var requesturl = "/profile/count-total-like";
+    var container = "total_likes_"+album_id;
+
+    $.post(requesturl, {album_id:album_id, item_type:item_type },
+                               function(html){
+                                    $("#"+container).html(html);
+
+                            });
+}
+</script>

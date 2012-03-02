@@ -1,0 +1,206 @@
+<!-- Script for Autogrow expendable textarea-->
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/ext-core.js"></script>
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/elastic-textarea.js"></script>
+<div class="register_area">
+<h1 class="green_heading"><?php echo $this->puts("THANK YOU FOR JOINING GAP DAEMON!")?></h1>    
+	<p class="green_heading_dis">
+	<?php
+        //Display meesage to users not registered using Facebook
+		$usersNs = new Zend_Session_Namespace("app");
+        if($usersNs->facebookId=="")
+		{
+            echo $this->puts("Please check your email inbox to verify your new Gap Daemon account!");
+		}	
+    ?>
+	</p>
+	<br /><br />
+	<p class="green_heading_dis">
+	<?php echo $this->puts("Now we need your help to spread the word! Use the form below to invite your friends & family to join Gap Daemon.")?>
+	</p><br />
+	<h1 class="green_heading"><?php echo $this->puts("INVITE YOUR CONTACTS")?></h1>
+<form name="openinviter" id="openinviter" method="post" action="/index/invite/">
+<div class="invite-contact-join">
+<h3>INVITE PEOPLE BY EMAIL</h3><br />
+Do you know the email addresses of the people you want to invite? If so, enter them into the box below: if there’s more than one, separate each email address with a comma.<br /><br />
+	<div class="reg_con">
+	<label style="padding: 0px;"><?php echo $this->puts($this->form->contacts->getLabel());?></label>
+	<?php echo $this->form->contacts;?>
+	<?php
+		if($this->errorMsg1!=="")
+		{
+			echo "<br /><span class='orange'>".$this->errorMsg1."</span>";
+		}
+	?>
+	</div>
+	
+	<div>
+	<label class="add-connect-lbl">&nbsp;</label>
+	<div class="add-con-btns"><?php echo $this->form->inviteEmail;?></div>
+	</div>	
+</div>
+
+<div class="invite-contact-join" >
+<h3>INVITE PEOPLE THROUGH YOUR FACEBOOK, GMAIL AND THE REST...</h3><br />
+You can invite people to join Gap Daemon using your existing social networks, like Facebook, or your email account. Don't worry, we won't store your details and we won't email anyone without your permission.<br /><br />
+	<?php
+    /*------facebook------*/
+    $facebook = $this->facebook();
+    $return_url=Zend_Registry::get('siteurl')."/index/facebook-invite/";
+    $cancel_url=Zend_Registry::get('siteurl')."/index/cancel-facebook";
+    $this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("cancel_url"=>$cancel_url,"next"=>$return_url,"req_perms"=>"publish_stream","display"=>"popup"));
+
+?>
+
+        <div class="reg_con">
+	<label>&nbsp;</label><a href="javascript://" class="button-link" onclick="inviteFacebookFriends('<?php echo $this->loginUrl;?>')" title="click here to invite your all Facebook friends">Invite Facebook Friends</a>
+	</div>
+
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->provider_box->getLabel());?></label>
+	<?php echo $this->form->provider_box;?>
+	</div>
+	
+	<div class="reg_con">Please enter your account details below:</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->email_box->getLabel());?></label>
+	<?php echo $this->form->email_box;?>
+	</div>
+    
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->password_box->getLabel());?></label>
+	<?php echo $this->form->password_box;?>
+	</div>
+	
+	<div class="reg_con">
+	<label></label>
+	<span style="display: none;" id="loading"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>	
+	<?php echo $this->form->load;?>
+	<br /><span id="msg" class="orange"></span>
+	</div>
+	
+	<div class="reg_con">
+	<label>Your Contacts</label>
+	    <div id="contacts-container" class="contacts_div"></div>
+		<input type="hidden" value="" id="oi_session_id" name="oi_session_id"></input>
+        <input type="hidden" value="" id="total_contacts" name="total_contacts"></input>
+		<?php
+		if($this->errorMsg2!=="")
+		{
+			echo "<br /><span class='orange'>".$this->errorMsg2."</span>";
+		}
+		?>
+	</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->message->getLabel());?></label>
+	<?php echo $this->form->message;?>
+	</div>
+	
+	<div>
+	<label class="add-connect-lbl">&nbsp;</label>
+	<div class="add-con-btns"><?php echo $this->form->sendInvitataion;?> OR
+	<input type="button" value="SKIP" class="invite_button" onclick="window.location='/index/thanks/skip-invite/1'"><!--<a href="/index/thanks/skip-invite/1">SKIP</a>-->
+	</div>
+	</div>	
+</div>
+</form>
+</div>
+<script type="text/javascript" language="javascript">
+elasticTextArea("contacts");
+$("#load").click(loadContacts);
+$("#sendInvitataion").click(validateInviteForm);
+function loadContacts()
+{
+	//validate form
+	if(trim($('#email_box').val())=="")
+	{
+		alertBox("Warning","Email can not be left blank.");
+		return false;
+	}
+	if(trim($('#email_box').val())!="" && checkEmail(trim($('#email_box').val()))==false)
+	{
+		alertBox("Warning","Email address is not valid.");
+		return false;
+	}
+	if(trim($('#password_box').val())=="")
+	{
+		alertBox("Warning","Password can not be left blank.");
+		return false;
+	}
+	
+	var params='';
+	params+="email="+$('#email_box').val();
+	params+="&password="+$('#password_box').val();
+	params+="&provider="+$('#provider_box :selected').val();
+	$("span#loading").show();
+	$("#load").hide();
+	 $("span#msg").html("");
+	$.ajax({
+		   type: "POST",
+		   url: "/index/load-contacts/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+		   //alert(json.data);
+		   if(json.error=="1")
+		   {
+			   $("span#msg").html(json.data);	
+		   }
+		   else
+		   {
+			  	//$('#contacts').val(json.data);
+			  	$('#contacts-container').html(json.data);
+			  	$('#oi_session_id').val(json.oi_session_id);
+                                $('#total_contacts').val(json.total_contacts);
+		   }
+			   
+		   	$("span#loading").hide();
+			$("#load").show();
+		   },
+		   error: function (json, status, e){
+				alert(e+"ddd");
+				$("span#loading").hide();
+				$("#load").show();
+			}
+	 });
+}
+
+function toggleAll(element)
+{
+var form = document.forms.openinviter, z = 0;
+for(z=0; z<form.length;z++)
+    {
+        if(form[z].type == 'checkbox')
+            form[z].checked = element.checked;
+    }
+}
+
+function validateInviteForm()
+{
+	var contactsIds	=	"";
+	var total_contacts = $("#total_contacts").val();
+	if(total_contacts!="")
+	{
+		for(var i=0; i<total_contacts; i++)
+		{
+			var chkEement = "contacts_"+i;
+			var val1 = $("#"+chkEement).val();
+			//alert("val1="+val1);
+			if($("#"+chkEement).attr("checked"))
+			{
+				contactsIds	=	contactsIds+','+val1;
+			}
+		}		
+	}	
+	if(contactsIds=="")
+	{
+		alertBox("Warning","Please select contacts to invite.");
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+</script>

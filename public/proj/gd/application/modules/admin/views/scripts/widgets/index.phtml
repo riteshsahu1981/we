@@ -1,0 +1,93 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<img src="/images/admin-images/bl-tl.gif" align="left" /><img src="/images/admin-images/bl-tr.gif" align="right" />
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;">	
+	<img width="20" src="/images/admin-images/newobject.png" align="left" vspace="5" hspace="5" /><a href="/admin/widgets/add/" class="add f-right">Add New Slide</a></span>
+	
+	Manage Slides - <span class='msg'>Total <?php echo $this->total?> slide(s) found! </span></div>	
+<div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+?>
+<br />
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+<span class='red'>
+<? echo $this->msg;?>
+</span>
+<br />
+<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+<?php }?>
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+    <th>Title</th>
+	<th>Link Title</th>
+    <th>Type</th>
+	<th>Order</th>
+	<th>Status</th>
+    <th>Action</th>
+  </tr>  
+	<?php	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+		{
+			$rowClass='trbg';
+		}	
+		else
+		{
+			$rowClass='trbg1';
+		}	
+			
+		$status	=	$row['status'];
+		$printImage	=	"/images/admin-images/false.gif";
+		$published_title="Click here to publish";
+		if($status == 1)
+		{
+			$printImage	=	"/images/admin-images/true.gif";
+			$published_title="Click here to unpublish";
+		}
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['widget_title']?></td>
+			<td><?php echo substr($row['widget_link_label'],0,50);?>...</td>
+            <td><?=$row['widget_type']?></td>
+			<td><?=$row['weight']?></td>
+            <td><a href='/admin/widgets/status/id/<?=$row['id']?>/page/<?=$page?>' title="<?php echo $published_title;?>"><img src="<?php print $printImage;?>" /></a></td>
+    		<td>
+    		<a href='/admin/widgets/edit/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="/admin/widgets/delete/id/<?=$row['id']?>" onclick="return confirm('Are you sure? You want to delete this slide.');">
+				<img src='/images/admin-images/delete.gif' border='0' title='Delete'/>
+			</a>
+			</td>
+  		</tr>
+	<? 	
+	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+	<div class="btm-curve"><img src="/images/admin-images/btm-r-l.gif" align="left" /><img src="/images/admin-images/btm-r-r.gif" align="right" /></div>
+</div>

@@ -1,0 +1,441 @@
+<div id="sidebar">
+<div id="sidebar-wrapper">
+	<ul id="main-nav"><!-- Accordion Menu -->
+		<?php
+		//echo "cont=>".$this->controllerName." action=>".$this->actionName." type=>".$this->type;
+		$generalInfoM = "";
+		if($this->controllerName=='user' && ( $this->actionName=='change-password'))
+		{
+			$generalInfoM = "current";
+		} 
+		else if($this->controllerName=='index' && ( $this->actionName=='dashboard'))
+		{
+			$generalInfoM = "current";
+		} 
+		?>		
+		<li> 
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $generalInfoM?>">General Info</a>
+			<ul style="display: none;">
+				<li><a href="<?php echo $this->seoUrl('/admin/index/dashboard')?>" <?php if($this->controllerName=='index' && $this->actionName=='dashboard'){echo "class='current'";}?>>Dashboard</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/user/change-password')?>" <?php if($this->controllerName=='user' && $this->actionName=='change-password'){echo "class='current'";}?>>Change Password</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/login/logout')?>">Logout</a></li>
+			</ul>
+		</li>
+		
+		<?php
+		$settings = ""; 
+		if(($this->controllerName=='global-settings') && ( $this->actionName=='index' || $this->actionName=='edit'))
+		{
+			$settings= "current";
+		}
+		else if($this->controllerName=='friend-group' )
+		{
+			$settings= "current";
+		}
+		else if($this->controllerName=='permission' )
+		{
+			$settings= "current";
+		}		
+		?>
+		<li> 
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $settings?>">Settings</a>
+			<ul style="display: none;">
+				<li><a href="<?php echo $this->seoUrl('/admin/global-settings/')?>" <?php if($this->controllerName=='global-settings' && ( $this->actionName=='index' || $this->actionName=='edit')){echo "class='current'";} ?>>General</a></li>
+				<?php if(APPLICATION_ENV=="development"){?>
+				<li><a href="<?php echo $this->seoUrl('/admin/permission/index')?>" <?php if($this->controllerName=='permission' && ( $this->actionName=='index' || $this->actionName=='edit')){echo "class='current'";} ?>>Permission</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/friend-group/index')?>" <?php if($this->controllerName=='friend-group' ){echo "class='current'";} ?>>Friend Group</a></li>
+				<?php }?>
+			</ul>
+		</li>
+		
+		<?php 
+		$userM = "";
+		if($this->controllerName=='user' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add' || $this->actionName=='newsletter-users' ))
+		{
+			$userM="current";
+		}
+		else if($this->controllerName=='userlevel' && ( $this->actionName=='view' || $this->actionName=='edituserlevel' || $this->actionName=='adduserlevel' ))
+		{
+			$userM="current";
+		}		
+		?>
+		<li> 
+			<a style="padding-right: 15px;" href="#" class="nav-top-item  <?php echo $userM?>">Member Management</a>
+			<ul style="display: none;">				
+				<li><a href="<?php echo $this->seoUrl('/admin/user')?>" <?php if($this->controllerName=='user' && ($this->actionName=='index' || $this->actionName=='edit' )){echo "class='current'";} ?>>Manage Members</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/user/add')?>" <?php if($this->controllerName=='user' && ($this->actionName=='add' )){echo "class='current'";} ?>>Add New User</a></li> 
+				<li><a href="<?php echo $this->seoUrl('/admin/userlevel/view/')?>" <?php if($this->controllerName=='userlevel' && ($this->actionName=='view' || $this->actionName=='edituserlevel' || $this->actionName=='adduserlevel')){echo "class='current'";} ?>>User Levels</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/user/newsletter-users')?>" <?php if($this->controllerName=='user' && ($this->actionName=='newsletter-users')){echo "class='current'";} ?>>Newsletter Subscribed Users</a></li>
+			</ul>
+		</li>
+		
+		<?php
+		$journalsMain	=	"";
+		$journalsBlogs	=	"";
+		$journalsTags	=	"";
+		$journalsCats	=	"";
+		$journalsCms	=	"";
+		if(($this->controllerName=='journals') && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='tags'))
+		{
+			$journalsMain = "current";
+		}
+		if($this->controllerName=='journals' && ($this->actionName=='index' || $this->actionName=='edit'))
+		{
+			$journalsBlogs = "current";
+		}
+		if($this->controllerName=='journals' && $this->actionName=='tags')
+		{
+			$journalsTags = "current";
+		}
+		if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="blog")
+		{
+			$journalsMain = "current";
+			$journalsCats = "current";
+		}
+		if($this->controllerName=='journals' && $this->actionName=='cms')
+		{
+			$journalsMain = "current";
+			$journalsCms = "current";
+		}
+		?>
+		<li> 
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $journalsMain;?>">Manage Journals</a>
+			<ul style="display: none;">
+				<li><a href="<?php echo $this->seoUrl('/admin/journals/cms')?>" class="<?php echo $journalsCms;?>">Home Page Content</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/blog')?>" class="<?php echo $journalsCats;?>">Categories</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/journals/index')?>" class="<?php echo $journalsBlogs;?>">Member's Journals</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/journals/tags')?>" class="<?php echo $journalsTags;?>">Tags</a></li>
+			</ul>
+		</li>
+		
+		<?php
+		$category	=	"";		
+		if($this->controllerName=='category' && ($this->type=="album" || $this->type=="other"))
+		{
+			$category= "current";
+		}
+		?>
+		<!--<li> 
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $category?>">Manage Categories</a>
+			<ul style="display: none;">
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/advice')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="advice"){echo "class='current'";} ?>>Advice Category</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/album')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="album"){echo "class='current'";} ?>>Album Category</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/blog')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="blog" ){echo "class='current'";} ?>>Blog Category</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/work')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="work"){echo "class='current'";} ?>>Work Category</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/study')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="study"){echo "class='current'";} ?>>Study Category</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/volunteer')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="volunteer"){echo "class='current'";} ?>>Volunteer Category</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/wsv')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="wsv"){echo "class='current'";} ?>>WSV Category</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/other')?>" <?php if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="other"){echo "class='current'";} ?>>Other Category</a></li> 
+			</ul>
+		</li>-->
+		<?php 
+		if(APPLICATION_ENV=="development")
+		{
+			
+		$block = "";		
+        if($this->controllerName=='block' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$block= "current";
+		}
+		else if($this->controllerName=='block-region' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$block= "current";
+		}
+		?>		
+		<li> 
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $block?>">Manage Blocks</a>
+			<ul style="display: none;">
+                <li><a href="<?php echo $this->seoUrl('/admin/block/')?>" <?php if($this->controllerName=='block' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add')){echo "class='current'";}?>>Blocks</a></li>
+                <li><a href="<?php echo $this->seoUrl('/admin/block-region/')?>" <?php if($this->controllerName=='block-region' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add' ) ){echo "class='current'";} ?>>Block-Regions</a></li>
+			</ul>
+		</li>
+		<?php
+		}//end if APPLICATION_ENV
+		
+		$EmailTemCmsMain = "";
+		if($this->controllerName=='email-template' && ( $this->actionName=='index' || $this->actionName=='edit'))
+		{
+			$EmailTemCmsMain = "current";
+		}
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="javascript://" class="nav-top-item <?php echo $EmailTemCmsMain;?>">Manage Email Templates</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/email-template')?>" class="<?php echo $EmailTemCmsMain;?>">Email-Template</a></li>
+			</ul>
+		</li>
+		<?php 
+		$cms = "";
+		if($this->controllerName=='page' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$cms= "current";
+		}
+		else if($this->controllerName=='banner' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$cms= "current";
+		}
+		?>		
+		<li> 
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $cms?>">Static Page CMS</a>
+			<ul style="display: none;">				
+				<li><a href="<?php echo $this->seoUrl('/admin/page')?>" <?php if($this->controllerName=='page' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add')){echo "class='current'";} ?>>Pages</a></li> 
+				<li><a href="<?php echo $this->seoUrl('/admin/banner/')?>" <?php if($this->controllerName=='banner' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add' ) ){echo "class='current'";} ?>>Banner</a></li>
+				<!--<li><a  <?php if($this->controllerName=='advice' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add')){echo "class='current'";} ?> href="<?php echo $this->seoUrl('/admin/advice')?>">Advice</a></li>-->
+				<!--<li><a  <?php if($this->controllerName=='articles' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add')){echo "class='current'";} ?> href="<?php echo $this->seoUrl('/admin/articles')?>">Articles</a></li>-->
+			</ul>
+		</li>
+		
+		<?php
+		$homePageWdgtCls = "";
+		$manageSlideCls = "";
+		$homePageTopContCls = "";
+		$homePageMidContCls = "";
+		$homePageBotContCls = "";
+		$homePageMidContLogoutCls = "";
+		$homePageMidContLoginCls = "";
+		
+		
+		$homeCondition1 = false;
+		$homeCondition2 = false;
+		//create condition to focus Home Page Widgets tab
+		if($this->controllerName=='widgets' && ( $this->actionName=='index' || $this->actionName=='add' || $this->actionName=='edit' || $this->actionName=='homepage-mid-content' || $this->actionName=='homepage-bottom-content'))
+		{
+			$homeCondition1 = true;
+		}
+		if($this->controllerName=='content' && ( $this->actionName=='index' || $this->actionName=='add' || $this->actionName=='edit'))
+		{
+			$homeCondition2 = true;
+		}
+		
+		if($homeCondition1 || $homeCondition2)
+		{
+			$homePageWdgtCls = "current";
+		}
+		//focus sub tab links
+		if($this->controllerName=='widgets' && ( $this->actionName=='index' || $this->actionName=='add' || $this->actionName=='edit'))
+		{
+			$manageSlideCls = "current";
+		}
+		if($this->controllerName=='content' && ( $this->actionName=='index' || $this->actionName=='add' || $this->actionName=='edit') && $this->type=="module")
+		{
+			$homePageTopContCls = "current";
+		}
+		if($this->controllerName=='widgets' && $this->actionName=='homepage-mid-content')
+		{
+			$homePageMidContCls = "current";
+		}
+		if($this->controllerName=='widgets' && $this->actionName=='homepage-bottom-content')
+		{
+			$homePageBotContCls = "current";
+		}
+		if($this->controllerName=='content' && ( $this->actionName=='index' || $this->actionName=='add' || $this->actionName=='edit') && $this->type=="logout")
+		{
+			$homePageMidContLogoutCls = "current";
+		}
+		if($this->controllerName=='content' && ( $this->actionName=='index' || $this->actionName=='add' || $this->actionName=='edit') && $this->type=="login")
+		{
+			$homePageMidContLoginCls = "current";
+		}
+		?>
+		<li> 
+			<a style="padding-right: 15px;" href="javascript://" class="nav-top-item <?php echo $homePageWdgtCls;?>">Home Page CMS</a>
+			<ul style="display: none;">
+				<li><a href="<?php echo $this->seoUrl('/admin/widgets/index')?>" class="<?php echo $manageSlideCls;?>">Manage Slides</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/content/index/type/logout')?>" class="<?php echo $homePageMidContLogoutCls;?>">Logged Out: Top Content</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/widgets/homepage-mid-content')?>" class="<?php echo $homePageMidContCls;?>">Logged Out: Mid Content</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/widgets/homepage-bottom-content')?>" class="<?php echo $homePageBotContCls;?>">Logged Out: Bottom Content</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/content/index/type/login')?>" class="<?php echo $homePageMidContLoginCls;?>">Logged In: Top Content</a></li>
+				<li><a href="<?php echo $this->seoUrl('/admin/content/index/type/module')?>" class="<?php echo $homePageTopContCls;?>">Logged In: Modules</a></li>
+			</ul>
+		</li>
+					
+		<?php
+		$featuredCls	=	"";
+		$featuredCityCls = "";
+		$travelHomeCls = "";
+		$travelSlideCls = "";
+		$manageCityCls = "";
+		$manageCountryCls = "";
+		if(($this->controllerName=='featured-city') && ( $this->actionName=='index' || $this->actionName=='travelguides-home' || $this->actionName=='travelguides-slides' || $this->actionName=='travelguides-addslide' || $this->actionName=='travelguides-editslide'))
+		{
+			$featuredCls = "current";
+		}
+		if($this->controllerName=='featured-city' && $this->actionName=='index')
+		{
+			$featuredCityCls = "current";
+		}
+		if($this->controllerName=='featured-city' && $this->actionName=='travelguides-home')
+		{
+			$travelHomeCls = "current";
+		}
+		if($this->controllerName=='featured-city' && ($this->actionName=='travelguides-slides' || $this->actionName=='travelguides-addslide' || $this->actionName=='travelguides-editslide'))
+		{
+			$travelSlideCls = "current";
+		}
+		if($this->controllerName=='featured-city' && ($this->actionName=='manage-city' || $this->actionName=='edit-city'))
+		{
+			$featuredCls = "current";
+			$manageCityCls = "current";
+		}
+		if($this->controllerName=='featured-city' && ($this->actionName=='manage-country' || $this->actionName=='edit-country'))
+		{
+			$featuredCls = "current";
+			$manageCountryCls = "current";
+		}
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="javascript://" class="nav-top-item <?php echo $featuredCls;?>">Travel Guides CMS</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/featured-city/travelguides-home/')?>" class="<?php echo $travelHomeCls;?>">Home Page Content</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/featured-city/travelguides-slides/')?>" class="<?php echo $travelSlideCls;?>">Home Page Slides</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/featured-city/index/')?>" class="<?php echo $featuredCityCls;?>">Featured Places</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/featured-city/manage-country/')?>" class="<?php echo $manageCountryCls;?>">Country CMS Contents</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/featured-city/manage-city/')?>" class="<?php echo $manageCityCls;?>">City/Places CMS Contents</a></li>
+			</ul>
+		</li>
+		<?php
+		$adviceCmsMain = "";
+		$adviceCmsHome = "";
+		$adviceCmsCats = "";
+		$adviceCmsAdvice = "";
+		if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="advice")
+		{
+			$adviceCmsMain = "current";
+			$adviceCmsCats = "current";
+		}
+		else if($this->controllerName=='advice' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$adviceCmsMain = "current";
+			$adviceCmsAdvice = "current";
+		}
+		else if($this->controllerName=='advice' && $this->actionName=='home')
+		{
+			$adviceCmsMain = "current";
+			$adviceCmsHome = "current";
+		}
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="javascript://" class="nav-top-item <?php echo $adviceCmsMain;?>">Advice CMS</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/advice/home')?>" class="<?php echo $adviceCmsHome;?>">Home Page Content</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/advice')?>" class="<?php echo $adviceCmsCats;?>">Categories</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/advice/index')?>" class="<?php echo $adviceCmsAdvice;?>">Articles</a></li>
+			</ul>
+		</li>
+		
+		<?php
+		$wsvCmsMain = "";
+		$wsvCmsHome = "";
+		$wsvCmsCats = "";
+		$wsvCmsArticles = "";
+		if($this->controllerName=='category' && ($this->actionName=="index" || $this->actionName=="edit" || $this->actionName=="add") && $this->type=="wsv")
+		{
+			$wsvCmsMain = "current";
+			$wsvCmsCats = "current";
+		}
+		else if($this->controllerName=='articles' && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$wsvCmsMain = "current";
+			$wsvCmsArticles = "current";
+		}
+		else if($this->controllerName=='articles' && $this->actionName=='home')
+		{
+			$wsvCmsMain = "current";
+			$wsvCmsHome = "current";
+		}
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="javascript://" class="nav-top-item <?php echo $wsvCmsMain;?>">WSV CMS</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/articles/home')?>" class="<?php echo $wsvCmsHome;?>">Home Page Content</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/category/index/type/wsv')?>" class="<?php echo $wsvCmsCats;?>">Categories</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/articles/index')?>" class="<?php echo $wsvCmsArticles;?>">Articles</a></li>
+			</ul>
+		</li>
+		
+		<?php
+		if(APPLICATION_ENV=="development")
+		{
+		$seoUrl = "";
+		if(($this->controllerName=='seo-url') && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$seoUrl= "current";
+		}		
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $seoUrl?>">Url Rewrite Management</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/seo-url/index/')?>" <?php if($this->controllerName=='seo-url'){echo "class='current'";} ?>>SeoUrl</a></li>
+			</ul>
+		</li>		
+		<?php
+		}//end if APPLICATION_ENV
+		
+		$location = "";
+		if(($this->controllerName=='continent') && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$location= "current";
+		}
+		else if(($this->controllerName=='country') && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$location= "current";
+		}
+		else if(($this->controllerName=='region') && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$location= "current";
+		}
+		else if(($this->controllerName=='city') && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$location= "current";
+		}
+		else if(($this->controllerName=='area') && ( $this->actionName=='index' || $this->actionName=='edit' || $this->actionName=='add'))
+		{
+			$location= "current";
+		}
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="#" class="nav-top-item <?php echo $location?>">Location</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/continent/index/')?>" <?php if($this->controllerName=='continent'){echo "class='current'";} ?>>Continent</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/country/index/')?>" <?php if($this->controllerName=='country'){echo "class='current'";} ?>>Country</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/region/index/')?>" <?php if($this->controllerName=='region'){echo "class='current'";} ?>>Region</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/city/index/')?>" <?php if($this->controllerName=='city'){echo "class='current'";} ?>>City</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/area/index/')?>" <?php if($this->controllerName=='area'){echo "class='current'";} ?>>Area</a></li>
+			</ul>
+		</li>
+		<?php
+		$shopCls = "";
+		$dealsCls = "";
+		if(($this->controllerName=='shop') && ( $this->actionName=='index'))
+		{
+			$shopCls = "current";
+			$dealsCls = "current";
+		}
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="javascript://" class="nav-top-item <?php echo $shopCls;?>">Travel Shop CMS</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/shop/index/')?>" class="<?php echo $dealsCls;?>">Hot Affiliate Deals</a></li>
+			</ul>
+		</li>
+
+        <?php
+		$reportUrl = "";
+		$abuseReportCls = "";
+		if(($this->controllerName=='reports') && ( $this->actionName=='abuse-report'))
+		{
+			$reportUrl = "current";
+		}
+		if($this->controllerName=='reports' && $this->actionName=='abuse-report')
+		{
+			$abuseReportCls = "current";
+		}		
+		?>
+		<li>
+			<a style="padding-right: 15px;" href="javascript://" class="nav-top-item <?php echo $reportUrl;?>">Reports</a>
+			<ul style="display: none;">
+			<li><a href="<?php echo $this->seoUrl('/admin/reports/abuse-report/')?>" class="<?php echo $abuseReportCls;?>">Abuse Report</a></li>
+			</ul>
+		</li>
+	</ul> <!-- End #main-nav -->
+</div></div>

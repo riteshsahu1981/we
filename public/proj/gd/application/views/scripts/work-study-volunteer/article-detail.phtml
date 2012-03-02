@@ -1,0 +1,17 @@
+<div id="main-left">
+	<div class="advice-detials">
+		<h2 class="main-heading"><span><?php echo $this->categoryM->getName(); ?></span> &gt; <?php echo $this->article->getTitle(); ?></h2>
+		<?php if($this->article->getStatus()=='1' || $this->preview==true){?>
+		<?php echo $this->article->getContent(); ?>
+		
+		<div style="float:right;">
+		<b>Author:</b> <a href="javascript://<?php //echo $this->seoUrl('/profile/view/username/'.$this->author_username);?>"><?php echo $this->author;?></a>
+		</div>
+		<?php } else {?>
+		<h2 class="main-heading" style="text-transform:none;">
+			<span>This article is not published.</span>
+		</h2>
+		<?php }?>
+	</div>
+</div>
+  

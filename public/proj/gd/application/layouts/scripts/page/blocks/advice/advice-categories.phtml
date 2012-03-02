@@ -1,0 +1,17 @@
+<?php 
+$categoryM=new Application_Model_Advice();
+$adviceCategory=$categoryM->getAdviceCategory();
+?>
+
+<div class="right-box-wide">
+	<h2 class="box-heading">MORE CATEGORIES</h2>
+	<?php if(count($adviceCategory)>0){?>
+	<ul class="journal-cat-list-right">
+		<?php foreach($adviceCategory as $id=>$_category){?>
+		<li><a href="<?php echo $this->seoUrl("/advice/detail/id/$id")?>"><?php echo $_category?></a></li>
+		<?php }?>
+	</ul>
+	<?php }else{?>
+	Advice categories not found.
+	<?php }?>
+</div>

@@ -1,0 +1,21 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+		<a class="add f-right" href="/admin/featured-city/travelguides-slides">Back</a></span>
+	Edit Slide</div>
+	<div id="rightsidecontentpart">
+	<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+    <?php }?>
+	<?php
+	if(isset($this->slideImage) && $this->slideImage!="")
+	{
+	?>
+	<div><b>Slide Image:</b> <img src="/media/picture/home/thumb_<?php echo $this->slideImage;?>" width="150" height="100"/></div>
+	<?php }?>
+	
+  	<?php echo $this->form;?>
+	</div>
+  </div>
+</div>

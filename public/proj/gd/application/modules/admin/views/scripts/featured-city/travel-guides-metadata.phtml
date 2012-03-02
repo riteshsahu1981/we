@@ -1,0 +1,28 @@
+<?php
+$itemId 	= $this->itemId;
+$itemType 	= $this->itemType;
+
+//get Meta Data information
+$metaTitle		= "";
+$metaKeyword	= "";
+$metaDesc		= "";
+$metadataM		=	new Application_Model_TravelGuidesMetadata();
+$metadataM		=	$metadataM->fetchRow("item_id={$itemId} AND item_type='{$itemType}'");
+if(false!==$metadataM)
+{
+	$metaTitle		= $metadataM->getMetaTitle();
+	$metaKeyword	= $metadataM->getMetaKeyword();
+	$metaDesc		= $metadataM->getMetaDesc();
+}
+?>
+<form name="frmMetaData" id="frmMetaData" enctype="multipart/form-data" method="post">
+	<input type="hidden" name="itemId" value="<?php echo $itemId;?>">
+	<input type="hidden" name="itemType" value="<?php echo $itemType;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+	<tr><td colspan="2"><div class="form-sub-head">Meta Data</div><span class="orange" id="tab8_msg"></span></td></tr>
+	<tr><td valign="top">Meta Title</td><td valign="top"><textarea cols="40" rows="3" name="metaTitle" class="title-input-box"><?php echo $metaTitle;?></textarea></td></tr>
+	<tr><td valign="top">Meta Keyword</td><td valign="top"><textarea cols="40" rows="3" name="metaKeyword" class="title-input-box"><?php echo $metaKeyword;?></textarea></td></tr>
+	<tr><td valign="top">Meta Description</td><td valign="top"><textarea cols="40" rows="3" name="metaDesc" class="title-input-box"><?php echo $metaDesc;?></textarea></td></tr>
+	<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave"></td></tr>
+	</table>
+</form>

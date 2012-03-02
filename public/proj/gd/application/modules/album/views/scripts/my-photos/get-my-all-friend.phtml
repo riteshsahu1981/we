@@ -1,0 +1,18 @@
+<div class="taging">
+    <strong>Select a Person To Tag</strong>
+    
+<?php
+
+foreach($this->arrFriend as $friend){
+
+$friendId       =   $friend->friend_id;
+
+$checkBoxValue  =   $friend->first_name." ".$friend->last_name."*".$friendId;
+
+?>
+   <label><input type="checkbox" name="friend[]" id="friend" value="<?php echo $checkBoxValue;?>" onclick="submitMyTag(this.value);"  /> <?php echo $friend->first_name;?> <?php echo $friend->last_name;?></label>
+
+<?php }?>
+
+    
+</div>

@@ -30,7 +30,7 @@ class Base_Controller_Action extends Zend_Controller_Action {
             $this->view->controllerName=$request->getControllerName();
             $this->view->params=$params=$request->getParams();
             $this->view->metas($params);
-            //$this->checkACL();
+            $this->checkACL();
             $this->setAppLayout();
 
         }

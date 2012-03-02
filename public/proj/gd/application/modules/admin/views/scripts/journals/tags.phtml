@@ -1,0 +1,59 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	Tags - <span class='msg'>Total <?php echo $this->total?> tag(s) found! </span>
+	</div>
+<div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml');?>
+<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+<?php }?>
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+    <th>Tag</th>
+    <th>Action</th>
+  </tr>  
+<?php
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['tag']?></td>
+    		<td>    		
+			<a href="/admin/journals/delete-tag/id/<?=$row['id']?>/page/<?php echo $page;?>" onclick="return confirm('Are you sure to delete this tag?');">
+				<img src='/images/admin-images/delete.gif' border='0' title='Delete'/>
+			</a>
+            </td>
+  		</tr>
+		<?php
+	}//end foreach
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml'); ?><br />
+<?php	
+}//end if
+?>
+</div>
+</div>
+</div>

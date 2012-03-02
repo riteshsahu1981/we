@@ -1,0 +1,192 @@
+ <?php 
+
+ $this->headScript()->appendFile("/js/tree/_lib/jquery.cookie.js");
+ $this->headScript()->appendFile("/js/tree/_lib/jquery.hotkeys.js");
+ $this->headScript()->appendFile("/js/tree/jquery.jstree.js");
+ $this->headLink()->appendStylesheet('/js/tree/themes/default/style.css'); 
+
+ //$this->headLink()->appendStylesheet('/js/tree/_docs/syntax/!style.css'); 
+ //$this->headLink()->appendStylesheet('/js/tree/_docs/!style.css'); 
+ ?>
+<script language="javascript">
+
+
+function customMenu(node) {
+    
+    var items = {   
+        renameItem: { 
+            label: "Rename",
+            action: function (node) { this.rename(node);}
+        },
+        deleteItem: { 
+            label: "Delete",
+            action: function (node) {   if(this.is_selected(node)) { this.remove(); } else { this.remove(node); }  }
+        },
+        createItem: { 
+            label: "Create",
+            action: function (node) {this.create(node);}
+        }
+    };
+
+    if ($(node).attr( 'rel' )=="root") {
+        
+        items.deleteItem._disabled = true;
+        items.renameItem._disabled = true ;      
+        items.createItem.label= "Create Legend"; 
+
+    }else if ($(node).attr( 'rel' )=="legend") {
+        
+        items.createItem.label= "Create Legend Value"; 
+    }
+    else if ($(node).attr( 'rel' )=="legend_value") {
+        
+        items.createItem.label= "Create Legend Value"; 
+        delete items.createItem; 
+    }
+     else
+    {
+        items.createItem.label= "Create Legend Value"; 
+    }
+
+    return items;
+}
+ 
+
+$(function () {
+	$("#privilege_tree").jstree({ 
+                "core" : { "initially_open" : [ "noderoot_0" ] },
+
+		"plugins" : [ "themes", "html_data", "ui", "crrm", "contextmenu", "types" ,"hotkeys"],
+                //"plugins" : [ "themes", "html_data", "ui", "crrm", "contextmenu", "types" ],
+                'contextmenu' : { 'items' : customMenu    },
+                
+                "types" : {
+                        // I set both options to -2, as I do not need depth and children count checking
+                        // Those two checks may slow jstree a lot, so use only when needed
+                        "max_depth" : -2,
+                        "max_children" : -2,
+                        // I want only 'root' nodes to be root nodes
+                        // This will prevent moving or creating any other type as a root node
+                        "valid_children" : [ "root" ],
+			"types" : {
+				"root" : {
+					"icon" : {"image" : "/js/tree/themes/default/_drive.png" },
+					"valid_children" : [ "default" ],
+					"max_depth" : 2,
+					"hover_node" : false,
+                                        'rename_node' :false,
+                                        'select_node' :false
+				},
+                                "legend" : {
+                                        "icon" : {"image" : "/js/tree/themes/default/folder.png" },
+					"valid_children" : [ "legend_value" ],
+					"max_depth" : 2,
+					"hover_node" : false					
+				},
+                                "legend_value" : {
+					"icon" : {"image" : "/js/tree/themes/default/folder.png" },
+					"valid_children" : [ "none" ],
+					"max_depth" : 2,
+					"hover_node" : false
+				},
+                                
+				"default" : {
+					"icon" : {"image" : "/js/tree/themes/default/folder.png" },
+					"valid_children" : [ "legend_value" ],
+					"max_depth" : 2,
+					"hover_node" : false
+				}
+			}
+		}
+               
+	})
+        .bind("create.jstree", function (e, data) {
+              
+		$.post(
+			"/security/legend/create", 
+			{ 
+                            "parent_node_id" : data.rslt.parent.attr("id"), 
+                            "node_title" : data.rslt.name
+			}, 
+			function (r) {
+				if(r.status) 
+                                    $(data.rslt.obj).attr("id", r.node_id);
+				else 
+                                    $.jstree.rollback(data.rlbk);
+				
+			},"json"
+		);
+	})
+	.bind("rename.jstree", function (e, data) {
+            
+		$.post(
+			"/security/legend/rename", 
+			{ 
+				"node_id" : data.rslt.obj.attr("id"), 
+                                "node_title" : data.rslt.new_name
+			}, 
+			function (r) {
+				if(!r.status) {
+					$.jstree.rollback(data.rlbk);
+				}
+			},"json"
+		);
+	})
+       .bind("remove.jstree", function (e, data) {
+           
+		data.rslt.obj.each(function () {                  
+			$.ajax({
+				async : false,
+				type: 'POST',
+				url: "/security/legend/remove", 
+				data : { 
+					"child_node_id" : this.id,
+                                        "parent_node_id" : data.rslt.parent.attr('id')
+				}, 
+				success : function (r) {
+					if(!r.status) {
+						data.inst.refresh();
+					}
+				}
+			});
+		});
+	})
+        ;
+});
+
+</script>
+<?php $model=new Base_Security_Legend();?>
+<div id="privilege_tree" class="demo">
+    <ul>
+        <li id="noderoot_0" rel="root">
+            <a href="#" >Legends</a>
+            <?php
+            $legends=$model->getLegends();
+            if(count($legends)>0){
+            ?>
+            <ul>
+                <?php foreach($legends as $_legend){?>
+                <li id="<?php echo $_legend->getMasterCode()."_".$_legend->getMasterId()?>"  <?php echo "rel='legend'"; ?> ><a href="#"><?php echo $_legend->getMasterValue()?> </a>
+                    
+                    <?php
+                    $legends_value=$model->getLegendsValue($_legend->getMasterId());
+                    if(count($legends_value)>0){
+                    ?>        
+                    <ul>
+                        <?php foreach($legends_value as $_legends_value){?>
+                        <li id="<?php echo $_legends_value->master_code."_".$_legends_value->legend_value_id?>" <?php echo "rel='legend_value'"; ?> ><a href="#"><?php echo $_legends_value->legend_value_title?> </a>
+                           
+                        </li>
+                        <?php }//end of legend-values foreach loop ?>
+                    </ul>
+                    <?php } // end of legend value if?>        
+                </li>
+                <?php }//end of legends foreach loop ?>
+            </ul>
+            <?php }//end of legend if?>
+        </li>
+    </ul>
+</div>
+
+
+

@@ -1,0 +1,40 @@
+<div id="main-left">
+<h2 class="main-heading"><?php echo $this->title?></h2>
+  <div class="advice-home"><?php echo $this->content?></div>
+ 
+<?php 
+if($this->total>0){
+$i=0;
+$j=1;
+
+foreach($this->advices as $advice){
+	$class='';
+		if($j%2==0 && $j>1){
+			$class="adv-r1";
+		}
+		$j++;
+	
+	?>
+
+	<div class="advice-box <?php echo $class?>">
+	<a href="<?php echo $this->seoUrl("/advice/detail/id/$advice->id");?>"><h3><?php echo $advice->title; ?></h3></a>
+	<p><a href="<?php echo $this->seoUrl("/advice/detail/id/$advice->id");?>"><img src='/images/advice/<?php echo $advice->name; ?>' width='128' height='84' align='left' class='left-img'></a>
+	<?php echo substr(stripslashes($advice->synopsis),0,220);?>...</p>
+	<br class='clear'/>
+	<a href="<?php echo $this->seoUrl("/advice/detail/id/$advice->id");?>" class="learn-more">Learn More</a>
+	</div>
+	<?php 
+	if($i%2==1 && $i!=0){
+		echo '<div class="clear"></div><hr class="hr2" />';
+	}
+	$i++;
+}
+ //echo  "<div class='clear'></div>".$this->paginationControl($this->advices, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param));
+}else{
+	echo "<H2>Sorry no result found</H2>";
+}
+?>  
+
+</div>
+
+

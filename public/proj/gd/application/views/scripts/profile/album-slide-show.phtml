@@ -1,0 +1,24 @@
+<script type="text/javascript" src="/js/jqueryui/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="/js/slider/coin-slider.js"></script>
+<link rel="stylesheet" href="/style/coin-slider-styles.css" type="text/css" />
+
+<?php if($this->countAlbum > 0){?>
+<div id='coin-slider'>
+    <?php foreach($this->arrAlbum as $albumPhoto){?>
+	<a href="#">
+		<img src='/media/album/custom/<?php print $albumPhoto->image;?>' >
+		<span>
+			<?php print stripslashes($albumPhoto->caption);?>
+		</span>
+	</a>
+    <?php }?>
+</div>
+<?php }else{?>
+<div>No photo in this album.</div>
+<?php }?>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#coin-slider').coinslider();
+	});
+</script>

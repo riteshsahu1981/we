@@ -1,0 +1,8 @@
+<div class="right-box-wide tags">
+	<h2 class="box-heading">TAG CLOUD</h2>
+	<?php 
+		$tagsM=new Application_Model_Tags();
+		echo $tagsM->getTagCloud(50);
+	?>
+	
+</div>

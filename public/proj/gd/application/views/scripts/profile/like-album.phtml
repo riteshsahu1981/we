@@ -1,0 +1,19 @@
+<a href="javascript:void(0);" id="unlike-album">
+<img src="/images/fb-unlike.jpg" alt="" class="f-left">
+</a>
+<script>
+$(document).ready(function(){
+	$("a#unlike-album").click(function(){
+		var album_id	=	$("#album_id").val();
+		var item_type	=	'album';
+		var requesturl	=	"/profile/unlike-album";
+
+		$.post(requesturl, {album_id:album_id, item_type:item_type },
+					   function(html){					
+						$("#like-album-container").html(html);
+							
+					});	
+		
+	});
+});
+</script>

@@ -1,0 +1,246 @@
+<div id="myjquerymenu" class="jquerycssmenu">
+<?php 
+    echo '<ul id="nav1">';
+    // loop root level (only has Home, but later may have an Admin root page?)
+    foreach ($this->container as $page) {
+    	
+        // check if it is active (not recursive)
+        $isActive = $page->isActive(false);
+        $liClass = $isActive ? ' class="active"' : '';
+        echo '<li ' . $liClass . '><a href="' . $this->seoUrl($page->getUri()) . '">'.$this->puts($page->getLabel()).'</a></li>', PHP_EOL;
+        // loop next level
+        foreach ($page as $p) {
+        	if($p<>"Login" && $p<>"Register")
+        	{
+        		$url="/".$p->getController()."/".$p->getAction();
+        		
+	            // check if it is active (recursive)
+	            $isActive = $p->isActive(true);
+	            $liClass = $isActive ? ' class="active"' : '';
+	            echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a></li>', PHP_EOL;
+        	}
+        }
+    }
+    echo '</ul>';
+    
+    
+    
+    ?>
+   <br style="clear: left" />
+</div>
+    <div id="myjquerymenu" class="jquerycssmenu">
+<ul>
+<li><a href="#">Item 1</a></li>
+<li><a href="#">Item 2</a></li>
+<li><a href="#">Folder 1</a>
+  <ul>
+  <li><a href="#">Sub Item 1.1</a></li>
+  <li><a href="#">Sub Item 1.2</a></li>
+  <li><a href="#">Sub Item 1.3</a></li>
+  <li><a href="#">Sub Item 1.4</a></li>
+  </ul>
+</li>
+<li><a href="#">Item 3</a></li>
+<li><a href="#">Folder 2</a>
+  <ul>
+  <li><a href="#">Sub Item 2.1</a></li>
+  <li><a href="#">Folder 2.1</a>
+    <ul>
+    <li><a href="#">Sub Item 2.1.1</a></li>
+    <li><a href="#">Sub Item 2.1.2</a></li>
+    <li><a href="#">Folder 3.1.1</a>
+		<ul>
+    		<li><a href="#">Sub Item 3.1.1.1</a></li>
+    		<li><a href="#">Sub Item 3.1.1.2</a></li>
+    		<li><a href="#">Sub Item 3.1.1.3</a></li>
+    		<li><a href="#">Sub Item 3.1.1.4</a></li>
+    		<li><a href="#">Sub Item 3.1.1.5</a></li>
+		</ul>
+    </li>
+    <li><a href="#">Sub Item 2.1.4</a></li>
+    </ul>
+  </li>
+  </ul>
+</li>
+<li><a href="#">Item 4</a></li>
+</ul>
+<br style="clear: left" />
+</div>
+
+
+<ul class="desti-link">
+
+<li><a href="#" >Ashu</a>
+				  <ul>
+	  				  <li><a href="#" >Ashu</a>
+							<ul>
+								<li>
+									<dl class="dest-box1">
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+									</dl>
+								</li>
+							</ul>
+					 </li>
+					  <li><a href="#" >ashu ashu</a>
+					  	<ul class="dest-box2">
+								<li>
+									<dl >
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+									</dl>
+								</li>
+							</ul>
+
+					  </li>
+					  <li><a href="#" >Ashu ashu ashu</a>
+					  	<ul class="dest-box3">
+								<li>
+									<dl >
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+									</dl>
+								</li>
+							</ul>
+					  </li>
+					  <li><a href="#" >Ashu ashu ashu ashu</a>
+					  	<ul class="dest-box4">
+								<li>
+									<dl >
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+										<dd>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+											<a href="#" >Ashu ashu ashu</a>
+										</dd>
+									</dl>
+								</li>
+							</ul>
+
+
+					  </li>
+					  <li><a href="#" >Ashu</a></li>
+					  <li><a href="#" >Ashu</a></li>
+					  <li><a href="#" >Ashu</a></li>
+					  <li><a href="#" >Ashu</a></li>
+				  </ul>
+			  </li>
+                          </ul>

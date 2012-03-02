@@ -1,0 +1,65 @@
+<?php 
+/*
+$this->custom_head .= '<script src="/js/fckeditor/fckeditor.js" type="text/javascript"></script>';
+$this->custom_head .= "<script language='javascript' type='text/javascript' src='/js/customs1.js'></script>";
+$this->custom_body = ' onload="setupFCK(\'content\',400,550)" ';
+*/
+$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded .
+?>
+
+<div id="center">
+	<h2>CREATE A JOURNAL POST</h2>
+	<div class="welcome-content">
+		<p>Add a new post to your gap year journal.</p>
+		<div class="form-structure">
+			<?php echo $this->msg;?>
+			
+			<form method="post">
+			<label><?php echo $this->form->title->getLabel()?></label>
+			<?php echo $this->form->title?>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->status->getLabel()?></label>
+			<?php echo $this->form->status?>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->categoryId->getLabel()?></label>
+			<?php echo $this->form->categoryId?>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->location->getLabel()?></label>
+			<?php echo $this->form->location?>
+			<br class="clear" />
+			
+			<label>
+				<?php echo $this->form->tags->getLabel()?>
+				<span>eg. party, new year, etc.</span>
+			</label>
+			<span class="tags-txtarea"><?php echo $this->form->tags?></span>
+			<br class="clear" />
+			
+			<label>
+				<?php echo $this->form->content->getLabel()?>
+				
+			</label><br class="clear"/>
+                       <span style="color:#666666;">This is your chance to personalise your post. Add images, format your text and even add links to other relevant sites.</span>
+			<span class="blog-txtarea"><?php echo $this->form->content?></span>
+			<br class="clear" />
+			
+			<label>
+				<?php echo $this->form->comment->getLabel();?>
+				<span>Let others write comments about your blog(recommended)</span>
+			</label>
+			<div class="radio-box2"><?php echo $this->form->comment;?> </div>
+			<br class="clear" />
+			
+			<label><?php echo $this->form->publish->getLabel();?></label>
+			<div class="radio-box2"><?php echo $this->form->publish;?> </div>
+			<br class="clear" /><br />
+			<label></label><?php echo $this->form->submit;?>
+			</form>
+		</div>
+	</div>
+</div>
+<?php echo $this->setupEditor( 'content', '/js/ckeditor/custom_config.js' );   ?>

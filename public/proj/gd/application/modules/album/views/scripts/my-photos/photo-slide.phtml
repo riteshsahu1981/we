@@ -1,0 +1,181 @@
+<link rel="stylesheet" type="text/css" href="/style/facebook-tag.css" media="all">
+<script src="/js/facebook-tag.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/ext-core.js"></script>
+<script type="text/javascript" src="/js/elastic-textarea.js"></script>
+<script>$(loadTagging);</script>
+
+<span class="page_number">Back To <a href="/album/my-photos/album-photos/id/<?php print $this->albumId;?>"><?php print $this->albumName;?></a>  |  
+<a href="/album/my-photos/photo-download/name/<?php print $this->photo;?>">Download Photo</a></span>
+<span class="pages">Photo <?php print $this->photoPosition;?> of <?php print $this->numPhotoAlbum;?> 
+	<span class="red-pagination"> <a href="javascript:void(0);" onclick="slideImage(<?php print $this->prevId;?>,'left');"><</a> <a href="javascript:void(0);" onclick="slideImage(<?php print $this->nextId;?>, 'right');">></a> </span>
+</span>
+<!-- End Heading -->
+<?php 
+	$imagePath = Zend_Registry::get('siteurl')."/media/album/custom/".$this->photo;
+        $imagePath1 = PUBLIC_PATH."/media/album/custom/".$this->photo;
+        
+	$objBaseCommon = new Base_Common();
+        $imageSize = $objBaseCommon->getimgwidhtheightstr($imagePath1, 443, 591);
+?>
+<!-- Start Tagged Images -->
+<div class="viewallmyphoto">
+<a href="javascript:void(0);" class="auto no-mrgn">
+<table border="0" align="center" cellpadding="0" cellspacing="0" class="middle">
+  <tr>
+    <td colspan="3" align="center" valign="middle"><img class="auto" src="/media/album/custom/<?php print $this->photo;?>" <?php print $imageSize;?> alt="" id="crop-image" onclick="slideImage(<?php print $this->nextId;?>, 'right');"></td>
+  </tr>
+</table>
+
+</a>
+</div>
+<!-- End Tagged Images -->
+
+<!-- Start Btns Area -->
+<div class="untags">
+<span id="fb-like-album-container">
+<iframe src="http://www.facebook.com/plugins/like.php?href=<?php echo $this->likeSrcUrl;?>&amp;layout=standard&amp;show_faces=false&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:35px;" allowTransparency="true"></iframe>
+<!--
+<?php //if($this->numVote == 0){?>
+<a href="javascript:void(0);" id="like-photo">
+<img src="/images/fb.jpg" alt="" width="51" height="23" class="f-left">
+</a>
+<?php //}else{?>
+<a href="javascript:void(0);" id="unlike-photo">
+<img src="/images/fb-unlike.jpg" alt="" class="f-left">
+</a>
+<?php //}?>
+    -->
+</span>
+
+<div class="f-right">
+<a href="javascript:void(0);" id="photo-edit-button" class="button">Edit</a>
+<a href="javascript:void(0);" id="photo-location" class="button">location</a>
+<a href="javascript:void(0);" id="album-photo-tag" class="button">Tag</a>
+<div id="icon">
+<div class="sign"><a href="#" class="signin"><span>SHARE IT</span></a></div>
+<div id="signin_menu">
+<div id="signin"> 
+<!-- AddThis Button BEGIN -->
+<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+<a class="addthis_button_facebook"></a>
+<a class="addthis_button_twitter"></a>
+<a class="addthis_button_delicious"></a>
+<a class="addthis_button_digg"></a>
+<a class="addthis_button_preferred_1"></a>
+<a class="addthis_button_stumbleupon"></a>
+</div>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4d6f61ff5dc109be"></script>
+<!-- AddThis Button END -->
+</div>
+</div>
+</div>
+</div>
+<div id="tag" style="display:none;">
+<div id="tag-icon"></div>
+<div class="finish-taging">Click on an area in the photo tag
+<a href="javascript:void(0);" id="finish-tagging" class="button">FINISH TAGGING</a>
+</div>
+</div>
+    <div class="description"><?php print $this->caption;?></div>
+</div>
+<!-- End Btns Area -->
+<script>
+$(document).ready(function(){
+	$("a#like-photo").click(function(){
+		var photo_id	=	$("#photo_id").val();
+		var item_type	=	'album_photo';
+		var requesturl	=	"/album/my-photos/like-photo";
+
+			$.post(requesturl, {photo_id:photo_id,item_type:item_type },
+					   function(html){					
+						$("#like-photo-container").html(html);
+							
+					});	
+		
+	});
+});
+
+$(document).ready(function(){
+	$("a#unlike-photo").click(function(){
+		var photo_id	=	$("#photo_id").val();
+		var item_type	=	'album_photo';
+		var requesturl	=	"/album/my-photos/unlike-photo";
+
+			$.post(requesturl, {photo_id:photo_id,item_type:item_type },
+					   function(html){					
+						$("#like-photo-container").html(html);
+							
+					});	
+		
+	});
+});
+
+$(document).ready(function(){
+	$("a#photo-edit-button").click(function(){
+		$("a#photo-edit-button").attr("style","background:none repeat scroll 0 0 #348698"); //change edit button color
+		 $("#photo-editing").fadeIn(800);
+		 var photoId	=	$("#photo_id").val();
+                 var albumId    = $("#album_id").val();
+		 var requesturl	=	"/album/my-photos/album-photo-edit";
+		 
+		 $.post(requesturl, {photoId:photoId,albumId:albumId},
+				   function(html){
+					$("#photo-editing").html(html);						
+				});
+
+	});
+});
+
+$(document).ready(function(){
+	$("a#photo-location").click(function(){
+			$("a#photo-location").attr("style","background:none repeat scroll 0 0 #348698"); //change edit button color
+			$("#photo-location-box").fadeIn(800);
+			var latLng=marker.getPosition();
+			buildMap(latLng);		
+	});
+});
+
+$(document).ready(function(){
+	$("div#close-photo-map").click(function(){
+			$("a#photo-location").attr("style","background:none repeat scroll 0 0 #ff2400"); //change edit button color
+			$("#photo-location-box").fadeOut(800);
+			
+	});
+});
+
+$(document).ready(function(){
+	$("a#album-photo-tag").click(function(){//
+		$("a#album-photo-tag").attr("style","background:none repeat scroll 0 0 #348698"); //change edit button color
+		$("#crop-image").attr("style","cursor: crosshair");
+		$("#tag").slideDown(500);
+		$("#tag-image-flag").val('1');
+	});
+});
+
+$(document).ready(function(){
+	$("a#finish-tagging").click(function(){//
+		$("a#album-photo-tag").attr("style","background:none repeat scroll 0 0 #ff2400"); //change edit button color
+		$("#crop-image").attr("style","");
+		$("#tag").slideUp(500);
+		$("#tag-image-flag").val('0');
+		$("#tag-target").hide();
+		$("#tag-input").hide();
+	});
+});
+
+
+if('<?php echo $this->myLongitude?>'=="" || '<?php echo $this->myLatitude?>'=="")
+{
+	myLatitude="51.5001524";
+        myLongitude="-0.1262362";
+        var latLng = new google.maps.LatLng(myLatitude, myLongitude);
+        buildMap(latLng);
+        geocodePosition(latLng);
+   // addingEventListnerToMaker(marker);
+	
+}else{
+
+var latLng = new google.maps.LatLng('<?php echo $this->myLatitude?>', '<?php echo $this->myLongitude?>');
+buildMap(latLng);
+}
+</script>

@@ -1,0 +1,55 @@
+<?php 
+		/*-------Fetch work categories ------*/
+			$categoryM=new Application_Model_Category();
+			$workCats=$categoryM->getCategory(null, 'work');
+		
+		/*------------------------------------*/
+		/*-------Fetch Study categories ------*/
+			$categoryM=new Application_Model_Category();
+			$studyCats=$categoryM->getCategory(null, 'study');
+		/*------------------------------------*/	
+		/*-------Fetch volunteer categories ------*/
+			$categoryM=new Application_Model_Category();
+			$volunteerCats=$categoryM->getCategory(null, 'volunteer');
+		/*------------------------------------*/
+?>
+
+<div class="right-box-wide search-dest">
+	<h2 class="box-heading">SEARCH</h2>
+	<form name="" method="post" action="/work-study-volunteer/search">
+		<input type="text" name="search-strg" class="search-strg" value="<?php echo $this->searchstr!=''?$this->searchstr:'Search by Keyword'; ?>" onfocus="if(this.value=='Search by Keyword'){this.value=''}" onblur="if(this.value==''){this.value='Search by Keyword'}"  />
+		
+
+		<span class="in">IN</span><select class="search-filtr2" name="search-filtr">
+				<option selected="selected" value=''>All Categories</option>
+				
+				<?php if(count($workCats)>0){?>
+				<optgroup label="Work">
+					<?php foreach($workCats as $id=> $_category){?>
+					<option value="<?php echo $id?>" <?php echo $this->searchfiltr==$id?'selected':''; ?>><?php echo $_category?></option>
+					<?php }?>
+				</optgroup>
+				<?php }?>
+				
+				<?php if(count($studyCats)>0){?>
+				<optgroup label="Study">
+					<?php foreach($studyCats as $id=> $_category){?>
+					<option value="<?php echo $id?>" <?php echo $this->searchfiltr==$id?'selected':''; ?>><?php echo $_category?></option>
+					<?php }?>
+				</optgroup>
+				<?php }?>
+				
+				<?php if(count($volunteerCats)>0){?>
+				<optgroup label="Volunteer">
+					<?php foreach($volunteerCats as $id=> $_category){?>
+					<option value="<?php echo $id?>" <?php echo $this->searchfiltr==$id?'selected':''; ?>><?php echo $_category?></option>
+					<?php }?>
+				</optgroup>
+				<?php }?>
+		</select>
+		<div class="clear"></div>
+		<input type="submit" name="" value="SEARCH"  class="submit-btn"  />
+		<input type="reset" name="" value="Reset"  class="submit-btn"  />
+	</form>
+	
+</div>

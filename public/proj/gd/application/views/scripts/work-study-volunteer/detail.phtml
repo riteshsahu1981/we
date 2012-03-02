@@ -1,0 +1,52 @@
+<div id="main-left">
+<div class="advice-detials"><h2 class="main-heading"><span><?php echo $this->category->getType();?></span> &gt; <?php  echo $this->category->getName()?></h2>
+
+<?php if($this->category->getImage()!=''){ ?>
+	<!--<div >
+		<img src="/media/picture/category/<?php //echo $this->category->getType()?>/<?php //echo $this->category->getImage(); ?>" alt="" />
+	</div>-->
+	<?php } ?>
+<p> <?php echo $this->category->getDescription()?> </p>
+</div>
+<div >
+<br />
+<h3 class="work-study-heading">Articles</h3>
+<?php if($this->total>0){ 
+	?>
+	
+	<?php 
+          foreach($this->articles as $row)
+		  {
+			  //$seo_url = "/work-study-volunteer/".$row->identifire;
+              $seo_url='/work-study-volunteer/article-detail/id/'.$row->id;
+          	?>
+          	<div class="work-stydy-cat">
+          	
+			 <div class="work-study-cat-img">
+			 <?php if($row->image != ""){?>
+				<img alt="" src="/images/articles/<?php echo "thumb_".$row->image;?>">
+			<?php }else{?>
+				<img alt="" src="/images/articles/noimages.jpg">
+			<?php }?>
+			</div>
+			<div class="work-study-cat-right"> 
+				<h3><?php echo $row->title;?></h3>
+          		 <p><?php echo $row->synopsis?>...</p>
+			 
+          	 <br />
+          	 <a href="<?php echo $this->seoUrl($seo_url);?>" class="learn-more">Learn More</a>
+          	</div>
+          	</div>
+          <?php 	
+          }
+	 echo  "<div class='clear'></div>".$this->paginationControl($this->articles, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param));
+	?>
+
+
+<?php }else{?>
+<br /><br /><h3>Sorry no articles found.</h3>
+
+<?php }?>
+</div>
+</div>
+  

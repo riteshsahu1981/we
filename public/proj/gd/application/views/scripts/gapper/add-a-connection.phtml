@@ -1,0 +1,235 @@
+<!-- Script for Autogrow expendable textarea-->
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/ext-core.js"></script>
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/elastic-textarea.js"></script>
+
+<script type="text/javascript" language="javascript">
+var params="mode=ajax";
+$(function() 
+{
+	$("#name").autocomplete(
+	{
+	 source: "/gapper/auto-name/",
+	 minLength: 1,
+	select: function(event, ui) 
+	  {
+	$("#firstName").val(ui.item.id);
+	  }
+	});
+});    	
+</script>
+<div class="cmn_center">
+<h2 class="topHeadh2">ADD A FRIEND</h2>
+Invite your friends & family to join Gap Daemon.
+<div class="search-other-gappers">
+<form action="/gapper/all-friends" method="post">
+<h3>SEARCH FOR OTHER GAP DAEMON MEMBERS</h3><br/>
+<b>Search Name</b> &nbsp;<input type="text" id="name" name="nickname" class="inviteSearchText" />&nbsp;&nbsp;<input type="submit" value="FIND" class="f-none" name="searchFriend" id="searchFriend" />
+</form>
+</div>
+
+<form name="openinviter" id="openinviter" method="post" action="/gapper/add-a-connection/">
+<div class="invite-contact-join">
+<h3>INVITE PEOPLE BY EMAIL</h3><br />
+Do you know the email addresses of the people you want to invite? If so, enter them into the box below: if there’s more than one, separate each email address with a comma.<br /><br />
+	<div class="reg_con">
+	<label style="padding: 0px;"><?php echo $this->puts($this->form->contacts->getLabel());?></label>
+	<?php echo $this->form->contacts;?>
+	<?php
+		if($this->errorMsg1!=="")
+		{
+			echo "<br /><span class='orange'>".$this->errorMsg1."</span>";
+		}
+	?>
+	</div>
+	
+	<div>
+	<label class="add-connect-lbl">&nbsp;</label>
+	<div class="add-con-btns"><?php echo $this->form->inviteEmail;?></div>
+	</div>	
+</div>
+
+<div class="invite-contact-join" >
+<h3>INVITE PEOPLE THROUGH YOUR FACEBOOK, GMAIL AND THE REST...</h3><br />
+<!--Enter your email address and password to send invitations to friends family members in your address book. Don't worry, we won't store your details and we won't email anyone without your permission.-->
+You can invite people to join Gap Daemon using your existing social networks, like Facebook, or your email account. Don't worry, we won't store your details and we won't email anyone without your permission.<br /><br />
+	<!--<div class="reg_con">
+	<label><?php //echo $this->puts($this->form->name->getLabel());?></label>
+	<?php //echo $this->form->name;?>
+	</div>-->
+<!--	<div class="reg_con">
+	<label>&nbsp;</label><a href="javascript://" class="button-link" onclick="inviteFacebookFriends('/index/invite-facebook-friends')" title="click here to invite your all Facebook friends">Invite Facebook Friends</a>	
+	</div>-->
+        
+<?php
+    /*------facebook------*/
+    $facebook = $this->facebook();
+    $return_url=Zend_Registry::get('siteurl')."/index/facebook-invite/";
+    $cancel_url=Zend_Registry::get('siteurl')."/index/cancel-facebook";
+    $this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("cancel_url"=>$cancel_url,"next"=>$return_url,"req_perms"=>"publish_stream","display"=>"popup"));
+
+?>
+
+        <div class="reg_con">
+	<label>&nbsp;</label><a href="javascript://" class="button-link" onclick="inviteFacebookFriends('<?php echo $this->loginUrl;?>')" title="click here to invite your all Facebook friends">Invite Facebook Friends</a>
+	</div>
+
+
+        
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->provider_box->getLabel());?></label>
+	<?php echo $this->form->provider_box;?>
+	</div>
+	
+	<div class="reg_con">Please enter your account details below:</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->email_box->getLabel());?></label>
+	<?php echo $this->form->email_box;?>
+	</div>
+    
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->password_box->getLabel());?></label>
+	<?php echo $this->form->password_box;?>
+	</div>
+	
+	<div class="reg_con">
+	<label></label>
+	<span style="display: none;" id="loading"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>	
+	<?php echo $this->form->load;?>
+	<br /><span id="msg" class="orange"></span>
+	</div>
+	
+	<div class="reg_con">
+	<label>Your Contacts</label>
+<!--	<div class="reg_con_span">Add more email addresses (seperate by commas)</div>-->
+	    <div id="contacts-container" class="contacts_div"></div>
+		<input type="hidden" value="" id="oi_session_id" name="oi_session_id"></input>
+        <input type="hidden" value="" id="total_contacts" name="total_contacts"></input>
+		<?php
+		if($this->errorMsg2!=="")
+		{
+			echo "<br /><span class='orange'>".$this->errorMsg2."</span>";
+		}
+		?>
+	</div>
+	
+	<div class="reg_con">
+	<label><?php echo $this->puts($this->form->message->getLabel());?></label>
+	<?php echo $this->form->message;?>
+	</div>
+	
+	<div>
+	<label class="add-connect-lbl">&nbsp;</label>
+	<div class="add-con-btns"><?php echo $this->form->sendInvitataion;?>
+	<!--<input type="button" value="SKIP" class="invite_button" onclick="window.location='/'">-->
+	</div>
+	</div>	
+</div>
+</form>
+</div>
+<script type="text/javascript" language="javascript">
+elasticTextArea("contacts");
+$("#load").click(loadContacts);
+$("#sendInvitataion").click(validateInviteForm);
+$("#searchFriend").click(validateSearchForm);
+function loadContacts()
+{
+	//validate form
+	if(trim($('#email_box').val())=="")
+	{
+		alertBox("Warning","Email can not be left blank.");
+		return false;
+	}
+	if(trim($('#email_box').val())!="" && checkEmail(trim($('#email_box').val()))==false)
+	{
+		alertBox("Warning","Email address is not valid.");
+		return false;
+	}
+	if(trim($('#password_box').val())=="")
+	{
+		alertBox("Warning","Password can not be left blank.");
+		return false;
+	}
+	var params='';
+	params+="email="+$('#email_box').val();
+	params+="&password="+$('#password_box').val();
+	params+="&provider="+$('#provider_box :selected').val();
+	$("span#loading").show();
+	$("#load").hide();
+	$("span#msg").html("");
+	$.ajax({
+		   type: "POST",
+		   url: "/index/load-contacts/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+		   //alert(json.data);
+		   if(json.error=="1")
+		   {
+			   $("span#msg").html(json.data);	
+		   }
+		   else
+		   {
+			  	$('#contacts-container').html(json.data);
+			  	$('#oi_session_id').val(json.oi_session_id);
+                $('#total_contacts').val(json.total_contacts);
+		   }
+			   
+			$("span#loading").hide();
+			$("#load").show();
+		   },
+		   error: function (json, status, e){
+				//alert(e+"ddd");
+				$("span#loading").hide();
+				$("#load").show();
+			}
+	 });
+}
+
+function toggleAll(element)
+{
+	var form = document.forms.openinviter, z = 0;
+	for(z=0; z<form.length;z++)
+	{
+		if(form[z].type == 'checkbox')
+			form[z].checked = element.checked;
+	}
+}
+
+function validateSearchForm()
+{
+	if(trim($('#name').val())=="")
+	{
+		alertBox("Warning","Please enter search keyword.");
+		return false;
+	}
+}
+
+function validateInviteForm()
+{
+	var contactsIds	=	"";
+	var total_contacts = $("#total_contacts").val();
+	if(total_contacts!="")
+	{
+		for(var i=0; i<total_contacts; i++)
+		{
+			var chkEement = "contacts_"+i;
+			var val1 = $("#"+chkEement).val();
+			//alert("val1="+val1);
+			if($("#"+chkEement).attr("checked"))
+			{
+				contactsIds	=	contactsIds+','+val1;
+			}
+		}		
+	}	
+	if(contactsIds=="")
+	{
+		alertBox("Warning","Please select contacts to invite.");
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+</script>

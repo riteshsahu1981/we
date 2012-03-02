@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+	<head>  
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	  <?php echo $this->headMeta(); ?> 
+	  <?php echo $this->headTitle(); ?> 
+	  <?php echo $this->headLink()->appendStylesheet("/style/admin-style.css"); ?>
+	<?php
+	//$this->headScript()->appendFile('/js/jquery-1.4.2.js');
+  	//$this->headScript()->appendFile('/js/ajaxfileupload.js');
+	//echo $this->headScript()->appendFile('/js/script.js');
+	?>
+	<script type="text/javascript" src="<?php echo Zend_Registry::get('siteurl')?>/js/lib.js"></script>
+	<?php if ($this->custom_head) {echo $this->custom_head;}?>
+	<LINK REL="SHORTCUT ICON" HREF="<?php echo Zend_Registry::get('siteurl')?>/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="<?php echo Zend_Registry::get('siteurl')?>/favicon.ico" type="image/x-icon">
+	</head> 
+		<body<?php if ($this->custom_body) {echo $this->custom_body;}?>>
+			<div class="wrapper">
+				<!-- Header Start -->
+				<?php $path="/layouts/scripts/page/admin"?>
+				<?php echo $this->pageElement('admin-header',$path)?>
+				<!-- Header End -->
+				
+				<div id="mainbody"> 
+				<?php 	echo $this->layout()->content ?>
+				</div>
+	  
+				<!-- footer start -->     
+				<?php echo $this->pageElement('admin-footer', $path)?>
+				<!-- footer end -->
+			</div>
+	</body>
+</html>
+

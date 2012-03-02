@@ -1,0 +1,1517 @@
+<?php
+class IndexController extends Base_Controller_Action
+{
+
+    
+    
+    public function init()
+    {
+        /* Initialize action controller here */
+    	/*$uri=$this->_request->getPathInfo();
+		$activeNav=$this->view->navigation()->findByUri($uri);
+		$activeNav->active=true;    	*/
+    	
+    }
+	
+	public function __call($method,$args)
+	{
+	
+
+     }
+
+        
+public function sliderDemoAction()
+{
+}
+
+	public function testtitleAction()
+	{
+		echo "I am good";
+		exit;
+	}
+	
+	public function pageAction()
+	{
+		$identifire=$this->_getParam("identifire");
+		$page=new Application_Model_Page();
+              
+		$page=$page->getStaticContent($identifire);
+		$this->view->title=$page->getTitle();
+		$this->view->content=$page->getContent();
+		$this->view->headTitle()->setSeparator(' - ');
+		if($page->getMetaTitle()=="")
+			$this->view->headTitle()->append($page->getTitle());
+		else
+			$this->view->headTitle()->append($page->getMetaTitle());
+		
+		$this->view->headMeta()->appendName('keywords',$page->getMetaKeyword());
+		$this->view->headMeta()->appendName('description',$page->getMetaDescription());
+		$this->view->headMeta()->appendName('title',$page->getMetaTitle());		
+	}
+	
+	public function contactAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	
+	public function aboutAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	public function advertiseAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	public function privacyPolicyAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	
+	public function workForUsAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	
+	public function termsConditionsAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	
+	public function pressMediaAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	
+	public function advertisingAndPartnershipsAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	public function safetyPolicyAction()
+	{
+		$this->_forward('page','index',null,array("identifire"=>$this->view->actionName));
+	}
+	public function sitemapAction(){
+		$this->view->layout()->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+		echo $this->view->navigation()->sitemap();
+	}
+    
+	public function adminAction()
+	{
+		$this->_forward('index','index','admin' );
+	}
+	
+	public function autosuggestCityAction()
+   	{
+   		$this->view->layout()->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+		
+		$q = strtolower($this->_getParam('term'));
+		if (!$q) return;
+		
+		$where="name like '%{$q}%'";
+		$model=new Application_Model_City();
+		$res=$model->fetchAll($where, null,11);
+		$result = array();
+		foreach ($res as $row) 
+		{
+			array_push($result, array("id"=>$row->getId(), "value" => $row->getName()));
+		}
+		echo Zend_Json::encode($result);
+   	}
+   	
+	public function autosuggestLanguageAction()
+   	{
+   		$this->view->layout()->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+		
+		$q = strtolower($this->_getParam('term'));
+		if (!$q) return;
+		
+		$where="name like '%{$q}%'";
+		$model=new Application_Model_Language();
+		$res=$model->fetchAll($where, null,11);
+		$result = array();
+		foreach ($res as $row) 
+		{
+			array_push($result, array("id"=>$row->getId(), "value" => $row->getName()));
+		}
+		echo Zend_Json::encode($result);
+   	}
+   	
+   	
+	
+    public function indexAction()
+    {
+      $this->_helper->layout->setLayout('home-layout');
+      if($this->_getParam("msg")=="le"){
+     	 $this->view->lmsg="Incorrect details entered: please try again.";
+      }else if($this->_getParam('msg')=="hle"){
+           $this->view->hlmsg="Invalid login credntials.";
+      }
+   	$request = $this->getRequest();
+    	$this->view->Lform=$form=new Admin_Form_Login();
+    	$elements=$form->getElements();
+    	$form->clearDecorators();
+    	foreach($elements as $element)
+    		$element->removeDecorator('label');
+    		
+    	if ($request->isPost())
+    	{
+	    	if ($form->isValid($request->getPost())) 
+	        {
+	        	$params=$request->getParams();
+	        	$Auth = new Base_Auth_Auth();
+	        	$Auth ->doLogout();
+	        	
+	        	$loginStatusEmail=true;
+	        	$loginStatusUsername=true;
+	        	
+	   			$loginStatusEmail=$Auth->doLogin($params, 'email');
+	   			if($loginStatusEmail==false){
+	   				$loginStatusUsername=$Auth->doLogin($params, 'username');
+	   			}
+	   			
+	   			//$loginStatusUsername=$Auth->doLogin($params, 'username');
+	   			if ($loginStatusEmail==false && $loginStatusUsername==false) 
+				{
+					
+                                    if($this->_getParam("homeLogin")=="homeLogin")
+                                    $this->_helper->redirector('index','index',"default",array("msg"=>"hle"));
+                                    else
+                                    $this->_helper->redirector('index','index',"default",array("msg"=>"le"));
+                                }
+				else
+				{
+					if($params['rememberMe']==1)
+					{
+						$Auth->remeberMe(true, $params);
+					}
+					else
+					{
+						$Auth->forgotMe('rememberMe'); //delete existing cookies as per new requirement
+					}
+					//header("location: {$_SERVER['HTTP_REFERER']}");
+					$this->_helper->redirector('where-i-am','gapper');
+				}
+	        }
+	        else {
+	        	
+	        	$this->_helper->redirector('index','index',"default",array("msg"=>"le"));
+	        }
+	        
+    	}
+      
+      
+    }
+
+	public function resizeImageAction()
+    {
+    	$path=base64_decode($this->_getParam('path'));
+    	
+    	$thumb = Base_Image_PhpThumbFactory ::create($path);
+		$thumb->resize(70);
+		$thumb->show();
+    	exit;	
+    }
+    
+	public function thumbAction()
+    {
+    	$path=base64_decode($this->_getParam('path'));
+    	$width=$this->_getParam('width');
+    	$height=$this->_getParam('height');
+    	$thumb = Base_Image_PhpThumbFactory ::create($path);
+		$thumb->resize($width,$height);
+		$thumb->show();
+    	exit;	
+    }
+    
+	public function doFbReturnAction()
+	{
+        $this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+			
+	 	/*------facebook------*/
+		$usersNs = new Zend_Session_Namespace("members");	
+		$user=new Application_Model_User();
+		$result=$user->facebookConnect($usersNs->userId);
+		if($result)
+		{
+	 	?>
+			<script language="javascript">
+				window.opener.location.reload();
+				window.close();
+			</script>
+		<?
+		}else {
+		?>
+			<script language="javascript">
+				alert("Could not connect with facebook!");
+				window.opener.location.href.reload();
+				window.close();
+			</script>
+		<?	
+		}
+		/*------------------*/
+	}
+    
+	public function __doFbReturnAction()
+	{
+        $this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+			
+	 	/*------facebook------*/
+		$user=new Application_Model_User();
+		$result=$user->doFacebookLogin();
+		if($result['email']=='no')
+		{
+                    ?>
+                    <script language="javascript">
+                           window.opener.location.href='/gapper/where-i-am';
+                           window.close();
+                    </script>
+                    <?
+                    //$this->_helper->redirector('update-my-email','gapper');
+		}
+		else
+		{
+                    ?>
+                    <script language="javascript">
+                           window.opener.location.href='/gapper/where-i-am';
+                           window.close();
+                    </script>
+                    <?
+			//$this->_helper->redirector('where-i-am','gapper');
+		}
+		/*------------------*/
+	}
+	
+	
+    
+	public function loginAction()
+    {
+    	if (Zend_Auth::getInstance()->hasIdentity()){ // if user is already logged in then redirect to home page
+    		$this->_helper->redirector("index","index");
+    	}
+    	
+    	
+    	
+    	/*------facebook------*/
+    	$facebook = $this->view->facebook();
+		$return_url=Zend_Registry::get('siteurl')."/index/do-fb-return/";
+		
+		//scope=offline_access,publish_stream,read_stream&display=popup
+		
+		$this->view->loginUrl=$loginUrl = $facebook->getLoginUrl(array("next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location", "display"=>"popup"));
+		//$this->view->loginUrl="https://graph.facebook.com/oauth/authorize?redirect_uri=$return_url&scope=offline_access,publish_stream,read_stream&client_id=102609193129645";
+		/*------------------*/
+		
+		
+    	
+    	$request = $this->getRequest();
+    	$this->view->form=$form=new Admin_Form_Login();
+    	$elements=$form->getElements();
+    	$form->clearDecorators();
+    	foreach($elements as $element)
+    		$element->removeDecorator('label');
+    		
+    	if ($request->isPost())
+    	{
+	    	if ($form->isValid($request->getPost())) 
+	        {
+	        	$params=$request->getParams();
+	        	$Auth = new Base_Auth_Auth();
+	        	$Auth ->doLogout();
+	        	
+	        	$loginStatusEmail=true;
+	        	$loginStatusUsername=true;
+	        	
+	   			$loginStatusEmail=$Auth->doLogin($params, 'email');
+	   			if($loginStatusEmail==false){
+	   				$loginStatusUsername=$Auth->doLogin($params, 'username');
+	   			}
+	   			
+	   			//$loginStatusUsername=$Auth->doLogin($params, 'username');
+	   			if ($loginStatusEmail==false && $loginStatusUsername==false) 
+				{
+					
+        	    
+                                    $this->_helper->redirector('index','index',"default",array("msg"=>"le"));
+				}
+				else
+				{
+					if($params['rememberMe']==1)
+					{
+						$Auth->remeberMe(true, $params);
+					}
+					//header("location: {$_SERVER['HTTP_REFERER']}");
+					$this->_helper->redirector('where-i-am','gapper');
+				}
+	        }
+	        else {
+	        	
+	        	$this->_helper->redirector('index','index',"default",array("msg"=>"le"));
+	        }
+	        
+    	}
+    }
+
+
+
+    public function loginModalAction()
+    {
+    	$this->_helper->layout->disableLayout();
+    	$request = $this->getRequest();
+    	$form=new Admin_Form_Login();
+    	$error=0;
+    	if ($request->isPost())
+    	{
+	    	if ($form->isValid($request->getPost()))
+	        {
+                    $params=$request->getParams();
+                    $Auth = new Base_Auth_Auth();
+                    $loginStatusEmail=true;
+                    $loginStatusUsername=true;
+
+                    $loginStatusEmail=$Auth->doLogin($params, 'email');
+                    if($loginStatusEmail==false){
+                            $loginStatusUsername=$Auth->doLogin($params, 'username');
+                    }
+
+                    //$loginStatusUsername=$Auth->doLogin($params, 'username');
+                    if ($loginStatusEmail==false && $loginStatusUsername==false)
+                    {
+                        $error=1;
+                    }
+                    else
+                    {
+                            $error=0;
+                            if($params['rememberMe']==1)
+                            {
+                                    $Auth->remeberMe(true, $params);
+                            }
+							else
+							{
+								$Auth->forgotMe('rememberMe'); //delete existing cookies as per new requirement
+							}								
+                    }
+	        }
+	        else
+	        {
+	        	$error=2;
+
+	        }
+    	}
+    		$result=array("error"=>$error);
+    	echo Zend_Json::encode($result);
+    	exit;;
+    }
+
+
+    public function usernameAction()
+    {
+    	$request = $this->getRequest();
+    	
+    	$this->view->form=$form=new Application_Form_Forgot();
+    	$elements=$form->getElements();
+    	$form->clearDecorators();
+    	foreach($elements as $element)
+    		$element->removeDecorator('label');
+    	
+    	$options=$request->getParams();
+    	
+    	if ($request->isPost())
+    	{
+	    	if ($form->isValid($request->getPost())) 
+	        {
+	        	$model=new Application_Model_User();
+		    	$model=$model->fetchRow("email='{$options['email']}'");
+		    	if(false!==$model)
+		    	{
+		    		$Auth=new Base_Auth_Auth();
+		    		$Auth->recoverUsername($model);
+					$this->view->msg="Your username has been emailed to your email address.";
+					$form->reset();	
+		    	}
+	        }
+    	}
+    	
+    }    
+    public function forgotAction()
+    {
+    	
+    	$request = $this->getRequest();
+    	
+    	$this->view->form=$form=new Application_Form_Forgot();
+    	$elements=$form->getElements();
+    	$form->clearDecorators();
+    	foreach($elements as $element)
+    		$element->removeDecorator('label');
+    	
+    	$options=$request->getParams();
+    	
+    	if ($request->isPost())
+    	{
+	    	if ($form->isValid($request->getPost())) 
+	        {
+	        	$model=new Application_Model_User();
+		    	$model=$model->fetchRow("email='{$options['email']}'");
+		    	if(false!==$model)
+		    	{
+		    		$Auth=new Base_Auth_Auth();
+		    		$Auth->recoverPassword($model);
+					$this->view->msg="Your password has been reset and emailed to your email address.";
+					$form->reset();	
+		    	}
+	        }
+    	}
+    }
+    
+	public function logoutAction()
+    {
+    	
+    	
+    	$Auth=new Base_Auth_Auth();
+		$Auth->doLogout();
+		/*
+		 * @Commented By: Mahipal Adhikari
+		 * @Commented On : 25-Nov-2010
+		 * @Description: Do not delete cookies while loggig out as per new requirement logged in mantis(bug id: 250)
+		 */
+		//$Auth->forgotMe('rememberMe');
+    	
+		/*---facebook logout---*/
+    	$facebook = $this->view->facebook();
+    	$session = $facebook->getSession();
+    	if($session)
+    	{
+    		try {
+		    	$uid = $facebook->getUser();
+		    	$me = $facebook->api('/me');
+		  	} catch (FacebookApiException $e) {
+			    error_log($e);
+			  }
+    		
+    		$logoutUrl = $facebook->getLogoutUrl(array("next"=>$_SERVER['HTTP_REFERER']));
+    			
+    	}
+    	
+    	if($me){
+    		$this->_helper->redirector->gotoUrl($logoutUrl );
+    	}else{
+    		$this->_helper->redirector->gotoUrl($_SERVER['HTTP_REFERER']);
+    	}
+    	/*----------------------------*/
+		exit;
+    }
+    
+    public function registerAction()
+    {
+    	
+		$form = new Application_Form_Register();
+    	$elements=$form->getElements();
+    	
+    	
+    	$form->clearDecorators();
+    	foreach($elements as $element)
+    		$element->removeDecorator('label');
+    	//print_r($elements);die();
+    	$this->view->fbmsg=$this->_getParam("fbmsg");
+    	
+        $this->view->form = $form;    	
+        $this->view->successMsg="";
+       $this->view->sender=$this->_getParam('sender');
+        if ($this->getRequest()->isPost()) 
+        {
+        	
+            $params= $this->getRequest()->getPost();          
+            if ($form->isValid($params)) 
+            {
+            	//print_r($params);die();
+            	
+            	$params['dob']=$params['year']."-".$params['month']."-".$params['day'];
+            	$params['status']='inactive';
+            	$params['userLevelId']=1;
+            	$password=$params['password'];
+   				$params['password']=md5($params['password']);
+   				
+   				/*----find gapper id ---*/
+   				$gapper_id=0;
+   				if($params['gapperOrFriend']=="friend"){
+	   				$gapperM=new Application_Model_User();
+	   				$gapper=$gapperM->getDataByUsername($params['usernameOfGapper']);
+	   				if(false!==$gapper)
+	   				{
+	   					$gapper_id=$gapper->getId();
+	   				}
+   				}
+   				$params['gapperId']=$gapper_id;
+   				/*----------------------*/
+   				
+				$user=new Application_Model_User($params);
+				$user_id=$user->save();
+				if($user_id>0)
+				{
+					/*---- default permission settings ----*/
+					
+					$user->setDefaultPermissions($user_id);
+					$user->setDefaultJournal($user_id);
+	            	
+	   				/*-------------------------------------------*/
+					
+					/*---------add a friend -------------*/
+					$sender_id=base64_decode($this->_getParam('sender'));
+					$senderM=new Application_Model_Friend();
+					$senderM->addAsFriend($sender_id,$user_id);
+					
+					
+					/*-------------------------------------*/
+					
+					$params['activate_link']=Zend_Registry::get('siteurl')."/index/activate/id/".base64_encode($user_id);
+    				$params['password']=$password;
+    				
+    				$usersNs = new Zend_Session_Namespace("members");
+    				$usersNs->registration_id=$user_id;
+					$mail=new Base_Mail();
+					$mail->sendRegistrationMail($params);
+					$this->_helper->redirector('invite','index',"default");
+					
+					//$this->view->successMsg="Your registration has been complete. <br> Please check your email to activate your account.";
+				}    	
+            }
+        }
+       
+    }
+ 	
+    public function inviteAction()
+    {
+    	$form = new Application_Form_Invite();
+    	$elements=$form->getElements();
+    	$form->clearDecorators();
+    	foreach($elements as $element)
+    		$element->removeDecorator('label');
+    		
+        $this->view->form = $form;    	
+        $this->view->successMsg="";
+        if ($this->getRequest()->isPost()) 
+        {
+            $params= $this->getRequest()->getPost();          
+            if ($form->isValid($params)) 
+            {
+            	$siteurl=Zend_Registry::get('siteurl');
+            	$usersNs = new Zend_Session_Namespace("members");
+            	$userId=base64_encode($usersNs->registration_id);
+				$params['invitation_link']="{$siteurl}/index/register/sender/{$userId}";
+				$mail=new Base_Mail();
+				$mail->sendInvitation($params);
+				
+				$this->_helper->redirector('thanks','index',"default");
+            }
+        }
+    }
+	public function thanksAction()
+	{
+		$skipInvite				=	$this->_getParam('skip-invite');
+		$this->view->skipInvite	=	$skipInvite;
+	}
+    public function connectYourAccountAction()
+    {
+		
+		
+        $facebook = $this->view->facebook();
+    	$session = $facebook->getSession();
+    	if (!$session) {
+    		$this->_helper->redirctor("register","index","default");
+    	}
+    	
+    	 $uid = $facebook->getUser();
+    	$me = $facebook->api('/me');
+    	
+    	$params['email']=$me['email'];
+    		$arrBday=explode("/",$me['birthday']);
+    	$params['year']=$arrBday[2];
+    	$params['month']=$arrBday[1];
+    	$params['day']=$arrBday[0];
+    	
+    	$params['firstName']=$me['first_name'];
+    	$params['lastName']=$me['last_name'];
+    	$params['sex']=$me['gender'];
+    
+		$form = new Application_Form_Register();
+		
+		$form->populate($params);
+    	$elements=$form->getElements();
+    	$form->clearDecorators();
+    	foreach($elements as $element)
+    		$element->removeDecorator('label');
+       $this->view->fbmsg=$this->_getParam("fbmsg");
+       $this->view->form = $form;    	
+       $this->view->successMsg="";
+       $this->view->sender=$this->_getParam('sender');
+        if ($this->getRequest()->isPost()) 
+        {
+            $params= $this->getRequest()->getPost();
+            $params['firstName']=$me['first_name'];
+                $params['lastName']=$me['last_name'];
+                $params['sex']=$me['gender'];
+            if ($form->isValid($params)) 
+            {
+            	$params['facebookId']=$uid;
+            	$params['dob']=$params['year']."-".$params['month']."-".$params['day'];
+            	$params['status']='inactive';
+            	$params['userLevelId']=1;
+            	$password=$params['password'];
+                $params['password']=md5($params['password']);
+                $params['status']="active";
+                //$model->setStatus('active');
+                /*----find gapper id ---*/
+                $gapper_id=0;
+                if($params['gapperOrFriend']=="friend"){
+                    $gapperM=new Application_Model_User();
+                    $gapper=$gapperM->getDataByUsername($params['usernameOfGapper']);
+                    if(false!==$gapper)
+                    {
+                            $gapper_id=$gapper->getId();
+                    }
+                }
+                $params['gapperId']=$gapper_id;
+                /*----------------------*/
+
+                $user=new Application_Model_User($params);
+                $user_id=$user->save();
+                if($user_id>0)
+                {
+                    /*---- default permission settings ----*/
+
+                    $user->setDefaultPermissions($user_id);
+                    $user->setDefaultJournal($user_id);
+
+                    /*-------------------------------------------*/
+
+                    /*---------add a friend -------------*/
+                    $sender_id=base64_decode($this->_getParam('sender'));
+                    $senderM=new Application_Model_Friend();
+                    $senderM->addAsFriend($sender_id,$user_id);
+
+
+                    /*-------------------------------------*/
+
+                    $params['activate_link']=Zend_Registry::get('siteurl')."/index/activate/id/".base64_encode($user_id);
+                    $params['password']=$password;
+
+                    $usersNs = new Zend_Session_Namespace("members");
+                    $usersNs->registration_id=$user_id;
+                    //$mail=new Base_Mail();
+                    //$mail->sendRegistrationMail($params);
+                    $this->_helper->redirector('invite','index',"default");
+
+                        //$this->view->successMsg="Your registration has been complete. <br> Please check your email to activate your account.";
+                }
+            }
+        }
+       
+}
+	
+	public function facebookConnectAction()
+	{
+		$this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+	 	/*------facebook------*/
+		//$user=new Application_Model_User();
+		//$result=$user->doFacebookLogin();
+		
+    	$facebook = $this->view->facebook();
+    	$session = $facebook->getSession();
+	if ($session) 
+	{
+    		$uid = $facebook->getUser();
+    		$user=new Application_Model_User();
+    		$where="facebook_id='{$uid}'";
+    		$user=$user->fetchRow($where);
+    		if(false===$user)
+    		{
+    			 ?>
+                    <script language="javascript">
+                           window.opener.location.href='/index/connect-your-account';
+                           window.close();
+                    </script>
+                    <?
+    		}
+    		else
+    		{
+    			$result=$user->doFacebookLogin();
+    			 ?>
+                    <script language="javascript">
+                           //window.opener.location.href='/index/register/fbmsg/ar';
+                    window.opener.location.href='/gapper/where-i-am';
+                           window.close();
+                    </script>
+                    <?
+    			//$this->_helper->redirector("register","index", "default",array("fbmsg"=>"ar"));
+    		}
+	}
+	}
+	
+	
+    
+	public function cancelFacebookAction()
+	{
+		$this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+		?>
+                    <script language="javascript">
+                           //window.opener.location.href='/index/register';
+               
+                           window.close();
+                    </script>
+                    <?
+	}
+	
+    public function loadContactsAction()
+    {
+    	$this->_helper->layout->disableLayout();
+    	$this->_helper->viewRenderer->setNoRender(true);
+    	
+		$email=$this->_getParam('email');          
+		$password=$this->_getParam('password');
+		$provider=$this->_getParam('provider');
+		
+        
+		$ers=array();
+		if (empty($email))
+			$ers['email']="Email missing !";
+		if (empty($password))
+			$ers['password']="Password missing !";
+		if (empty($provider))
+			$ers['provider']="Provider missing !";
+		if (count($ers)==0)
+		{
+                   // include_once(LIBRARY_PATH."/Base/OpenInviter/Base_OpenInviter_OpenInviter.php");
+			$inviter=new Base_OpenInviter_OpenInviter();
+			$oi_services=$inviter->getPlugins();
+			$inviter->startPlugin($provider);
+			$internal=$inviter->getInternalError();
+			if ($internal)
+			$ers['inviter']=$internal;
+			elseif (!$inviter->login($email,$password))
+			{
+				$internal=$inviter->getInternalError();
+				$ers['login']=($internal?$internal:"Login failed. Please check the email and password you have provided and try again later !");
+			}
+			elseif (false===$contacts=$inviter->getMyContacts())
+			{
+				$ers['contacts']="Unable to get contacts !";
+			}
+			
+			
+		}
+		
+    	if(count($ers)==0)
+		{
+			//print_r($contacts);
+			$address=array();
+			$address=array_keys($contacts);
+                        $data="<input onchange='toggleAll(this)' style='width:20px' type='checkbox' value='contacts_all' id='contacts_all' name='contacts_all'><strong>Check All</strong><br/>";
+                        $i=0;
+                        foreach($contacts as $key=>$val)
+                        {
+                            $data.="<input style='width:20px' type='checkbox' value='{$key}' id='contacts_{$i}' name='contacts_{$i}'>{$val}<br/>";
+                            $i++;
+                        }
+			//$data=implode(", ",$address);
+			$result=array('error'=>0, 'data'=>$data, 'total_contacts'=>count($contacts),'oi_session_id'=>$inviter->plugin->getSessionID());
+		}
+		else
+		{
+			$ers=implode(", ",$ers);
+			$result=array('error'=>1, 'data'=>$ers);
+			
+		}
+		echo Zend_Json::encode($result);
+    }
+    public function activateAction()
+    {
+    	$id=base64_decode($this->_getParam('id'));
+    	$model=new Application_Model_User();
+    	$model=$model->find($id);
+    	if(false===$model)
+    	{
+    		$this->view->msg="Invalid request. Please try again";
+    	}
+    	else
+    	{
+    		if($model->getStatus()=="inactive")
+    		{
+    			$model->setStatus('active');
+    			$model->save();
+    			$this->view->msg="Your account has been activated. Please login to access your account.";
+    		}
+    		else
+    		{
+    			$this->view->msg="Your account is already activated. Please login to access your account.";
+    		}
+    		
+    	}
+    }
+  
+    
+    public function checkNickNameAction(){
+    	$this->_helper->layout->disableLayout();	
+    	$request = $this->getRequest();
+    	$options=$request->getParams();
+    	
+    	$model=new Application_Model_User();
+    	if(true===$model->isExist("nick_name='{$options['nickName']}'"))
+    	{
+    		$result=Array('error'=>1,'msg'=>"Nickname already exists.");	
+    	}
+    	else
+    	{
+    		$result=Array('error'=>0,'msg'=>"Nickname is available!");
+    	}
+
+    	echo Zend_Json::encode($result);
+    	exit;
+    }
+    
+      public function checkEmailAction(){
+    	$this->_helper->layout->disableLayout();	
+    	$request = $this->getRequest();
+    	$options=$request->getParams();
+    	
+    	$model=new Application_Model_User();
+    	if(true===$model->isExist("email='{$options['email']}'"))
+    	{
+    		$result=Array('error'=>1,'msg'=>"Email already exists.");	
+    	}
+    	else
+    	{
+    		$result=Array('error'=>0,'msg'=>"Email is available!");
+    	}
+
+    	echo Zend_Json::encode($result);
+    	exit;
+    }
+    
+
+    
+
+	public function warningAction()
+    {
+            $this->view->headTitle("Unauthorized Access");
+    }
+    
+    public function destinationsAction(){
+    	$this->_helper->viewRenderer->setNoRender(true);
+    }
+ 
+	public function forumAction(){
+    	$this->_helper->viewRenderer->setNoRender(true);
+    }
+
+    
+    
+    public function facebookAction()
+    {
+    	$this->_helper->viewRenderer->setNoRender(true);
+    	
+    	$facebook = new Base_Facebook_Facebook(array(
+		  'appId'  => '102609193129645',
+		  'secret' => 'b8ba71904d48df9f719be20a39e87764',
+		  'cookie' => true,
+		));
+		$session = $facebook->getSession();
+    	$me = null;
+		// Session based API call.
+		if ($session) {
+		  try {
+		    $uid = $facebook->getUser();
+		    $me = $facebook->api('/me');
+		  } catch (Base_Facebook_FacebookApiException  $e) {
+		    error_log($e);
+		  }
+		}
+		exit("tet");
+    	if ($me) {
+		  $logoutUrl = $facebook->getLogoutUrl();
+		} else {
+		  $loginUrl = $facebook->getLoginUrl();
+		}
+
+		print_r($me);
+		if($me)
+		{
+			echo "	<a href='$logoutUrl'>
+      					<img src='http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif'>
+    				</a>";	
+		}
+		else
+		{
+			echo "	<a href='$loginUrl'>
+      					<img src='http://static.ak.fbcdn.net/rsrc.php/zB6N8/hash/4li2k73z.gif'>
+    				</a>";	
+			 
+		}
+		//echo $this->cdnUri();
+    }
+    
+    
+
+public function excelAction()
+{
+	$this->_helper->layout->disableLayout();
+	$this->_helper->viewRenderer->setNoRender(true);
+
+	print "<pre>";
+	
+	
+	$filename = "data/destinationlist.xls";
+
+	$objPHPExcel = Base_Excel_PHPExcel_IOFactory::load($filename);
+
+	echo date('H:i:s') . " Iterate worksheets\n";
+	foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) 
+	{
+		//echo '- ' . $worksheet->getTitle() . "\r\n";
+
+		foreach ($worksheet->getRowIterator() as $row) 
+		{
+			echo '    - Row number: ' . $row->getRowIndex() . "\r\n";
+			if($row->getRowIndex()<>1){ //we do not need first row(column name)
+				
+				$cellIterator = $row->getCellIterator();
+				$cellIterator->setIterateOnlyExistingCells(false); // Loop all cells, even if it is not set
+				$counter=0;
+				$arrRow=array();
+				foreach ($cellIterator as $cell) 
+				{
+					$counter++;
+					if (!is_null($cell)) 
+					{
+						//do database inserts here	
+						if($counter==1){
+							$arrRow['continent']=$cell->getCalculatedValue();
+						}
+						else if($counter==2){
+							$arrRow['country']=$cell->getCalculatedValue();	
+						}
+						else if($counter==3){
+							$arrRow['region']=$cell->getCalculatedValue();	
+						}
+						else if($counter==4){
+							$arrRow['state']=$cell->getCalculatedValue();	
+						}
+						else if($counter==5){
+							$arrRow['city']=$cell->getCalculatedValue();	
+						}
+						//echo '        - Cell: ' . $cell->getCoordinate() . ' - ' . $cell->getCalculatedValue() . "\r\n";
+					}
+					
+				}
+				
+				//----insert into continent
+				
+					$continentM=new Application_Model_Continent();
+					$continent=$continentM->fetchRow("name='{$arrRow['continent']}'");
+					if(false===$continent){
+						$continentM->setName($arrRow['continent']);
+						$continent_id=$continentM->save();	
+					}else{
+						$continent_id=$continent->getId();
+					}
+				//--------------------------
+				
+				//----insert into country
+				
+					$countryM=new Application_Model_Country();
+					$country=$countryM->fetchRow("name='{$arrRow['country']}'");
+					if(false===$country){
+						$countryM->setName($arrRow['country']);
+						$countryM->setContinentId($continent_id);
+						$country_id=$countryM->save();	
+					}else{
+						$country_id=$country->getId();
+					}
+					
+				//-------------------------------
+				
+				
+				
+			}
+			
+		}
+	}
+
+
+}
+
+
+
+public function friendsProfileAction()
+{
+	
+	
+	$id=$this->getRequest()->getParam('id');
+	
+	 $model=new Application_Model_User();
+	 $viewprof=$model->find($id);
+	 
+	 $this->view->viewprof=$viewprof;
+	 
+
+}
+
+public function changeRequestAction()
+{
+	$this->_helper->layout->disableLayout();
+	$this->_helper->viewRenderer->setNoRender(true);
+	
+	$ctype		=	$this->getRequest()->getParam('ctype');
+	$id			=	$this->getRequest()->getParam('id');
+	$userid		=	$this->getRequest()->getParam('userid');
+	$friendid	=	$this->getRequest()->getParam('friendid');
+	$status		=	$this->getRequest()->getParam('status');
+	
+	$params['id']				=	$id;
+	$params['userId']			=	$userid;
+	$params['friendId']			=	$friendid;
+	$params['status']			=	$status;
+	$params['connectionType']	=	$ctype;
+	
+	$response	= "";
+	$response	= "<span style='color:#EF4733;'>";
+	
+	$friend = "";
+	$friendm = new Application_Model_Friend($params);
+    $friend =  $friendm->save();
+	
+	if($friend)
+	{
+		//if request accepted then insert new row in reverse to make accepter as friend of requester
+		if($status=="accept")
+		{
+			//delete any existing record sent from friend
+			$delReqWhere = "user_id=$friendid AND friend_id=$userid";
+			$delRes =  $friendm->delete($delReqWhere);
+			
+			//once deleted now insert new row to make accepter as friend of requester
+			$params_u['userId']			=	$friendid;
+			$params_u['friendId']		=	$userid;
+			$params_u['status']			=	$status;
+			$params_u['connectionType']	=	$ctype;
+			$userm = new Application_Model_Friend($params_u);
+			$user =  $userm->save();
+		}
+		
+		//send email to requester for request confirmation
+		$userObj = new Application_Model_User();
+		
+		//get accepter/sender information
+		$Sender   = $userObj->find($friendid);
+		$mailOptions['sender_email']= $Sender->getEmail();
+		$mailOptions['sender_name']	= ucwords($Sender->getFirstName()).' '.ucwords($Sender->getLastName());
+		
+		//get requester/receiver information
+		$Receiver   = $userObj->find($userid);
+		$mailOptions['receiver_email']	= $Receiver->getEmail();
+		//$mailOptions['receiver_email']	= "mahipal@profitbyoutsourcing.com";
+		$mailOptions['receiver_name']	= ucwords($Receiver->getFirstName()).' '.ucwords($Receiver->getLastName());
+		$mailOptions['req_status']		= ($status=="accept") ? "Accepted":"Declined";
+		
+		$Mail	=	new Base_Mail();
+		$Mail->acceptDeclineRequest($mailOptions);
+		
+		//set confirmation message to display
+		$response .= ($status=="accept") ? "Request has been accepted.":"Request has been declined.";
+	}
+	else
+	{
+		$response .= "Error occured. Please try again later.";
+	}
+	$response	.= "</span>";
+	//sleep(5);
+	echo $response;
+	exit;
+}
+
+public function changeProfileAction()
+{
+	$this->_helper->layout->disableLayout();
+	$this->_helper->viewRenderer->setNoRender(true);
+	$ctype=$this->getRequest()->getParam('ctype');
+	$id=$this->getRequest()->getParam('id');
+	$userid=$this->getRequest()->getParam('userid');
+	$friendid=$this->getRequest()->getParam('friendid');
+
+	$params['id']=$id;
+	//$params['friendId']=$id;
+	$params['userId']=$userid;
+	$params['friendId']=$friendid;
+	$params['status']='accept';
+
+	$params['connectionType']=$ctype;
+
+	$friendm = new Application_Model_Friend($params);
+	$friend =  $friendm->save();
+}
+
+public function deleteProfileAction()
+{
+    $id=$this->getRequest()->getParam('id');
+    $friendm = new Application_Model_Friend();
+    $userdata = $friendm->find($id);
+    
+    $userId = $userdata->getUserId();
+    $friendId = $userdata->getFriendId();
+    
+    $friendm->delete("id = $id");
+    $friendm->delete("user_id = $friendId and friend_id=$userId");
+    $this->_redirect('/gapper/my-friends/msg/success');
+ }
+
+
+
+
+public function xmlAction()
+{
+	
+	$this->_helper->layout->disableLayout();
+	$this->_helper->viewRenderer->setNoRender(true);
+	echo "<pre>";
+	$filename = "data/sample - Chiang Mai.xml";
+	$xml_parser = new Base_Xml_Parser(null, $filename); 
+	
+	$continentName=$xml_parser->Data['identification']['geoTag1'];
+	$countryName=$xml_parser->Data['identification']['geoTag2'];
+	$cityName=$xml_parser->Data['identification']['geoTag3'];
+	$regionName=$cityName;
+	$stateName=$cityName;
+	//----insert into continent
+		$continent_id=0;
+		$continentM=new Application_Model_Continent();
+	
+		$continent=$continentM->fetchRow("name='{$continentName}'");
+		if(false===$continent)
+		{
+			$continentM->setName($continentName);
+			$continent_id=$continentM->save();
+		}
+		else
+		{
+			$continent_id=$continent->getId();
+		}
+	//--------------------------
+	
+	//----insert into country
+		$country_id=0;
+		$countryM=new Application_Model_Country();
+		$country=$countryM->fetchRow("name='{$countryName}' and continent_id='{$continent_id}'");
+		if(false===$country){
+			$countryM->setName($countryName);
+			$countryM->setContinentId($continent_id);
+			$country_id=$countryM->save();	
+		}else{
+			$country_id=$country->getId();
+		}
+		
+	//-------------------------------
+
+		
+	///------insert into region
+		$region_id=0;
+		$regionM=new Application_Model_Region();
+		$region=$regionM->fetchRow("name='{$regionName}' and country_id='{$country_id}'");
+		if(false===$region){
+			$regionM->setName($regionName);
+			$regionM->setCountryId($country_id);
+			$region_id=$regionM->save();	
+		}else{
+			$region_id=$region->getId();	
+		}
+	//------------------------
+ 
+	///------insert into state
+		$state_id=0;
+		$stateM=new Application_Model_State();
+		$state=$stateM->fetchRow("name='{$stateName}' and region_id='{$region_id}'");
+		if(false===$state){
+			$stateM->setName($stateName);
+			$stateM->setRegionId($region_id);
+			$state_id=$stateM->save();	
+		}else{
+			$state_id=$state->getId();	
+		}
+	//------------------------
+		
+		
+	///------insert into city
+		$city_id=0;
+		$cityM=new Application_Model_City();
+		$city=$cityM->fetchRow("name='{$cityName}' and country_id='{$state_id}'");
+		if(false===$city){
+			$cityM->setName($cityName);
+			$cityM->setCountryId($country_id);
+			$city_id=$cityM->save();	
+		}else{
+			$city_id=$city->getId();	
+		}
+	//------------------------
+
+	if($continent_id>0 && $country_id>0 && $city_id>0 ){
+		//it is city
+		$locationType="city";
+		$locationId=$city_id;
+	}else if($continent_id>0 && $country_id>0){
+		//it is country
+		$locationType="country";
+		$locationId=$country_id;
+	}else if($continent_id>0){
+		//it is continent
+		$locationType="continent";
+		$locationId=$continent_id;
+	}
+	
+	///////////Remove/////////
+	$destinationM=new Application_Model_Destination();
+	$destinationM->delete();
+	$experiencesM=new Application_Model_Experiences();
+	$experiencesM->delete();
+	$practicalitiesM=new Application_Model_Practicalities();
+	$practicalitiesM->delete();
+	//------------------------------
+	
+	
+	
+	
+	$title=$xml_parser->Data['content']['title'];
+	$introduction=$xml_parser->Data['content']['introduction'];
+	$destinationM=new Application_Model_Destination();
+	$destinationM->setTitle($title);
+	$destinationM->setIntroduction($introduction);
+	$destinationM->setLocationId($locationId);
+	$destinationM->setLocationType($locationType);
+	$destination_id=$destinationM->save();
+
+	
+	foreach ($xml_parser->Data['content']['experiences'] as $experiences) 
+	{ 
+		
+		foreach($experiences as $_item){
+			$experiencesM=new Application_Model_Experiences();
+			$experiencesM->setTitle($_item['title']);
+			$experiencesM->setDestinationId($destination_id);
+			$experiencesM->setCopy($_item['copy']);
+			$experiencesM->save();
+		}
+	} 
+	 
+	foreach ($xml_parser->Data['content']['practicalities'] as $practicalities) 
+	{ 
+		
+		foreach($practicalities as $_item){
+			$practicalitiesM=new Application_Model_Practicalities();
+			$practicalitiesM->setTitle($_item['title']);
+			$practicalitiesM->setDestinationId($destination_id);
+			$practicalitiesM->setCopy($_item['copy']);
+			$practicalitiesM->save();
+		}
+	}
+	
+	
+	//print_r($xml_parser->Data); 
+}
+
+
+public function poiAction()
+{
+	
+	$this->_helper->layout->disableLayout();
+	$this->_helper->viewRenderer->setNoRender(true);
+	echo "<pre>";
+	$filename = "data/lonelyplanet-london-gapdaemon.xml";
+	$xml_parser = new Base_Xml_Parser(null, $filename); 
+	
+	 $destinationName=$xml_parser->Data['destination_name'];
+	
+	
+	//----insert into continent
+		$continent_id=0;
+		$continentM=new Application_Model_Continent();
+	
+		$continent=$continentM->fetchRow("name='{$destinationName}'");
+		if(false!==$continent)
+		{
+			$continent_id=$continent->getId();
+		}
+	//--------------------------
+	
+	//----insert into country
+		$country_id=0;
+		$countryM=new Application_Model_Country();
+		$country=$countryM->fetchRow("name='{$destinationName}'");
+		if(false!==$country){
+			$country_id=$country->getId();
+		}
+	//-------------------------------
+
+		
+ 
+	///------insert into city
+		$city_id=0;
+		$cityM=new Application_Model_City();
+		$city=$cityM->fetchRow("name='{$destinationName}'");
+		if(false!==$city){
+			$city_id=$city->getId();	
+		}
+	//------------------------
+
+	if($city_id>0 ){
+		//it is city
+		$locationType="city";
+		$locationId=$city_id;
+	}else if($country_id>0){
+		//it is country
+		$locationType="country";
+		$locationId=$country_id;
+	}else if($continent_id>0){
+		//it is continent
+		$locationType="continent";
+		$locationId=$continent_id;
+	}else{
+		//create a place/city and get the reference id/location id
+		
+		///------insert into city
+		$city_id=0;
+		$cityM=new Application_Model_City();
+		$cityM->setName($destinationName);
+		$cityM->setCountryId(0);
+		$city_id=$cityM->save();
+		//------------------------
+	
+		$locationType="other";
+		$locationId=$city_id;
+	}
+	error_reporting(E_ALL&~(E_NOTICE));
+
+	foreach($xml_parser->Data['pois']['poi'] as $poi){
+
+			$poiM = new Application_Model_Poi();
+            $poiM  	->setLocationId($locationId)
+                	->setLocationType($locationType)
+                	->setName($poi['poi_name'])
+                	->setAddress(serialize($poi['address_parts']['address_part']))
+                	->setPostcode($poi['address_postcode'])
+                	->setTelfaxs(serialize($poi['telfaxs']['telfax']))
+                	->setEmail($poi['poi_email'])
+                	->setWeb($poi['poi_web'])
+                	->setTransportModes(serialize($poi['transport_modes']['transport_mode']))
+                	->setPriceRange($poi['price_range'])
+                	->setReviewFull($poi['review_full']['p'])
+                	->setReviewSummary($poi['review_summary']['p'])
+                	->setBookable($poi['bookable']['value'])
+                	->setXCoordinate($poi['feature_x_coord'])
+                	->setYCoordinate($poi['feature_y_coord'])
+                	->setFeatureId($poi['feature_id'])
+                	->setKeywords(serialize($poi['keywords']['keyword']))              	
+                	;
+                	$poiM->save();
+		
+		
+	}
+	
+
+}
+/**
+* @Created By : Mahipal Singh Adhikari
+* @Created On : 17-Nov-2010
+* @Description: This function is used to display login page and when guest user try to access private pages
+*/
+public function userLoginAction()
+{
+	// if user is already logged in then redirect to were-I-am page
+	if(Zend_Auth::getInstance()->hasIdentity())
+	{
+		$this->_helper->redirector('where-i-am','gapper');
+	}
+	if($this->_getParam("msg")=="le")
+	{
+		$this->view->message="Incorrect details entered: please try again.";
+    }
+	else if($this->_getParam('msg')=="hle")
+	{
+		$this->view->message="Invalid login credntials.";
+    }
+	$request = $this->getRequest();
+	if ($request->isPost())
+	{
+		$params=$request->getParams();
+		$Auth = new Base_Auth_Auth();
+		$Auth ->doLogout();
+
+		$loginStatusEmail=true;
+		$loginStatusUsername=true;
+
+		$loginStatusEmail=$Auth->doLogin($params, 'email');
+		if($loginStatusEmail==false)
+		{
+			$loginStatusUsername=$Auth->doLogin($params, 'username');
+		}
+
+		//$loginStatusUsername=$Auth->doLogin($params, 'username');
+		if ($loginStatusEmail==false && $loginStatusUsername==false) 
+		{
+			$this->_helper->redirector('user-login','index',"default",array("msg"=>"le"));
+		}
+		else
+		{
+			if($params['rememberMe']==1)
+			{
+				$Auth->remeberMe(true, $params);
+			}
+			else
+			{
+				$Auth->forgotMe('rememberMe');//delete existing cookies as per new requirement
+			}
+			//if reffered from secured pages
+			if($_SESSION['session_redirect_url'])
+			{
+				$redirect_url = $_SESSION['session_redirect_url'];
+				unset($_SESSION['session_redirect_url']);
+				header("location:".$redirect_url);
+				exit;
+			}
+			else
+			{
+				$this->_helper->redirector('where-i-am','gapper');
+			}	
+		}
+		
+	}
+}//end of function
+	
+
+	public function appLoginAction()
+	{
+		//$this->_helper->layout->setLayout('home-layout');
+		$this->_helper->layout->disableLayout();
+		$appNs = new Zend_Session_Namespace("app");
+		$request = $this->getRequest();
+	    if($request->isPost())    
+		{
+			$params=$request->getParams();
+			if($params['test_username']=="admin" && $params['test_password']=="admin")
+			{
+				
+				$appNs->userName=$params['test_username'];
+				$appNs->password=$params['test_password'];
+				$this->_helper->redirector('index','index');
+			}
+			else
+			{
+				$this->view->msg="Invalid credentials";
+			}
+		}
+    	
+	}
+    
+}//end of class

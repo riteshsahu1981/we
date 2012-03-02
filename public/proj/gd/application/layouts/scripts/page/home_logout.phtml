@@ -1,0 +1,115 @@
+<!-- Script for Home page tab scroll-->
+<script type="text/javascript" src="/js/latest/SpryDOMUtils.js"></script>
+<script type="text/javascript" src="/js/latest/SprySlidingPanels.js"></script>
+<script type="text/javascript" src="/js/latest/sp_withTabs.js"></script>
+
+<!-- Start Main Center Area -->
+<div class="main-center">
+<div class="leftnav">
+
+<!-- Popular Deamon Container START-->
+<div class="popular-deamon">
+<div class="gry-crnr"><img src="<?echo $this->cdnUri()?>/images/gry-lft-crnr.jpg" width="9" height="9" align="left" /><img src="<?echo $this->cdnUri()?>/images/gry-rght-crnr.jpg" width="9" height="9" align="right" /></div>
+<?php
+$HomeMidContentM	=	new Application_Model_HomeMidContent();
+$modelRes			=	$HomeMidContentM->find(1);
+?>
+<h3 class="heading-grn"><?php echo $modelRes->getTitle();?></h3>
+<div class="left">
+<!--<img src="/media/picture/home/thumb_<?php //echo $modelRes->getEditorPic();?>" width="138" height="125" />-->
+<img src="<?echo $this->cdnUri();?>/image?src=<?echo $this->cdnUri();?>/media/picture/home/<?php echo $modelRes->getEditorPic();?>&w=138&h=125" />
+<span><?php echo $modelRes->getEditorPicTitle();?></span>
+<div class="clear"></div>
+<?php echo $modelRes->getEditorPicText();?><span><a href="<?php echo $modelRes->getEditorPicUrlLink();?>" target="<?php echo $modelRes->getEditorPicUrlTarget();?>"><?php echo $modelRes->getEditorPicUrlLabel();?></a></span>
+</div>
+<div class="right">
+<div style="display: block;" class="slidingTabPanelWrapper">
+<ul class="slidingTabPanel">
+<li><a href="javascript://" id="nutshell" class="tabActive" title="<?php echo $modelRes->getSubTitle1();?>"><?php echo $modelRes->getSubTitle1();?></a></li>
+<li><a href="javascript://" id="widgets" class="tab" title="<?php echo $modelRes->getSubTitle2();?>"><?php echo $modelRes->getSubTitle2();?></a></li>
+</ul>
+</div>
+<div style="overflow: hidden;" tabindex="0" class="SlidingPanels" id="slidingPanel">
+<div class="SlidingPanelsContentGroup">
+
+<div id="nutshellPanel" class="p1 SlidingPanelsContent SlidingPanelsCurrentPanel">
+<ul>
+<?php 
+//echo $modelRes->getSubTitle1Text();
+$SubTitle1TextArr = unserialize($modelRes->getSubTitle1Text());
+echo '<li><a href="'.$SubTitle1TextArr['sharedLink1Url'].'" target="'.$SubTitle1TextArr['sharedLink1Target'].'">'.$SubTitle1TextArr['sharedLink1Text'].'</a><span>1</span></li>';
+echo '<li><a href="'.$SubTitle1TextArr['sharedLink2Url'].'" target="'.$SubTitle1TextArr['sharedLink2Target'].'">'.$SubTitle1TextArr['sharedLink2Text'].'</a><span>2</span></li>';
+echo '<li><a href="'.$SubTitle1TextArr['sharedLink3Url'].'" target="'.$SubTitle1TextArr['sharedLink3Target'].'">'.$SubTitle1TextArr['sharedLink3Text'].'</a><span>3</span></li>';
+echo '<li><a href="'.$SubTitle1TextArr['sharedLink4Url'].'" target="'.$SubTitle1TextArr['sharedLink4Target'].'">'.$SubTitle1TextArr['sharedLink4Text'].'</a><span>4</span></li>';
+echo '<li class="nobrdr"><a href="'.$SubTitle1TextArr['sharedLink5Url'].'" target="'.$SubTitle1TextArr['sharedLink5Target'].'">'.$SubTitle1TextArr['sharedLink5Text'].'</a><span>5</span></li>';
+?>
+</ul>
+</div>
+<div id="widgetsPanel" class="p2 SlidingPanelsContent">
+<ul>
+<?php 
+//echo $modelRes->getSubTitle2Text();
+$SubTitle2TextArr = unserialize($modelRes->getSubTitle2Text());
+echo '<li><a href="'.$SubTitle2TextArr['readLink1Url'].'" target="'.$SubTitle2TextArr['readLink1Target'].'">'.$SubTitle2TextArr['readLink1Text'].'</a><span>1</span></li>';
+echo '<li><a href="'.$SubTitle2TextArr['readLink2Url'].'" target="'.$SubTitle2TextArr['readLink2Target'].'">'.$SubTitle2TextArr['readLink2Text'].'</a><span>2</span></li>';
+echo '<li><a href="'.$SubTitle2TextArr['readLink3Url'].'" target="'.$SubTitle2TextArr['readLink3Target'].'">'.$SubTitle2TextArr['readLink3Text'].'</a><span>3</span></li>';
+echo '<li><a href="'.$SubTitle2TextArr['readLink4Url'].'" target="'.$SubTitle2TextArr['readLink4Target'].'">'.$SubTitle2TextArr['readLink4Text'].'</a><span>4</span></li>';
+echo '<li class="nobrdr"><a href="'.$SubTitle2TextArr['readLink5Url'].'" target="'.$SubTitle2TextArr['readLink5Target'].'">'.$SubTitle2TextArr['readLink5Text'].'</a><span>5</span></li>';
+?>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="gry-crnr"><img src="<?echo $this->cdnUri()?>/images/gry-btmlft-crnr.jpg" width="9" height="9" align="left" /><img src="<?echo $this->cdnUri()?>/images/gry-btmrght-crnr.jpg" width="9" height="9" align="right" /></div>
+</div>
+<!-- Popular Deamon Container END-->
+
+</div>
+<!-- Start Right Part -->
+<div class="rightnav">
+	<div class="brdr-crnr"><img src="<?echo $this->cdnUri()?>/images/gry-brdr-lft.jpg" width="9" height="9" align="left" /><img src="<?echo $this->cdnUri()?>/images/gry-brdr-rght.jpg" width="9" height="9" align="right" /></div>
+	<div class="main-brdr">ADVERTISEMENT
+	<?php
+	  $banner = new Cms_Model_Banner();
+	  $banner ->showBanner("right", "600", "160");
+	?>      
+	</div>
+	<div class="brdr-crnr-btm"><img src="<?echo $this->cdnUri()?>/images/gry-brdr-btmlft.jpg" width="9" height="9" align="left" /><img src="<?echo $this->cdnUri()?>/images/gry-brdr-btmrght.jpg" width="9" height="9" align="right" /></div>
+</div>
+<!-- End Right Part  -->
+
+<!-- Bottom Banner START -->
+<div class="ln-hght20"></div>
+<?php
+$HomeBottomContentM	=	new Application_Model_HomeBottomContent();
+$bottomContentRes	=	$HomeBottomContentM->find(1);
+$backgroundImage	=	"/images/home_banner_bck.jpg";
+if($bottomContentRes->getBackgroundImage()!="")
+{
+	$backgroundImage	=	"/media/picture/home/thumb_".$bottomContentRes->getBackgroundImage();
+}
+$leftTitle		= $bottomContentRes->getLeftTitle();
+$leftContent	= $bottomContentRes->getLeftText();
+$rightTitle		= $bottomContentRes->getRightTitle();
+$rightContent	= $bottomContentRes->getRightText();
+?>
+<!--<div class="bottom-banner" style="background: url('<?php echo $backgroundImage;?>') no-repeat scroll left top #EBEBEB;">
+<img src="<?echo $this->cdnUri()?>/images/gry-rght-crnr.jpg" width="9" height="9" align="right" />
+<div class="bottom-box-upper"></div>
+<div id="img-txt"><h2 class="heading"><?php echo $leftTitle;?></h2><?php echo $leftContent;?></div>
+<div id="details-right"><span><strong><?php echo $rightTitle;?></strong></span><br /><?php echo $rightContent;?></div>
+<img src="<?echo $this->cdnUri()?>/images/gry-btmrght-crnr.jpg" width="9" height="9" align="right" class="btm-img" />
+</div>-->
+<div class="bottom-banner"><img src="<?php echo $backgroundImage;?>" width="641" height="299" class="f-left" />
+<div class="bottom-box-upper"></div>
+<img src="<?echo $this->cdnUri()?>/images/gry-rght-crnr.jpg" width="9" height="9" align="right" />
+<div id="img-txt"><h2 class="heading"><?php echo $leftTitle;?></h2><?php echo $leftContent;?></div>
+<div id="details-right">
+<span><strong><?php echo $rightTitle;?></strong></span><br /><?php echo $rightContent;?></div>
+<img src="<?echo $this->cdnUri()?>/images/gry-btmrght-crnr.jpg" width="9" height="9" align="right" class="btm-img" />
+</div>
+<!-- Bottom Banner END -->
+
+</div>
+<!-- End Main Center Area -->

@@ -1,0 +1,28 @@
+<?php $date=new Base_Date();?>
+<?php 
+if(!is_null($this->bookUser)){
+    $user=new Application_Model_User();
+    $user->setProfilePicture($this->bookUser->profile_picture);
+    
+ }
+?>
+<div id="employee-info-content">
+<table>
+    <tbody>
+        <tr ><td width="30%">Book Title :</td><td><?php echo $this->book->getTitle()?></td></tr>
+        <tr ><td >Author :</td><td><?php echo $this->book->getAuthor()?></td></tr>
+        <tr ><td>ISBN : </td><td><?php echo $this->book->getIsbn() ?></td></tr>
+        <tr ><td>Description : </td><td><?php echo $this->book->getDescription() ?></td></tr>
+        <?php if(!is_null($this->bookUser)):?>
+        <tr ><td>Status : </td><td>Issued</td></tr>
+        <tr ><td>Issued to : </td><td> <img src="<?php echo $user->getThumbnail();?>"/><br><?php echo $this->bookUser->first_name ?> <?php echo $this->bookUser->last_name ?> (Code : <?php echo $this->bookUser->employee_code?>)</td></tr>
+        <tr ><td>Email: </td><td><?php echo $this->bookUser->email?> </td></tr>
+        <tr ><td>Issue Date : </td><td><?php echo $date->getSysDate(strtotime($this->bookUser->issue_date),false)?></td></tr>
+        <tr ><td>Estimated Return Date: </td><td><?php echo $date->getSysDate(strtotime($this->bookUser->estimated_return_date),false)?> </td></tr>
+
+        <?php else:?>
+        <tr ><td>Status : </td><td>Available</td></tr>
+        <?php endif ?>
+        </tbody>
+</table>
+</div>

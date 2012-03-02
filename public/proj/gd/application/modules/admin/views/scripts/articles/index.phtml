@@ -1,0 +1,115 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;"><a href="/admin/articles/add/" class="add f-right">Add Article</a></span>
+	<?php echo $this->title ?> - <span class='msg'>Total <?php echo $this->total?> article(s) found! </span>
+	</div>	
+<div id="rightsidecontentpart">
+<form id="frmSearch" name="frmSearch" action="/admin/articles/index/" method="get" class="admin-form-new">
+	<table align="center" cellspacing="2" cellpadding="3" border="0" class="admin-search-table">
+		<tr>
+			<td colspan="4" class="heading">Search Articles</td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->title->getLabel();?></td><td><?php echo $this->form->title;?></td>
+		<td><?php echo $this->form->category_id->getLabel();?></td><td><?php echo $this->form->category_id;?></td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->status->getLabel();?></td><td><?php echo $this->form->status;?></td>
+		<td>&nbsp;</td><td><?php echo $this->form->submit;?></td>
+		</tr>
+	</table>
+    <input type="hidden" value="<?php echo $this->page_size?>" name ="page_size" id="page_size" >
+</form>
+<?php
+if($this->total>0)
+{
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+<span class='red'><? echo $this->msg;?></span>
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+    <th>Articles</th>
+    <th>URL Re-write</th>
+	<th>Category</th>
+	<th>Author</th>
+	<th>Publish Date</th>
+	<th>Status</th>
+    <th>Action</th>
+  </tr>  
+	<?php	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			
+			$status	=	$row['status'];
+			$printImage	=	"/images/admin-images/false.gif";
+			$published_title="Click here to publish";
+			if($status == 1)
+			{
+				$printImage	=	"/images/admin-images/true.gif";
+				$published_title="Click here to unpublish";
+			}
+			//get article category
+			$category = "N/A";
+			$categoryM = new Application_Model_Category();
+			$categoryM = $categoryM->find($row['category_id']);
+			if(false!==$categoryM)
+			{
+				$category = $categoryM->getName();
+			}
+			
+			//get article author
+			$author = "N/A";
+			$userM = new Application_Model_User();
+			$userM = $userM->find($row['user_id']);
+			if(false!==$userM)
+			{
+				$author = $userM->getFirstName()." ".$userM->getLastName();
+			}
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['title']?></td>
+            <td><?=$row['identifire']?></td>
+			<td><?=$category?></td>
+			<td><?=$author?></td>
+			<td><?php echo date("M j, Y", $row['addedon']);?></td>
+			<td><a href='/admin/articles/status/id/<?=$row['id']?>/page/<?=$page?>' title="<?php echo $published_title;?>"><img src="<?php print $printImage;?>" /></a></td>
+    		<td>    		
+    		<a href='/admin/articles/edit/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="/admin/articles/delete/id/<?=$row['id']?>" onclick="return confirm('Are you sure to delete this Article?');">
+				<img src='/images/admin-images/delete.gif' border='0' title='Delete'/>
+			</a>			
+			</td>
+  		</tr>
+	<?php	
+	}//end foreach
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?><br />
+<?	
+}//end if
+else
+{
+	echo "<div class='orange'>No record found.</div>";
+}
+?>
+</div>
+</div>
+</div>

@@ -1,0 +1,134 @@
+<?php //echo $this->totalItemCount; ?>
+
+<form method="post" action="<?php echo $this->seoUrl("/security/user/index")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <select name='status'>
+        <option value=''>Status</option>
+        <option <?php if($this->status=="active"){echo "selected='selected'";}?>value="active">Active</option>
+        <option <?php if($this->status=="inactive"){echo "selected='selected'";}?>value="inactive">Inactive</option>
+    </select>
+    
+   
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="8">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>User Id</th>
+            <th>Name</th>
+             <th>Email</th>
+             
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+        foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"># <?php echo $item->id; ?></a></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"><?php echo ucwords($item->first_name." ".$item->last_name); ?></a></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"><?php echo $item->email; ?></a></td>
+           
+            <td>
+                <!-- Icons -->
+                <a title="Edit" href="<?php echo $this->seoUrl("/security/user/edit-user/id/".$item->id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                <?php if( $item->status=="active") {
+                    $title="Click here to make employee inactive!";
+                    $image="/images/icons/tick_circle.png";
+                }else{
+                    $image="/images/icons/cross_circle.png";
+                    $title="Click here to make employee active!";
+                }?>
+               
+                &nbsp;&nbsp;
+                <a title="<?php echo $title?>" href="<?php echo $this->seoUrl("/security/user/change-user-status/id/".$item->id)?>"><img alt="<?php echo $title?>"  src="<?php echo $image?>"></a> 
+               
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="8">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+<script>
+    
+    function openD(user_id,user_full_name)
+    {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+        $("#userInfo").html("");
+        $( "#dialog-modal" ).dialog({
+                height: 460,
+                width: 420,
+                modal: true,
+                title: user_full_name
+        });
+        $("#imgLoading").show();
+        var params='id='+user_id;
+        $.ajax({
+                   type: "POST",
+                   url: "/security/user/user-info",
+                   data: params,
+                   dataType: "html",
+                   success: function(html)
+                   {
+                       $("#imgLoading").hide();
+                        $("#userInfo").html(html);
+                    
+                        
+                   },
+                   error: function (json, status, e)
+                   {
+                      $("#userInfo").html("Error");
+                       $("#imgLoading").hide();
+                   }
+               });
+
+
+       
+    }
+
+</script>
+
+<div id="dialog-modal" title="User Information" style="display:none">
+    <img style="display:none" id="imgLoading" src="/images/loading.gif"/>
+	<div id="userInfo"></div>
+        
+</div>

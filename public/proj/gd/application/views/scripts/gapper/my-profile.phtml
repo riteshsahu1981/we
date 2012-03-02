@@ -1,0 +1,233 @@
+<div id="center">
+<h2>MY PROFILE SETTINGS</h2>
+<div class="welcome-content">
+<p>You can complete / update your profile details here</p>
+
+<div class="form-structure">
+<ul class="errors"><li><?php echo $this->msg;?></li></ul>
+
+	<form action="" method="post" enctype="multipart/form-data">
+		<h3 style="color:#EF4733;">Change Password</h3>   
+		<label><?php echo $this->form->currentPassword->getLabel();?></label>
+		<?php echo $this->form->currentPassword;?>
+		<br class="clear" />
+		
+        <label><?php echo $this->form->password->getLabel();?></label>
+		<?php echo $this->form->password;?>
+		<br class="clear" />
+		
+		<label><?php echo $this->form->confirmPassword->getLabel();?></label>
+		<?php echo $this->form->confirmPassword;?>
+		<br class="clear" />
+				     
+		<h3 style="color:#EF4733;">Profile Details</h3>
+		<br class="clear" />
+		
+		<!--<div><strong>Username:</strong>
+		<span style="margin-left:110px;"><strong><?php //echo $this->username;?></strong></span></div>-->
+		<label>Username:</label> <label><?php echo $this->username;?></label>
+		<br class="clear" />		
+		
+		<label><?php echo $this->form->firstName->getLabel();?></label>
+		<?php echo $this->form->firstName;?>
+		<br class="clear" />
+		     
+		<label><?php echo $this->form->lastName->getLabel();?></label>
+		<?php echo $this->form->lastName;?>
+		<br class="clear" />
+
+        <label><?php echo $this->form->email->getLabel();?></label>
+		<?php echo $this->form->email;?>
+		<br class="clear" />
+
+		<label><?php echo $this->form->countryPassport->getLabel();?></label>
+		<?php echo $this->form->countryPassport;?>
+		<br class="clear" />
+		     
+		<label><?php echo $this->form->preferredLanguage->getLabel();?></label>
+		<?php echo $this->form->preferredLanguage;?>
+		<br class="clear" />
+		     
+		<label><?php echo $this->form->otherLanguages->getLabel();?></label>
+		<?php echo $this->form->otherLanguages;?>
+		<br class="clear" />
+		     
+		<label><?php echo $this->form->cityId->getLabel();?></label>
+		<?php echo $this->form->cityId;?>
+		<?php echo $this->form->cityName;?>
+		<br class="clear" />
+		     
+		<label><?php echo $this->form->day->getLabel();?></label>
+		<?php echo $this->form->day;?> <?php echo $this->form->month;?><?php echo $this->form->year;?>
+		<br class="clear" />
+		     
+		<label><?php echo $this->form->sex->getLabel();?></label>
+		<div class="radio-box"><?php echo $this->form->sex;?> </div>
+		<br class="clear" />
+		     
+		<label><?php echo $this->form->firstTimeTraveller->getLabel();?></label>
+		<div class="radio-box"><?php echo $this->form->firstTimeTraveller;?></div>		
+		<br class="clear" />		
+		<!-- Commented By Mahipal Singh Adhikari on 9-Dec-2010 as per client request, please refer http://gdmantis.ortegradev.com/view.php?id=354 -->
+		<!--<label><?php //echo $this->form->mobileCountryCode->getLabel();?></label>
+		<?php //echo $this->form->mobileCountryCode;?> 
+		<br class="clear" />-->
+		     
+		<label><?php echo $this->form->mobile->getLabel();?></label>
+		<?php echo $this->form->mobile;?>
+		<br class="clear" />
+		
+		<h3 style="color:#EF4733;">Profile Photo</h3>
+        <? //echo "media/picture/profile/".$this->thumbImage;?>
+		<?php if(isset($this->thumbImage) && file_exists("media/picture/profile/".$this->image_name) && $this->image_name<>""){?>
+			<span id="remove_image_response"></span>
+			<div id="profile_image_section" style="display:inline;">
+			<label></label>
+			<img width="100px" height="76px" border="0" src="<? echo $this->thumbImage."?".rand(0,100)?>" alt="" />
+			<a href="javascript://" onclick="removeProfileImage('<?php echo $this->image_name;?>','<?php echo $this->gender;?>')">Remove</a>
+			</div>
+			<br class="clear" />
+		<?php }else{?>
+			<div id="profile_image_section">			
+			<img src="<? echo $this->thumbImage."?".rand(0,100)?>" width="100" style="float:left;margin:0 10px 5px 0;" border="0" />
+			</div>
+		<?php }?>
+        <br class="clear" /><br class="clear" />
+		<label><?php echo $this->form->image->getLabel();?></label>
+		<?php echo $this->form->image;?>
+		<br class="clear" />
+		
+		<h3 style="color:#EF4733;">About You</h3>
+		
+		<!--  <label><?php //echo $this->form->dreamDestination->getLabel();?></label>
+		<?php //echo $this->form->dreamDestination;?>
+		<br class="clear" />
+		
+		<label><?php //echo $this->form->wayToTravel->getLabel();?></label>
+		<?php //echo $this->form->wayToTravel;?>
+		<br class="clear" />
+		
+		<label><?php //echo $this->form->travelGear->getLabel();?></label>
+		<?php //echo $this->form->travelGear;?>
+		<br class="clear" />
+
+		<label><?php //echo $this->form->yearGoal->getLabel();?></label>
+		<?php //echo $this->form->yearGoal;?>
+		<br class="clear" />
+		
+		<label><?php //echo $this->form->leaveHomeWithout->getLabel();?></label>
+		<?php //echo $this->form->leaveHomeWithout;?>
+		<br class="clear" />
+		
+		<label><?php //echo $this->form->interests->getLabel();?></label>
+		<?php //echo $this->form->interests;?>
+		<br class="clear" />  -->
+		
+		<label><?php echo $this->form->evenTakenGapYear->getLabel();?></label>
+		<?php echo $this->form->evenTakenGapYear;?>
+		<br class="clear" />
+		
+		<label><?php echo $this->form->nextTravelToDoList->getLabel();?></label>
+		<?php echo $this->form->nextTravelToDoList;?>
+		<br class="clear" />
+		
+		<label><?php echo $this->form->favouriteTravelExperience->getLabel();?></label>
+		<?php echo $this->form->favouriteTravelExperience;?>
+		<br class="clear" />
+				
+		<?php echo $this->form->submit;?>
+		</form>
+		</div>
+		</div>
+</div>
+<script type="text/javascript">
+$(function() {
+	$("#cityName").autocomplete({
+		source: "/index/autosuggest-city/",
+		minLength: 1,
+		select: function(event, ui) {
+		$("#cityId").val(ui.item.id);
+		}
+	});
+
+	function split(val) {
+		return val.split(/,\s*/);
+	}
+	
+	function extractLast(term) {
+		return split(term).pop();
+	}
+		
+	$("#otherLanguages").autocomplete({
+		source: function(request, response) {
+			$.getJSON("/index/autosuggest-language/", {
+				term: extractLast(request.term)
+			}, response);
+		},
+		search: function() {
+			// custom minLength
+			var term = extractLast(this.value);
+			if (term.length < 2) {
+				return false;
+			}
+		},
+		focus: function() {
+			// prevent value inserted on focus
+			return false;
+		},
+		select: function(event, ui) {
+			var terms = split( this.value );
+			// remove the current input
+			terms.pop();
+			// add the selected item
+			terms.push( ui.item.value );
+			// add placeholder to get the comma-and-space at the end
+			terms.push("");
+			this.value = terms.join(", ");
+			return false;
+		}
+	});
+});
+
+function removeProfileImage(image, gender)
+{
+	if(confirm("Are you sure? You want to delete your profile photo?"))
+	{
+		//alert("image="+image);
+		$("#remove_image_response").show();
+		$("#remove_image_response").html("<img src='/images/ajax-loader.gif'>");
+		var params="mode=ajax&image="+image;
+		$.ajax({
+				   type: "POST",
+				   url: "/gapper/remove-profileimage/",
+				   data: params,
+				   dataType: "json",
+				   success: function(json)
+				   {
+						if(json.error==1)
+						{
+							$("#remove_image_response").html(json.response);
+						}
+						else
+						{
+							$("#remove_image_response").html(json.response);
+							$("div#profile_image_section").html('');
+							$("div#profile_image_section").hide();
+							
+							//set default image according to user gender for top left section
+							var profile_default_img = "/images/no_image_female.jpeg";
+							if(gender=='male')
+							{
+								profile_default_img = "/images/no-image.jpg";
+							}
+							document.getElementById('profile_image').src = profile_default_img;
+						}
+				   },
+				   error: function (json, status, e)
+				   {
+						alert("json="+json+" status="+status+" e="+e);
+				   }
+			 });
+	}		 
+}
+</script>	 

@@ -1,0 +1,59 @@
+<div id="journal-center">
+<?php
+$heading = "Error";
+$profile = "profile";
+$message = "User does not share profile details with the entire community.";
+
+//echo "actionName=".$this->actionName;
+if($this->actionName=='view')
+{
+	$profile = "profile";
+}
+else if($this->actionName=='index')
+{
+	$profile = "location";
+}
+else if($this->actionName=='travel-wall')
+{
+	$profile = "travel wall";
+}
+else if($this->actionName=='journals')
+{
+	$profile = "journals";
+}
+else if($this->actionName=='friends')
+{
+	$profile = "friends";
+}
+//get user information and set the message
+if(isset($this->user_id) && $this->user_id!="")
+{
+	$userM		= new Application_Model_User();            
+    $userObj	= $userM->find($this->user_id);
+	if($userObj!==false)
+	{
+		$name    = $userObj->getFirstName();
+		//$name	.= " ".$userObj->getLastName();
+		$heading = "You cannot view $name's $profile";
+		$message = "<b>$name</b> does not share $profile details with the entire community.";
+	}	
+}
+
+//set custom message for Journal action if journal is not published or not public
+if($this->actionName=='journals')
+{
+	if(isset($this->error_message) && $this->error_message!="")
+	{
+		$message = $this->error_message;
+	}	
+}	
+?>
+	<h2><?php echo $this->puts($heading);?></h2>
+    <div class="user-journal-box" align="center">
+	<?php echo $this->puts($message);?>
+	<div align="center" style="margin-top:10px;">
+	<img alt="Warning" src="<?php echo $this->cdnUri()?>/images/warning.jpeg">
+	<br /><span style="font-size:14px; color:#FF2400; font-weight:bold;">Unauthorized Access.</span>
+	</div>
+	</div>
+</div>

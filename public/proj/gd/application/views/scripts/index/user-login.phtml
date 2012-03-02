@@ -1,0 +1,66 @@
+<?php
+$cookie	=	new Base_Http_Cookie();
+$cookieUserInfo		=	array();
+$cookieUserInfo		=	unserialize(base64_decode($cookie->getCookie('rememberMe')));
+$this->cookie_username	= "Username or Email";
+$this->cookie_password	= "";
+$this->cookie_remember	= "";
+if(count($cookieUserInfo)>1)
+{
+	$this->cookie_username = $cookieUserInfo["email"];
+	$this->cookie_password = $cookieUserInfo["password"];
+	$this->cookie_remember = "checked='checked'";
+	//echo "user=>".$this->cookie_username." pass=>".$this->cookie_password;
+}
+
+//facebook login URl
+$facebook = $this->facebook();
+$return_url=Zend_Registry::get('siteurl')."/index/facebook-connect/";
+$cancel_url=Zend_Registry::get('siteurl')."/index/cancel-facebook";
+$this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("cancel_url"=>$cancel_url,"next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location","display"=>"popup"));
+?>
+<script language="javascript" type="text/javascript">
+$(document).ready(function()
+{
+	<?php if(isset($this->cookie_password) && $this->cookie_password!=""){?>
+	$('#password-clear').hide();
+	$('#password-password').show();
+	<?php }else{ ?>
+	$('#password-clear').show();
+	$('#password-password').hide();
+	<?php }?>
+
+	$('#password-clear').focus(function() {
+		$('#password-clear').hide();
+		$('#password-password').show();
+		$('#password-password').focus();
+	});
+	$('#password-password').blur(function() {
+		if($('#password-password').val() == '') {
+			$('#password-clear').show();
+			$('#password-password').hide();
+		}
+	});
+});
+</script>
+<div class="login-banner" style="margin:5px 0 0 250px; height:165px; float: left;">
+		<h2>Log in to Gap Daemon</h2>
+		<p class="reg-sign"><span>Not a member?</span>
+			<span><a href="<?php echo $this->seoUrl("/index/register/");?>" class="register">CREATE ACCOUNT</a></span>
+			<span>Sign in with</span>
+			<span><a onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" href="javascript://" class="connect-log"><img src="<?php echo $this->cdnUri()?>/images/f_connect-1-1.gif" alt="" /></a></span>
+		</p>
+		<p>Already got a Gap Daemon account?</p>
+        <div class="div2 clear mart5 orange"><?php if($this->message<>""){echo $this->message;}?></div>
+		<form id="frmHomeLogin" method="post">                    
+		<div class="log-input">
+		<input type="text" style="padding:10px 5px;" id="email" name="email" class="log-user" value="<?php echo $this->cookie_username;?>" onblur="replaceText(this);" onfocus="clearText(this);" />
+		<input style="padding:10px 5px; display: none;" id="password-clear" type="text" class="log-pass" value="Enter your password" autocomplete="off"  />
+		<input style="padding:10px 5px;" id="password-password" type="password" name="password" class="log-pass" value="<?php echo $this->cookie_password;?>" autocomplete="off" />
+		<!--<input type="text" name="password" id="password" class="log-pass" value="Enter your password" onblur="replaceText(this);" onfocus="clearText(this);" onkeyup="this.type='password'" />-->
+		</div>
+		<input type="submit" name="cmdSubmit" class="f-left" value="Sign In" />
+        <input type="hidden" id="homeLogin"  name="homeLogin" value="homeLogin">
+		<div class="log-checkbox"><label><input type="checkbox" name="rememberMe" value="1" id="rememberMe" class="user-check" <?php echo $this->cookie_remember;?> />Remember me</label></div>
+        </form>
+</div>

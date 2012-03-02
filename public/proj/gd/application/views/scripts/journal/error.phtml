@@ -1,0 +1,14 @@
+<div id="journal-center">
+<?php
+$heading = "Error";
+$message = $this->message;
+?>
+	<h2><?php echo $this->puts($heading);?></h2>
+    <div class="user-journal-box" align="center">
+	<?php echo $this->puts($message);?>
+	<div align="center" style="margin-top:10px;">
+	<img alt="Warning" src="<?php echo $this->cdnUri()?>/images/warning.jpeg">
+	<br /><span style="font-size:14px; color:#FF2400; font-weight:bold;">Unauthorized Access.</span>
+	</div>
+	</div>
+</div>

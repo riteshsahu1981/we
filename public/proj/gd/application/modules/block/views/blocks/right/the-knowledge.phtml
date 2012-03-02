@@ -1,0 +1,60 @@
+<?php
+$id			=	$this->country_id;
+$countryM	=	new Application_Model_Country();
+$country	=	$countryM->find($id);
+
+if(false!==$country)
+{
+	$destinationM	=	new Application_Model_Destination();
+	$destination	=	$destinationM->fetchRow("location_id='{$id}' AND location_type='country'");
+	$knowledgeArr	=	array();
+	if(false!==$destination)
+	{
+		$knowledgeArr	=	unserialize($destination->getKnowledge());
+	}
+			
+    if(is_array($knowledgeArr) && count($knowledgeArr)>0)
+    {
+    ?>
+	<div class="right-box-wide" >
+		<h2 class="box-heading">THE KNOWLEDGE</h2>
+		<?php
+		for($cntK=0; $cntK<count($knowledgeArr); $cntK++)
+		{
+			$faqStr = "";
+			if(strtolower($country->getName())=='wales')
+			{
+				//break long words into small one as there are some text needs to be fit in right block
+				$faqAnsArr = explode(" ", $knowledgeArr[$cntK]['copy']);
+				foreach($faqAnsArr AS $key=>$value)
+				{
+					if(strlen($value)>50)
+					{
+						$valSubStr1 = substr($value, 0, 20);
+						$valSubStr2 = substr($value, 20, strlen($value));
+						$valSubStr  = $valSubStr1." - ".$valSubStr2;
+					}
+					else
+					{
+						$valSubStr = $value;
+					}
+					$faqStr .= $valSubStr." ";
+				}
+			}
+			else
+			{
+				$faqStr = $knowledgeArr[$cntK]['copy'];
+			}
+		?>
+			<div class="the-knowledge">
+			<div class="the-knowledge-title"><b><?php echo $knowledgeArr[$cntK]['title'];?></b></div>
+			<div class="the-knowledge-disc"><?php echo $faqStr;?></div>
+			</div>
+        <?php
+        }//end of for
+        ?>
+    </div>
+    <?php
+    }//end of if
+}//end of if		
+?>

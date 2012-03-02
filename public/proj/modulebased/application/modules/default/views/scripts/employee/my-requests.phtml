@@ -1,0 +1,69 @@
+<form method="post" action="<?php echo $this->seoUrl("/employee/my-requests")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Department</th>
+            <th>Summary</th>
+            <th>Request Id</th>
+            <th>Status</th>
+            <th>Requested On</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            <td><?php echo $item->department_name ?></td>
+            <td><?php echo  substr($item->request,0,60 )?>...</td>
+            <td><a href="<?php echo $this->seoUrl("/employee/request-detail/id/".$item->id) ?>">#<?php echo $item->id ?></a></td>
+            <td <?php if($item->status=="open"){?> style="color:red" <?php }?>    > <?php echo $item->status; ?></td>
+            <td><?php 
+            $date=new Base_Date();
+            echo $date->getSysDate($item->addedon);
+            
+            ?></td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>

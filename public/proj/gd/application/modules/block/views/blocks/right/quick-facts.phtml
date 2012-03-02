@@ -1,0 +1,83 @@
+<?php
+$id			=	$this->country_id;
+$countryM	=	new Application_Model_Country();
+$country	=	$countryM->find($id);
+
+if(false!==$country)
+{
+	$db		= Zend_Registry::get("db");
+	$sSQL = "SELECT * FROM lonely_planet_country WHERE country_id='{$id}'";
+	//$sSQL = "SELECT * FROM lonely_planet_country WHERE destination_name LIKE '%{$country->getName()}%'";
+	$row = array();
+	//$row	= $db->fetchRow($sSQL);
+	$RESQuick = $db->query($sSQL);
+	$RESQuick->setFetchMode(Zend_Db::FETCH_ASSOC);
+	$DATAQuick = $RESQuick->fetchAll();
+	//if(count($row)>1)
+	if(count($DATAQuick)>0)
+	{
+		//print_r($DATAQuick);
+		
+		$languages = unserialize($DATAQuick[0]['language_spokens']);
+                //var_dump($languages);
+                $language_name	= "N/A";
+		$language_des	= "";
+		$found_lang = false;
+                if($languages){
+                
+                    foreach($languages AS $language)
+		{
+			if(($language["language_spoken_type"]=="official" || $language["language_spoken_type"]=="essential") && $found_lang==false)
+			{
+				$language_name	= $language["language_spoken_name"];
+				if(isset($language["language_spoken_description"]))
+				{
+					$language_des	= $language["language_spoken_description"]["p"];
+				}	
+				$found_lang = true;
+			}	
+		}//end of foreach
+                
+                }
+		$capital_city	= $DATAQuick[0]['capital_city'];
+		$currency_name	= $DATAQuick[0]['currency_name'];
+		$currency_code	= $DATAQuick[0]['currency_code'];
+		$religion		= $DATAQuick[0]['religion'];
+		/*
+		$languages = unserialize($row->language_spokens);
+		$language_name	= "N/A";
+		$language_des	= "";
+		$found_lang = false;
+		foreach($languages AS $language)
+		{
+			if(($language["language_spoken_type"]=="official" || $language["language_spoken_type"]=="essential") && $found_lang==false)
+			{
+				$language_name	= $language["language_spoken_name"];
+				if(isset($language["language_spoken_description"]))
+				{
+					$language_des	= $language["language_spoken_description"]["p"];
+				}	
+				$found_lang = true;
+			}	
+		}//end of foreach
+		$capital_city	= $row->capital_city;
+		$currency_name	= $row->currency_name;
+		$currency_code	= $row->currency_code;
+		$religion		= $row->religion;
+		*/
+?>
+<div class="right-box-wide" >
+  <div class="quickfact-by"><img alt="" src="<?php echo $this->cdnUri()?>/images/lonely-planet.jpg" class="f-left"> <span>POWERED BY <a href="http://www.lonelyplanet.com/" target="_blank">LONELY PLANET</a></span></div>
+  <h2 class="box-heading">QUICK FACTS</h2>
+  <div class="quick-facts">
+    <div class="quick-fact-det"><span>Capital City:</span> <?php echo $capital_city;?></div>
+    <div class="quick-fact-det"><span>Currency:</span> <?php echo $currency_name;?> (<?php echo $currency_code;?>)</div>
+    <div class="quick-fact-det"><span>Language:</span> <?php echo $language_name;?></div>
+    <div class="quick-fact-det"><span class="f-left">Religions:</span> <span class="religions"><?php echo $religion;?></span></div>
+<!--	<div class="quick-fact-det"><br /><a href="#tab2">Practical Info</a></div>-->
+  </div>
+</div>
+<?php
+	}//end of if
+}//end of if
+?>

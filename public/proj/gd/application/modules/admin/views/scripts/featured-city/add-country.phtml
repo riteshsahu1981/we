@@ -1,0 +1,73 @@
+<?php
+	$this->headScript()->appendFile( $this->baseUrl().'/js/ckeditor/ckeditor.js');
+	$this->ckeditor = 'ckeditor'; //To tell the layout ckeditor must be loaded.
+?>
+<script language="javascript" type="text/javascript">
+$(function()
+{
+	$("#country_tabs").tabs();
+	
+	//selected default tabs
+	$("#country_tabs").tabs({ selected: "<?php echo $this->selTab;?>" });
+});
+</script>
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style="margin: 0pt 15px 0pt 0pt; float: right;">
+		<a class="add f-right" href="/admin/featured-city/manage-country/page/<?php echo $this->page;?>">Back</a></span>
+	Add Country Contents</div>
+<div id="rightsidecontentpart">
+<span class="red" style="font-size:14px; margin:0 0 10px 0; padding-bottom:5px;"><b>*Note: </b>No data available for this country, All fields are showing default contect. Please modify this default text(if any) before save.</span>
+	<div id="country_tabs" class="no-brdr-top no-top-padd">
+	<ul>
+		<li><a href="#tabs-1">Overview</a></li>
+		<li><a href="#tabs-2">Practical Info</a></li>
+		<li><a href="#tabs-3">Travel</a></li>
+		<li><a href="#tabs-4">Culture</a></li>
+		<li><a href="#tabs-5">Points Of Interest</a></li>
+		<li><a href="#tabs-6">The Knowledge</a></li>
+		<li><a href="#tabs-7">Images</a></li>
+		<li><a href="#tabs-8">Meta Data</a></li>		
+	</ul>
+	<div id="tabs-1" class="no-bordr-all">
+		<?php echo $this->partial('featured-city/add-country-tab1.phtml',array('countryId'=>$this->id));?>
+	</div>
+	<div id="tabs-2" class="no-bordr-all">
+		<?php //echo $this->partial('featured-city/country-tab2.phtml',array('countryId'=>$this->id));?>
+	</div>
+	<div id="tabs-3" class="no-bordr-all">
+		<?php //echo $this->partial('featured-city/country-tab3.phtml',array('countryId'=>$this->id));?>
+	</div>
+	<div id="tabs-4" class="no-bordr-all">
+		<?php //echo $this->partial('featured-city/country-tab4.phtml',array('countryId'=>$this->id));?>
+	</div>
+	<div id="tabs-5" class="no-bordr-all">
+		<?php //echo $this->partial('featured-city/country-tab5.phtml',array('countryId'=>$this->id));?>
+	</div>
+	<div id="tabs-6" class="no-bordr-all">
+		<?php //echo $this->partial('featured-city/country-tab6.phtml',array('countryId'=>$this->id));?>
+	</div>
+	<div id="tabs-7" class="no-bordr-all">	
+	</div>
+	<div id="tabs-8" class="no-bordr-all">
+		<?php //echo $this->partial('featured-city/travel-guides-metadata.phtml',array('itemId'=>$this->id, 'itemType'=>'country'));?>
+	</div>
+</div>
+	
+	</div>
+  </div>
+</div>
+<script language="javascript" type="text/javascript">
+function addMoreRowsDontLeave()
+{
+	var tabRow ="<tr><td valign='top'>Title </td><td valign='top'><input type='text' name='pracTitle[]' class='title-input-box' value=''></td></tr>";
+	tabRow +="<tr><td valign='top'>Copy </td><td valign='top'><textarea cols='40' rows='5' name='pracCopy[]' class='title-input-box'></textarea></td></tr>";
+	//tabRow +="<tr><td colspan='2'>&nbsp;</td></tr>";
+	$('#table_dontleave > tbody:last').append(tabRow);
+}
+</script>
+<?php
+//echo $this->setupEditor("introMini");
+echo $this->setupEditor("introShort");
+?>

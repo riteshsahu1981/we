@@ -1,0 +1,80 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<?php echo $this->headTitle(); ?>
+<?php echo $this->headMeta(); ?>
+
+<?php
+/*-------------- jquery ui----------------------*/
+if($this->jQuery()->isEnabled())
+echo $this->jQuery();
+/*-----------------------------------------------*/
+?>
+
+<?php echo $this->headScript(); ?>
+<?php echo $this->headLink(); ?>
+
+<style type="text/css">
+
+#facebook-popup{width:60%; height:auto; margin:0px 0px 0px 50px; padding:0px; float:left; position:relative; clear:both;}
+#frmFacebook{width:100%; float:left;}
+.checkall{float:left; width:97%; height:auto; margin:5px 0px; color:#348698; text-transform:uppercase; font:bold 13px arial; }
+.facebook-contacts{border:4px solid #E6E6E6; color: #999999; font: 13px HelveticaRegular,Arial,Helvetica,sans-serif; height: 263px; margin:0px; overflow: auto; padding:0px; width:98%;}
+.fb-box-gry{width:100%; height:auto; padding:10px 0px; background:#f6f6f6; float:left; margin:0px; border-top:1px solid #e8e7e7; color:#348698; font:bold 13px Arial; }
+.fb-btns{width:100%; float:left; margin:10px 0px 0px 0px;}
+.fb-box-gry img{ border:1px solid #ccc; background:#fff; padding:1px; }
+.error-msg{ font:bold 13px Arial; color:#FF2400; padding:5px; width:95%;}
+.absolute{position:absolute; bottom:-35px; left:0px;}
+.absolute2{position:absolute; bottom:-35px; right:0px;}
+#fb-header{width:283px; height:180px; margin-left:50px; float:left; clear:both;}
+#fb-header .logo {
+    background: url("../../../images/logo.png") no-repeat scroll 0 0 transparent;
+	background-position:0px 19px;
+    float: left;
+    height:120px;
+    width:50%;
+}
+</style>
+
+</head>
+<body>
+
+<!-- Header -->
+
+<div id="fb-header">
+<a href="/" class="logo"></a>
+<!--<div class="top_rgt_ban2">
+<?php
+//  $bannerHeader = new Cms_Model_Banner();
+//  $bannerHeader->showBanner("top", "600", "120");
+?>
+</div>-->
+</div>
+
+<!-- Header -->
+
+<!-- Sub-Header -->
+
+<?php //echo $this->pageElement('sub-header')?>
+
+<!-- Sub-Header -->
+
+<!-- Start Content Area -->
+
+<div id="facebook-popup"
+<?php if($this->actionName == 'page'){?> class="contentArea2" <?php }?> >
+<?php echo $this->layout()->content ?>
+</div>
+
+
+<!-- End Content Area -->
+
+<!-- Footer -->
+
+<?php //echo $this->pageElement('footer')?>
+
+<!-- Footer -->
+
+</body>
+</html>

@@ -1,0 +1,368 @@
+<div id="main-left">
+<div id="blogs">
+<?php
+$row		=	$this->blog;
+
+$date		=	new Base_Date();
+$date->setSysDateFormat("D jS F Y");
+
+$user			=	$row->getUserObj();
+$tagsM			=	new Application_Model_Tags();
+$tagStr			=	$tagsM->getBlogTags($row->getId());
+
+$voteM			=	new Application_Model_Vote();
+$total_likes	=	$voteM->getTotalVotes($row->getId(),"blog",1,null);
+
+$userM 			=	new Application_Model_User();
+$userM			=	$userM->find($row->getUserId());
+
+$comObj			=	new Application_Model_Comment();
+$blogCategory	=	$row->getBlogCategory($row->getId());
+?>
+
+		<div class="journal-box">
+        	<div class="journal-box-left">
+			<a href="/<?php echo $userM->getUsername()?>">
+        	<img src="/image?src=<?php echo $userM->getThumbnail();?>&size=journal" /><!--<img src="<?php echo $userM->getThumbnail()?>" alt="" width="61" />-->
+			</a>
+			</div>
+			<div class="journal-box-right">
+                <h3 class="main-heading2"><?php echo $row->getTitle();?></h3>
+                <div class="post-by">Posted by <b><a href="/<?php echo $userM->getUsername()?>"><?php echo  $user->first_name.' '.$user->last_name;?></a></b> | Category: <a href="<?php echo $this->seoUrl("/journal/index/search-filtr/".$blogCategory['category_id']);?>"><?php echo $blogCategory['category_name'];?></a> | <span><?php echo $date->getSysDate($row->getAddedon());?></span> | <span><a href="#blog_comments_list"><?php echo $comObj->numComments('blog', $row->getId());?> Comment</a></span> | 
+				<?php if($this->userId==""){?>
+                 <a href="javascript: loginPopUp('Please login to like');">Like</a>
+                <?php 
+				}
+				else
+				{
+                    $userVote=$voteM->getTotalVotes($row->getId(),"blog", 1,$this->userId);
+                    if($userVote>0)
+					{
+                       $likeStyle="display:none";
+                       $unlikeStyle="";
+
+                    }
+                    else
+                    {
+                        $likeStyle="";
+                        $unlikeStyle="display:none";
+                    }
+                    ?>
+                        <span style="display: none;" id="loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                        <span style="<?php echo $unlikeStyle?>" id="unlike_<?php echo $row->getId();?>">
+                        <a href="javascript: like(<?php echo $row->getId();?>, -1);">Unlike</a>
+                        </span>
+
+                        <span style="<?php echo $likeStyle?>"  id="like_<?php echo $row->getId();?>">
+                        <a href="javascript: like(<?php echo $row->getId();?>, 1);">Like</a>
+                        </span>
+                    <?php
+                }//end of else
+				?>
+                </div>
+                <div class="post-by-txt" style="text-align:justify;"><?php echo $this->textModifier($row->getContent(), true);?></div>
+                <?php
+				//set total likes text
+				$total_likes = 0;
+				$total_likes = $voteM->getTotalVotes($row->getId(),"blog",1,null);
+				$textPrint	=	"member likes this";
+				if($total_likes > 1)
+				{
+					$textPrint	=	"members like this";
+				}
+
+				//set like-dislike class and style
+				$classTag		= "like-dislike";
+				$mainDivStyle	= "display: none;";			
+				if($tagStr!="" || $total_likes > 0)
+				{
+					$classTag		= "like-dislike like-dislike-img";
+					$mainDivStyle	= "display: block;";
+				}
+				?>
+				<div class="like-dislike like-dislike-img <?php //echo $classTag;?>">
+				<!-- Tags and likes DIV starts here -->
+				<div style="<?php echo $mainDivStyle;?>" id="journal_tag_div_<?php echo $row->getId();?>">
+				 <?php if ($total_likes>0){$totalLikeDisplay="";}else{$totalLikeDisplay="display:none";}?>
+					<span class="like-dislike-l f-left">
+					<span id="you-like-this-thumb-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>">
+					<img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like" class="f-left" />
+					<span id="you-like-this-<?php echo $row->getId();?>" style="<?php echo $unlikeStyle?>">You likes this</span>
+					</span>
+					<a href="/journal/user-like-this/blog_id/<?php echo $row->getId()?>" class="like-this-l-link">
+					<span id="total_likes_<?php echo $row->getId();?>"  style="<?php echo $totalLikeDisplay?>">
+					<?php echo $total_likes.' '.$textPrint;?>
+					</span>
+					</a>
+					</span>
+					
+					<?php
+					//set style for seperator
+					$displaySeperator = "display: none;";
+					if($tagStr!="" && $total_likes > 0)
+					{
+						$displaySeperator = "display: block;";
+					}			
+					?>
+					<span class="like-dislike-pipe-seperator" style="<?php echo $displaySeperator;?>" id="journal_tag_sep_<?php echo $row->getId();?>">&nbsp;</span>
+					
+				  <?php if(isset($tagStr) && $tagStr!=""){?>
+				  <span class="like-dislike-r f-left" id="journal_tag_str_<?php echo $row->getId();?>">Tags: <?php echo $tagStr;?></span>
+				  <?php }?>
+				  </div>
+				  <!-- Tags and likes DIV ends here -->
+                <div class="clear"></div>
+				<?php
+                            $item_id= $row->getId();
+                            $commentM=new Application_Model_Comment();
+                            $where="item_id='{$item_id}' AND publish='1' AND item_type='blog'";
+                            $order="addedon ASC";
+                            $comments=$commentM->fetchAll($where,$order,10);
+                            $styleComment="";
+                            if(count($comments)==0){
+                                $styleComment="display:none";
+                            }
+                     ?>
+					<div id="comment-list-<?php echo $row->getId();?>" class="comment-on-comment" >
+					<a href="" name="blog_comments_list"></a>
+                     <?php
+
+                        if(count($comments)>0){
+                            foreach($comments as $_comment)
+                                echo $this->partial('comment/comment.phtml', array('comment'=>$_comment, 'type'=>'blog_comment',  'userId'=>$this->userId, 'item_id'=>$item_id));
+                        }
+                     ?>
+                    </div>
+                    <?php if($row->getComment()=='yes'){?>
+					<div class="commet-frm-feed" id="comment-form-<?php echo $row->getId();?>">
+					<form action="">
+						<input type="text" id="blog-comment-<?php echo $row->getId();?>"  name="blog-comment-<?php echo $row->getId();?>" class="feed-comment-txt" value="Comment..." onfocus="if(this.value=='Comment...'){this.value=''}" onblur="if(this.value==''){this.value='Comment...'}"  />
+						<?php if($this->userId){?>
+						<input id="saveComment_<?php echo $row->getId();?>" name="saveComment_<?php echo $row->getId();?>" type="button" value="Comment" class="feed-comment-btn" onclick="blogComment(<?php echo $row->getId();?>, <?php echo $row->getUserId();?>)"/>
+						<?php }else{?>
+						<input id="saveComment_<?php echo $row->getId();?>" name="saveComment_<?php echo $row->getId();?>" type="button" value="Comment" class="feed-comment-btn" onclick="loginPopUp('Please Login')"/>
+						<?php }?>
+						
+						<span style="display: none;" id="comment_loading_<?php echo $row->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+					</form>
+                    </div>
+					<?php }?>
+				</div>
+				<div class="clear"></div>
+				<a href="/journal/index<?php //echo $userM->getUsername();?>" class="orange-sml">Back To Journal</a>	 
+				<?php
+					 $shareLink = Zend_Registry::get('siteurl')."/journal/view-post/blog_id/".$row->getId();
+				?>
+				<span class="share-id-option">
+					<a href="javascript://" id="share-link-dd-<?php echo $row->getId();?>" class="share-link-dd">Share It</a>
+                    <span id="share-link-dd_menu-<?php echo $row->getId();?>"  class="share-link-dd_menu" >
+                    <a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=facebook&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Facebook"><img src="/images/facebook-icon-sml.png" alt="" /></a>
+                    <a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=twitter&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Twitter"><img src="/images/twitter-icon-sml.png" alt="" /></a>
+                    <a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=delicious&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Social"><img src="/images/social_03.png" alt="" /></a>
+                    <a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=digg&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Digg This"><img src="/images/digg-icon-sml.png" alt="" /></a>
+                    <a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=google&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Google"><img src="/images/gmail-icon-sml.png" alt="" /></a>
+                    <!--<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=delicious&amp;url=<?php //echo $shareLink;?>&amp;title=<?php //echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Delicious"><img src="/images/delicious-icon-sml.png" alt="" /></a>-->
+                    <a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=stumbleupon&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $row->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Stumbleupon"><img src="/images/stumbleupon-icon-sml.png" alt="" /></a>
+                    </span>
+                </span>
+				<div class="clear"></div>
+				<br class="clear"></br>
+            </div>
+		</div>
+</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+
+	$("#share-link-dd_menu-<?php echo $row->getId();?>").hide();
+	$("#share-link-dd-<?php echo $row->getId();?>").click(function(e) {          
+		e.preventDefault();
+		$("#share-link-dd_menu-<?php echo $row->getId();?>").toggle("slow");
+		$("#share-link-dd-<?php echo $row->getId();?>").toggleClass("menu-open");
+	});
+	
+	$("#share-link-dd_menu-<?php echo $row->getId();?>").mouseup(function() {
+		return false;
+	});
+	
+});
+</script>
+
+<script language="javascript">
+function like(item_id,vote)
+{
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=blog";
+	$("span#like_"+item_id).hide();
+        $("span#loading_"+item_id).show();
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+				$("span#loading_"+item_id).hide();
+				$("#comment-main-"+item_id).show();
+				if(vote==1)
+				{
+					$("span#unlike_"+item_id).show();
+					$("span#like_"+item_id).hide();
+					$("#you-like-this-"+item_id).show();
+					$("#you-like-this-thumb-"+item_id).show();
+				}
+				else
+				{
+					$("span#unlike_"+item_id).hide();
+					$("span#like_"+item_id).show();
+					$("#you-like-this-"+item_id).hide();
+					$("#you-like-this-thumb-"+item_id).hide();
+				}
+
+				//display main DIV and other as per user vote and total likes
+				if(vote==1)
+				{
+					$("div#journal_tag_div_"+item_id).show();
+					//$("div#journal_tag_div_"+item_id).addClass('like-dislike-img');
+					
+					//if Tags are available then display seperator
+					if($("span#journal_tag_str_"+item_id).html()!=null)
+					{
+						$("span#journal_tag_sep_"+item_id).show();
+					}
+				}
+				else
+				{
+					if(json.total_up==0)
+					{
+						$("span#journal_tag_sep_"+item_id).hide();
+						//if Tags are not available then hide main DIV
+						if($("span#journal_tag_str_"+item_id).html()==null)
+						{
+							$("div#journal_tag_div_"+item_id).hide();
+						}
+					}
+				}
+				
+				if(json.total_up>1)
+				{
+					$("span#total_likes_"+item_id).html(json.total_up + " members like this");
+				}
+				else if(json.total_up==1)
+				{
+					$("span#total_likes_"+item_id).show();
+					$("span#total_likes_"+item_id).html(json.total_up + " member like this");
+				}
+				else
+				{
+					$("span#total_likes_"+item_id).hide();
+					$("span#total_likes_"+item_id).html(json.total_up);
+				}
+             }
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+function showCommentBox(item_id)
+{
+     $("#comment-main-"+item_id).show();
+}
+function blogComment(item_id, user_id)
+{
+ var params='';
+	params+="comment="+$("#blog-comment-"+item_id).val();
+	params+="&item_id="+item_id;
+	params+="&user_id="+user_id;
+	params+="&item_type=blog";
+	//$("span#like_"+item_id).hide();
+        $("span#comment_loading_"+item_id).show();
+        $("#saveComment_"+item_id).hide();
+	$.ajax({
+		   type: "POST",
+		   url: "/comment/save-journal-comment/",
+		   data: params,
+		   dataType: "html",
+		   success: function(html){
+
+                    $("#saveComment_"+item_id).show();
+                    $("span#comment_loading_"+item_id).hide();
+                    $("#comment-list-"+item_id).append(html);
+                    $("#blog-comment-"+item_id).val('Comment...');
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+
+function likeComment(item_id,vote)
+{
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=blog_comment";
+	$("span#like_"+item_id).hide();
+        $("span#loading_comment_"+item_id).show();
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+                            $("span#loading_comment_"+item_id).hide();
+                            if(vote==1){
+                                $("span#unlike_comment_"+item_id).show();
+                                $("span#like_comment_"+item_id).hide();
+                                $("#you-like-this-comment-"+item_id).show();
+                                $("#you-like-comment-"+item_id).show();
+
+                            }else{
+                                $("span#unlike_comment_"+item_id).hide();
+                                $("span#like_comment_"+item_id).show();
+                                $("#you-like-this-comment-"+item_id).hide();
+                                $("#you-like-comment-"+item_id).hide();
+                            }
+
+                                if(json.total_up>0)
+                                {
+                                    $("#you-like-this-comment-"+item_id).show();
+                                }
+                                else
+                                {
+                                    $("#you-like-this-comment-"+item_id).hide();
+                                }
+
+                                if(json.total_up>1)
+                                {
+                                    $("span#total_likes_comment_"+item_id).html(json.total_up + " members like this");
+                                }
+                                else
+                                {
+                                    $("span#total_likes_comment_"+item_id).html(json.total_up + " member likes this");
+                                }
+
+                            //$("span#total_likes_left_"+item_id).html(json.total_up);
+                        }
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+
+</script>

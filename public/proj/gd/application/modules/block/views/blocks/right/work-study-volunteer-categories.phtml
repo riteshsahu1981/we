@@ -1,0 +1,72 @@
+<?php 
+$display_cat = false; //no need to display this section as per new requirements(added by Mahipal on 14-Feb-2011)
+if($display_cat==true)
+{
+	//Fetch work categories
+	$categoryM=new Application_Model_Category();
+	$workCats=$categoryM->getCategory(null, 'work');
+		
+	//Fetch Study categories
+	$categoryM=new Application_Model_Category();
+	$studyCats=$categoryM->getCategory(null, 'study');
+	
+	//Fetch volunteer categories
+	$categoryM=new Application_Model_Category();
+	$volunteerCats=$categoryM->getCategory(null, 'volunteer');
+?>
+<div class="right-box-wide">
+	<h2 class="box-heading">MORE CATEGORIES</h2>
+	<?php if(count($workCats)>0){?>
+	<h3>Work</h3>
+	<ul class="journal-cat-list-right">
+		<?php foreach($workCats as $id=>$_category){?>
+		<li><a href="<?php echo $this->seoUrl("/work-study-volunteer/detail/id/$id")?>"><?php echo $_category?></a></li>
+		<?php }?>
+	</ul>
+	<?php }?>
+	
+	<?php if(count($studyCats)>0){?>
+	<h3>Study</h3>
+	<ul class="journal-cat-list-right">
+		<?php foreach($studyCats as $id=>$_category){?>
+		<li><a href="<?php echo $this->seoUrl("/work-study-volunteer/detail/id/$id")?>"><?php echo $_category?></a></li>
+		<?php }?>
+	</ul>
+	<?php }?>
+	
+	<?php if(count($volunteerCats)>0){?>
+	<h3>Volunteer</h3>
+	<ul class="journal-cat-list-right">
+		<?php foreach($volunteerCats as $id=>$_category){?>
+		<li><a href="<?php echo $this->seoUrl("/work-study-volunteer/detail/id/$id")?>"><?php echo $_category?></a></li>
+		<?php }?>
+	</ul>
+	<?php }?>
+</div>
+<? }?>
+
+<?php 
+$articlesM	=	new Application_Model_Articles();
+$where		= 	"status='1'";
+$orderBy	=	"addedon DESC";
+$limit		=	15;
+
+//get particular category advices
+if(isset($this->category_id) && $this->category_id!=0)
+{
+	//$where	.=	" AND category_id={$this->category_id}";
+}
+$articlesRes = $articlesM->fetchAll($where, $orderBy, $limit);
+?>
+<div class="right-box-wide">
+	<h2 class="box-heading">Articles</h2>
+	<?php if(count($articlesRes)>0){?>
+	<ul class="journal-cat-list-right">
+		<?php foreach($articlesRes as $article){?>
+		<li><a href="<?php echo $this->seoUrl("/work-study-volunteer/article-detail/id/{$article->getId()}")?>"><?php echo $article->getTitle();?></a></li>
+		<?php }?>
+	</ul>
+	<?php }else{?>
+	No articles found fot this section.
+	<?php }?>
+</div>

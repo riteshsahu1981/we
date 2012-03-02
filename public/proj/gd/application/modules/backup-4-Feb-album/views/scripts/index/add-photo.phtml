@@ -1,0 +1,27 @@
+<?php  $siteurl=Zend_Registry::get('siteurl'); ?>
+<h3>UPLOAD PHOTOS</h3>
+Select an album, browse and upload your photos! When uploaded you can tag the location, set the permission and add tag to each individual photo
+<div class="form-structure">
+<h3>STEP 1</h3>
+<form method="post">
+<label>Select Album </label><?php echo $this->albumSelectBox; ?>
+<h3>STEP 2</h3>
+<label>Find your photos</label><?php echo $this->albumSelectBox; ?>
+<?php 
+include ("ImageUploaderPHP/ImageUploader.class.php");
+
+$imageUploader = new ImageUploader("ImageUploader1", 650, 400);
+//71060-4358C-00000-03604-C74CA
+$imageUploader->setActiveXControlEnabled(false);
+    $imageUploader->setJavaAppletEnabled(true);
+
+   $imageUploader->setLicenseKey("72060-4358C-00000-0A86B-DB8E5");
+
+    $imageUploader->render();
+
+    
+    
+
+?>
+</form>
+</div> 

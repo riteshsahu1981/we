@@ -1,0 +1,18 @@
+<?php if($this->status==1 || $this->preview==true){?>
+	<div class="normal-txt">
+	<h2><?php echo $this->title;?></h2>
+	<?php echo $this->content;?>
+	</div>
+<?php 
+}
+else
+{?>
+<!--<h2 class="main-heading4">Oops!! </h2>
+<p class="oops-msg">You have reached a page that has changed or no longer exists.<br />Sorry, we could not find the page you were looking for. Maybe it's moved, or maybe the URL is incorrect, or maybe you performed an illegal operation.</p>
+</h2>-->
+<div class="wide-page">
+<h2 class="main-heading4">Oops!! </h2>
+<p class="oops-msg">We encountered some problem, our tech team has been informed of this, you can visit our <a href="/">Homepage</a> for further navigation.</p>
+</div>
+<?php }?>
+

@@ -1,0 +1,50 @@
+<div id="main-left">
+<h2 class="main-heading"><?php echo $this->title?></h2>
+  <div class="advice-home"><?php echo $this->content?></div>
+  <h2>Categories</h2>
+<?php 
+if($this->total>0)
+{
+	$i=0;
+	$j=1;
+
+	foreach($this->categories as $category)
+	{
+		$class='';
+		if($j%2==0 && $j>1)
+		{
+			$class="adv-r1";
+		}
+		$j++;
+		
+		$image = "/media/picture/city/no-image.jpg";
+		if($category->image!="" && file_exists("media/picture/category/advice/".$category->image))
+		{
+			$image = "/media/picture/category/advice/".$category->image;
+		}		
+?>
+	<div class="advice-box <?php echo $class?>">
+	<a href="<?php echo $this->seoUrl("/advice/category/id/$category->id");?>"><h3><?php echo $category->name; ?></h3></a>
+	<p align="justify">
+	<a href="<?php echo $this->seoUrl("/advice/category/id/$category->id");?>">
+	<img src='<?php echo $image;?>' width='128' height='84' align='left' class='left-img'>
+	</a>
+	<?php echo substr(stripslashes($category->description),0,220);?>...
+	</p>
+	<br class='clear'/>
+	<a href="<?php echo $this->seoUrl("/advice/category/id/$category->id");?>" class="learn-more">Learn More</a>
+	</div>
+	<?php 
+	if($i%2==1 && $i!=0)
+	{
+		echo '<div class="clear"></div><hr class="hr2" />';
+	}
+	$i++;
+	}//end forach
+}
+else
+{
+	echo "<H2>Sorry no result found</H2>";
+}
+?>
+</div>

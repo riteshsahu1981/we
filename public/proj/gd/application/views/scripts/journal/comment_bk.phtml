@@ -1,0 +1,69 @@
+<div class="my-journal-view-comment">
+<div class="comment-on-comment" id="comment-list-<?php echo $this->blog_id;?>">
+<?php 
+if($this->comment)
+{
+   $date			=	new Base_Date();
+   $objModelUser	=	new Application_Model_User();
+   
+   $objComment = $this->comment;  
+   foreach($objComment as $comment)
+   {
+		$objUser 	= 	$objModelUser->find($comment->userId);
+		$username	=	$objUser->getUsername();
+		$firstname	=	$objUser->getFirstName();
+		$lastname	=	$objUser->getLastName();
+		$image		=	$objUser->getThumbnail();
+		
+		//get comment like/dislike status for logged in user
+		$response	=	"<a href='javascript://' title='Like Comment' onclick='likeComment(".$comment->getId().", 1)'>Like</a>";
+		$voteM		=	new Application_Model_Vote();
+		$userVote	=	$voteM->getTotalVotes($comment->getId(), 'blog_comment', 1, $this->user_id);
+        if($userVote> 0)
+		{
+			$response = "<a href='javascript://' title='Unlike Comment' onclick='likeComment(".$comment->getId().", -1)'>Unlike</a>";
+		}
+?>
+	<div class="my-journal-view-comment-row" id="comment-detail-<?php echo $comment->getId();?>">
+		<div class="my-journal-view-comment-row-l">
+		<a href="/<?php echo $username;?>">
+		<!--<img width="37px" height="43px" border="0" src="<?php echo $image?>" alt="" />-->
+		<img src="/image?src=<?php echo $image;?>&size=comment" border="0" alt="<?php echo $username;?>" />
+		</a>
+		</div>
+			<div class="my-journal-view-comment-row-r">
+			<p><span><a href="/<?php echo $username;?>"><?php echo $firstname.' '.$lastname;?></a></span> <?php echo $comment->comment;?></p>
+			<div class="jposted">Posted  <?php echo $date->timeAgo($comment->getAddedon())?> | 
+			<a href="#add_comment_form" title="Add Comment">Comment</a> | 
+			<label id="like-comment-label-<?php echo $comment->getId();?>"><?php echo $response;?></label> |
+			<span class="close-img-comnt1 f-right">
+                        <a href="javascript://" title="Remove Comment" onclick="removeComment(<?php echo $comment->getId();?>, <?php echo $this->blog_id;?>)">Remove</a>
+                        </span>
+			</div>
+		</div>
+	</div>
+<?php 
+	}//end of foreach
+}//end of if
+else
+{
+?>
+<div class="my-journal-view-comment-row" id="no_comment_found_<?php echo $this->blog_id;?>">	
+	<div style='float;left; padding-left:10px;'>No comments found for this post.</div>
+</div>	  
+<?php
+}
+?>
+</div>
+<?php if ($this->enable_comment=="yes"){?>
+<div class="jcommet-frm">
+<div id="server-response"></div>
+	<a href="" name="add_comment_form"></a>
+	<form action="">
+		<input type="text" onblur="if(this.value==''){this.value='Comment...'}" onfocus="if(this.value=='Comment...'){this.value=''}" value="Comment..." class="feed-comment-txt" name="blog-comment-<?php echo $this->blog_id;?>" id="blog-comment-<?php echo $this->blog_id;?>">
+		<input type="button" onclick="addComment(<?php echo $this->blog_id;?>)" class="feed-comment-btn" value="Comment" id="saveComment_<?php echo $this->blog_id;?>" name="saveComment_<?php echo $this->blog_id;?>">
+		<span id="comment_loading_<?php echo $this->blog_id;?>" style="display: none;"><img src="/images/loading.gif" alt=""></span>
+	</form>
+</div>
+<?php }?>
+</div>

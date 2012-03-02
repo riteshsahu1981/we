@@ -1,0 +1,81 @@
+<?php //echo $this->totalItemCount; ?>
+
+<form method="post" action="<?php echo $this->seoUrl("/admin/log/messages")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Category Name</th>
+             <th>Severity</th>
+            <th>Type</th>
+            <th>User Message</th>
+            <th>System Message</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+       
+        foreach ($this->paginator as $item): ?>
+        <?php  $sno++?>
+        <tr id="message_<?php echo $item->message_id?>">
+            <td><?php echo $sno?></td>
+            <td><?php echo $item->category_name;?></td>
+            <td><?php echo $item->sevirity_name; ?></td>
+            <td><?php echo $item->type_name; ?></td>
+            <td><?php echo $item->user_message; ?></td>
+            <td><?php echo $item->sys_message; ?></td>
+             <td>
+                <!-- Icons -->
+                <a title="Edit" href="<?php echo $this->seoUrl("/admin/log/edit-message/messageid/".$item->message_id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                 <?php 
+                    $image="/images/icons/cross_circle.png";
+                    $title="Click here to delete Message!";
+                ?>
+               
+                &nbsp;&nbsp;
+                <a title="<?php echo $title?>" href="<?php echo $this->seoUrl("/admin/log/delete-message/id/".$item->message_id)?>" onclick="javascript: return confirm('Are you sure you want to delete?');"><img alt="<?php echo $title?>"  src="<?php echo $image?>"></a> 
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="8">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+

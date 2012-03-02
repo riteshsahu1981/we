@@ -1,0 +1,67 @@
+<?php
+$countryId = $this->countryId;
+//set default if no data available
+$noteMsg = "";
+if(!isset($bankBreaker['bankBreaker']))
+{
+	$bankBreaker['bankBreaker'] = array("Hostel Bed N/A"=>"1/5","Beer N/A"=>"1/5","Big Mac N/A"=>"1/5", "Taxi N/A"=>"1/5","Cigarettes N/A"=>"1/5");
+	$bankBreaker['dailyBudget'] = array("amount"=>"0","currency"=>"Currency","rate"=>"0");
+	$noteMsg = "No content exists for this area, this is default data to display fields. Please modify following data for this country and then Save else this default data will appear for this country.";
+}	
+?>
+<form name="frmOverview" id="frmOverview" enctype="multipart/form-data" method="post">
+	<input type="hidden" name="id" value="">
+	<input type="hidden" name="destinationId" value="">
+	<input type="hidden" name="update_action" value="overview">
+	<input type="hidden" name="countryId" value="<?php echo $countryId;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%">
+		<tr><td colspan="2"><div class="form-sub-head">Overview</div><span class="orange" id="tab1_msg"><?php echo $this->errorMsg;?></span></td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">In A Nutshell</div></td></tr>
+		<!--<tr><td valign="top">Title</td><td><input type="text" name="introMini" value="<?php //echo $lonelyPlanetCountry->getIntroMini();?>" class="title-input-box" maxlength="250"></td></tr>-->
+		<tr><td valign="top">Introduction</td><td><textarea cols="40" rows="4" name="introShort" class="title-input-box"></textarea></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">Don't Leave Here Without</div></td></tr>
+		<tr><td colspan="2" id="dont_leave_without_reload">
+			<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" id="table_dontleave">
+			<tr><td valign="top">Title</td><td><input type="text" name="pracTitle[]" value="" class="title-input-box"></td></tr>
+			<tr><td valign="top">Copy</td><td><textarea cols="40" rows="4" name="pracCopy[]" class="title-input-box"></textarea></td></tr>
+			</table>
+		</td><tr>
+		<tr><td>&nbsp;</td><td><input type="button" value="Add New Item" onclick="addMoreRowsDontLeave();"></td></tr>
+		
+		<?php if(count($bankBreaker)>0 && isset($bankBreaker['bankBreaker'])){?>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="form-subSub-head">Bank Breaker Or Penny Pincher</div></td></tr>
+		<?php
+		if($noteMsg!="")
+		{
+			echo "<tr><td colspan='2'><span class='orange'>".$noteMsg."</span></td></tr>";
+		}
+		?>
+		<?php
+		$itemCount = 1;
+		foreach($bankBreaker["bankBreaker"] AS $item=>$rating){			
+		?>
+		<tr><td valign="top">Item <?=$itemCount;?></td><td><input type="text" name="bankBreakerItem[]" value="<?php echo $item;?>" class="subtitle-input-box" style="width:200px !important;">&nbsp;&nbsp;
+		<select name="bankBreakerRating[]" class="subtitle-input-box" style="width:120px !important;">
+		<option value="1/5" <?php if($rating=="1/5"){ echo "selected";}?>>1/5</option>
+		<option value="1.5/5" <?php if($rating=="1.5/5"){ echo "selected";}?>>1.5/5</option>
+		<option value="2/5" <?php if($rating=="2/5"){ echo "selected";}?>>2/5</option>
+		<option value="2.5/5" <?php if($rating=="2.5/5"){ echo "selected";}?>>2.5/5</option>
+		<option value="3/5" <?php if($rating=="3/5"){ echo "selected";}?>>3/5</option>
+		<option value="3.5/5" <?php if($rating=="3.5/5"){ echo "selected";}?>>3.5/5</option>
+		<option value="4/5" <?php if($rating=="4/5"){ echo "selected";}?>>4/5</option>
+		<option value="4.5/5" <?php if($rating=="4.5/5"){ echo "selected";}?>>4.5/5</option>
+		<option value="5/5" <?php if($rating=="5/5"){ echo "selected";}?>>5/5</option>
+		</select></td></tr>
+		<?php
+			$itemCount++;
+			}//end foreach
+		?>
+		<tr><td valign="top">Typical Daily Budget</td><td><input type="text" name="bankBreakerCurrency" value="<?php echo $bankBreaker['dailyBudget']['currency'];?>" class="subtitle-input-box" maxlength="250" style="width:200px !important;">&nbsp;&nbsp;<input type="text" name="bankBreakerAmount" value="<?php echo $bankBreaker['dailyBudget']['amount'];?>" class="subtitle-input-box" maxlength="250" style="width:100px !important;">&nbsp;&nbsp;<input type="hidden" name="bankBreakerRate" value="<?php echo $bankBreaker['dailyBudget']['rate'];?>" class="subtitle-input-box" maxlength="250" style="width:100px !important;"></td></tr>
+		<?php	
+		}//end if
+		?>
+		<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave" ></td></tr>
+	</table>
+</form>

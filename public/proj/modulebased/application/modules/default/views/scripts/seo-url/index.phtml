@@ -1,0 +1,85 @@
+
+<?php
+if($this->total>0)
+{
+	
+?>
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+
+
+
+
+
+
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <thead>
+    <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+    <tr>
+    <th>SNo.</th>
+    <th>Actual Url</th>
+    <th>Seo Url</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+	<?
+	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			
+	$DATE=new Base_Date();
+	
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		
+    		<td><?=$row['actual_url']?></td>
+    		<td><?=$row['seo_url']?></td>
+	
+			
+    		<td>
+    		<a href='/seo-url/edit/id/<?=$row['id']?>'><img src='/images/pencil.png' border='0' title='Edit'/></a>&nbsp;&nbsp;
+    		</td>
+    		
+  		</tr>
+	<? 	
+	}
+	?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="7">
+                        <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+	</table>
+<?	
+}
+?>

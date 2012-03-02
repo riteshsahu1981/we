@@ -1,0 +1,122 @@
+<?php
+$user = $this->userObject;
+
+$arrDob=explode("-",$user->getDob());
+if(count($arrDob)>0)
+{
+	$params['year']=$arrDob[0];
+	$params['month']=$arrDob[1];
+	$params['day']=$arrDob[2];
+}
+?>
+<div id="journal-center" >
+	<?php if($this->viewOwn){?>
+ 	<h2>Profile Details</h2>
+    <div class="form-structure-profile">
+		<label><?php echo $this->puts('First Name:')?></label>
+		<?php echo $user->getFirstName();?>
+		<br class="clear" />
+
+		<label><?php echo $this->puts('Surname:')?></label>		
+        <?php echo $user->getLastName();?>
+		<br class="clear" />
+
+		<label><?php echo $this->puts('Nationality:')?></label>
+		<?php //echo $user->getCountryName();?><?php echo $user->getNationality();?>		
+		<br class="clear" />
+
+		<label><?php echo $this->puts('Preferred Language:')?></label>
+		<?php echo $user->getPreferredLanguageName();?>
+		<br class="clear" />
+
+		<label><?php echo $this->puts('Other Languages:')?></label>
+		<?php echo $user->getOtherLanguages();?>
+		<br class="clear" />
+
+		<label><?php echo $this->puts('Home Town/City:')?></label>
+		<?php echo $user->getCityName();?>
+		<br class="clear" />
+
+		<label><?php echo $this->puts('Date of Birth:')?></label>
+		<?php echo $params['day'];?>-<?php echo $params['month'];?>-<?php echo $params['year'];?>
+		<br class="clear" />
+
+		<label><?php echo $this->puts('Gender:')?></label>
+		<?php echo $user->getSex();?>
+		<br class="clear" />
+
+		<label><?php echo $this->puts('First time traveller?')?></label>
+		<?php echo $user->getFirstTimeTraveller();?>             
+		<br class="clear" />
+		<!-- Commented By Mahipal Singh Adhikari on 9-Dec-2010 as per client request, please refer http://gdmantis.ortegradev.com/view.php?id=354 -->
+		<!--<label><?php //echo $this->puts('Mobil No. Country Code:')?></label>
+		<?php //echo $user->getMobileCountryCode();?>
+		<br class="clear" />-->
+
+		<label><?php echo $this->puts('Mobile Number:')?></label>
+		<?php echo $user->getMobile();?>
+		<br class="clear" />
+
+	</div>
+	<?php }?>	
+	
+    <div class="structure-about-profile">
+		<h3>About <?php echo $user->getFirstName();?> <?php echo $user->getLastName();?></h3>
+
+	<!-- 	<label><?php //echo $this->puts('Dream destination')?></label>
+        <br class="clear" />
+		
+		<?php //echo $user->getDreamDestination();?>
+		<br class="clear" />
+
+		<label><?php //echo $this->puts('Favourite way to travel')?></label>
+        <br class="clear" />
+		
+		<?php //echo $user->getWayToTravel();?>
+		<br class="clear" />
+
+		<label><?php //echo $this->puts('Best bit of travel gear')?></label>
+        <br class="clear" />
+		
+		<?php //echo $user->getTravelGear();?>
+		<br class="clear" />
+
+		<label><?php //echo $this->puts('Gap Year goal')?></label>
+        <br class="clear" />
+		
+		<?php //echo $user->getYearGoal();?>
+		<br class="clear" />
+
+		<label><?php //echo $this->puts('Never leave home without')?></label>
+        <br class="clear" />
+		
+		<?php // echo $user->getLeaveHomeWithout();?>
+		<br class="clear" />
+
+		<label><?php //echo $this->puts('Interests')?></label>
+        <br class="clear" /> 
+		
+		<?php //echo $user->getInterests();?>
+		<br class="clear" />   --> 
+		
+		<label><?php echo $this->puts('Ever taken a gap year?')?></label>
+        <br class="clear" /> 
+		
+		<?php echo $user->getEvenTakenGapYear();?>
+		<br class="clear" />
+		
+		<label><?php echo $this->puts('Next on your travel To Do list?')?></label>
+        <br class="clear" /> 
+		
+		<?php echo $user->getNextTravelToDoList();?>
+		<br class="clear" />
+		
+		<label><?php echo $this->puts('Your favourite travel experience so far?')?></label>
+        <br class="clear" /> 
+		
+		<?php echo $user->getFavouriteTravelExperience();?>
+		<br class="clear" />              
+
+	 </div>
+  
+</div>

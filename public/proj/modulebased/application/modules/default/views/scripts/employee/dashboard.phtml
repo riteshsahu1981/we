@@ -1,0 +1,12 @@
+<?php print $this->partial('employee/employee-information-card.phtml', array('user' => $this->user, 'align'=>"left", 'label'=>"My Information Card")) ?>
+<?php //print $this->partial('employee/leave-account-balance-card.phtml', array('user' => $this->user, 'align'=>"right", 'label'=>"My ")) ?>
+<?php print $this->partial('employee/latest-appriciations.phtml', array('appriciations' => $this->appriciations, 'align'=>"right")) ; ?>
+<br class="clear"/>
+<?php print $this->partial('employee/birthday-alerts.phtml', array('birthdayGuys' => $this->birthdayGuys, 'align'=>"right")) ;?>
+<?php    print $this->partial('employee/notice-board.phtml', array('latestNotice' => $this->latestNotice, 'align'=>"left")) ; ?>
+<br class="clear"/>
+
+
+
+        
+

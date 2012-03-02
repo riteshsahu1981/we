@@ -1,0 +1,165 @@
+<!-- Start Main Center Area -->
+<div class="main-center">
+	<div class="map-top-boxs">
+<?php
+//select all active modules
+$modulesM = new Application_Model_Content();
+$where = "status=1 AND weight!=0"; //select active module content and not home page top modules having weight is 0 (ZERO)
+$order = "weight ASC";
+$limit = 9;
+$moduleRes =  $modulesM->fetchAll($where, $order, $limit);
+if($moduleRes)
+{
+	foreach($moduleRes AS $module)
+	{
+?>
+
+	<?php 
+	/*---------------------------------  Map Box  -------------------------------*/
+	if($module->getAlias()=="home_login_where_i_am")
+	{
+		$arrBodyText = unserialize($module->getBody());
+	?>
+	<div class="main-center-box2">
+	<div class="map_details">
+	<div class="redbox">
+	<a href="<?php echo $arrBodyText["whereUrl"];?>" target="<?php echo $arrBodyText["whereUrlTarget"];?>"><?php echo $arrBodyText["whereText"];?></a>
+	</div>
+	<div class="whtbox">
+	<a href="<?php echo $arrBodyText["whereBodyUrl"];?>" target="<?php echo $arrBodyText["whereBodyUrlTarget"];?>"><?php echo $arrBodyText["whereBodyText"];?></a>
+	</div>
+	<?php //echo $module->getBody();?>
+	</div>
+	</div>
+	<?php 
+	}
+	else if($module->getAlias()=="meet_backpackers")
+	{
+	/*--------------------------- MEET OTHER BACKPACKERS ---------------------*/
+		$users	= array();
+		$userM	= new Application_Model_User();
+		$users	= $userM->fetchAll("status='active'","addedon DESC",3);
+
+		$userNs = new Zend_Session_Namespace('members');
+		$isLoggedIn = $userNs->userId;
+	?>
+	<div class="main-center-box">
+	<div class="m-box-corner"><img src="/images/m-top.png" alt="" /></div>
+	<div class="m-box-content">
+	<h3><?php echo $module->getTitle();?></h3><br />
+	<?php echo $module->getBody();?>
+	<div class="m-line">&nbsp;</div>
+	<?php 
+	foreach($users as $user)
+	{
+		if($user->getStatus()=="active")
+		{
+			$username = $user->getUsername();
+			$name = $user->getFirstName()." ".$user->getLastName();
+	?>
+	<div class="m-tab-img">
+	<a href="<?php echo $this->seoUrl('/'.$username); ?>" alt="<?php echo $name;?>" title="<?php echo $name;?>">
+	<img src="/image?src=<?php echo $user->getThumbnail();?>&size=journal&<?php echo rand(1,100000);?>" border="0" alt="<?php echo $name;?>" title="<?php echo $name;?>" />
+	</a>
+	<p><a href="<?php echo $this->seoUrl('/'.$username); ?>" alt="<?php echo $name;?>" title="<?php echo $name;?>"><?php echo $name;?></a></p>
+	</div>
+	<?php
+		}//end if
+	}//end foreach
+	?>
+	</div>
+	<div class="m-box-corner"><img src="/images/m-bottom.png" alt="" /></div>
+	</div>
+	<?php 
+	}
+	else if($module->getAlias()=="home_advertise")
+	{
+	/*------------------------------- Advertising  --------------------------*/
+	?>
+	<div class="main-center-box">
+	<div class="advertise-top-crnr"><img src="/images/gry-brdr-lft.jpg" width="9" height="9" align="left" /><img src="/images/gry-brdr-rght.jpg" width="9" height="9" align="right" /></div>
+	<div class="advertise-main-brdr"><?php echo $module->getTitle();?>
+	<?php
+	  $banner = new Cms_Model_Banner();
+	  $banner ->showBanner("right", "600", "160");
+	?> 
+	</div>
+	<div class="advertise-crnr-btm">
+	<img src="/images/gry-brdr-btmlft.jpg" width="9" height="9" align="left" />
+	<img src="/images/gry-brdr-btmrght.jpg" width="9" height="9" align="right" />
+	</div>
+	</div>
+	<?php 
+	}
+	else if($module->getAlias()=="home_journal")
+	{
+	/*------------------------------- Journal post of the week --------------------------*/
+	?>
+		<div class="main-center-box">
+		<div class="m-box-corner"><img src="/images/m-top.png" alt="" /></div>
+		<div class="m-box-content">
+		<h3><?php echo $module->getTitle();?></h3>
+		<?php echo $this->pageElement('home_journal');?>
+		</div>
+		<div class="m-box-corner"><img src="/images/m-bottom.png" alt="" /></div>
+		</div>
+	<?php
+	}
+	else if($module->getAlias()=="home_photo_week")
+	{
+		$arrBodyText = unserialize($module->getBody());
+	/*------------------------------- Photo of the week --------------------------*/
+	?>
+		<div class="main-center-box">
+		<div class="m-box-corner"><img src="/images/m-top.png" alt="" /></div>
+		<div class="m-box-content">
+		<h3><?php echo $module->getTitle();?></h3><br />
+		<!--<img width="278" height="128" alt="" style="border: 1px solid rgb(230, 230, 230);" src="/media/picture/home/thumb_<?php //echo $arrBodyText["weekPhoto"];?>">-->
+		<img src="<?echo $this->cdnUri();?>/image?src=<?echo $this->cdnUri();?>/media/picture/home/thumb_<?php echo $arrBodyText["weekPhoto"];?>&w=278&h=128" style="border: 1px solid rgb(230, 230, 230);" />
+		<?php echo $arrBodyText["body"];?>
+		</div>
+		<div class="m-box-corner"><img src="/images/m-bottom.png" alt="" /></div>
+		</div>
+	<?php
+	}
+	else if($module->getAlias()=="popular_gap_daemon")
+	{
+		//$arrBodyText = unserialize($module->getBody());
+	/*------------------------------- Photo of the week --------------------------*/
+	?>
+		<div class="main-center-box">
+		<div class="m-box-corner"><img src="/images/m-top.png" alt="" /></div>
+		<div class="m-box-content">
+		<h3><?php echo $module->getTitle();?></h3><br />
+		<!--<p>Take a look at the most popular articles, blog posts and features on Gap Daemon this week:</p>-->
+		<!--<div class="m-line">&nbsp;</div>-->
+		<?php echo $module->getBody();?>
+		</div>
+		<div class="m-box-corner"><img src="/images/m-bottom.png" alt="" /></div>
+		</div>
+	<?php
+	}
+	else
+	{
+	/*------------------------------- Other Module START --------------------------*/
+	?>
+	<div class="main-center-box">
+		<div class="m-box-corner"><img src="/images/m-top.png" alt="" /></div>
+		<div class="m-box-content">
+		<h3><?php echo $module->getTitle();?></h3><br />
+		<?php echo $module->getBody();?>
+		</div>
+		<div class="m-box-corner"><img src="/images/m-bottom.png" alt="" /></div>
+	</div>
+	<?php 
+	}
+	/*------------------------------- Other Module START --------------------------*/
+	?>
+
+<?php
+	}//foreach
+}//end if
+?>
+	</div>
+</div>
+<!-- End Main Center Area -->

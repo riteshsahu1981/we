@@ -1,0 +1,62 @@
+<?php
+$id = $this->countryId;
+
+$destination			= array();
+$bankBreaker			= array();
+$dontLeaveWithout		= array();
+$lonelyPlanetCountry	= array();
+$knowledgeArr			= array();
+$destination_id			= 0;
+
+//select details from lonely_planet_country table
+$lonelyPlanetCountryM	=	new Application_Model_LonelyPlanetCountry();
+$lonelyPlanetCountryM	=	$lonelyPlanetCountryM->fetchRow("country_id={$id}");
+	
+if(false!==$lonelyPlanetCountryM)
+{
+	$lonelyPlanetCountry = $lonelyPlanetCountryM;
+	
+	//select Destinations details
+	$destinationId = "";
+	$destinationM	=	new Application_Model_Destination();
+	$destinationM	=	$destinationM->fetchRow("location_id={$id} AND location_type='country'");
+	if(false!==$destinationM)
+	{		
+		$destination = $destinationM;		
+		$bankBreaker	=	unserialize($destination->getBankBreaker());
+		$knowledgeArr	=	unserialize($destination->getKnowledge());
+		$destination_id = $destination->getId();
+		
+		//select Dont Leave Here Without details
+		$dontLeaveWithoutM	=	new Application_Model_DontLeaveWithout();
+		$dontLeaveWithoutM	=	$dontLeaveWithoutM->fetchAll("destination_id={$destination_id}", "id ASC");
+		if(false!==$dontLeaveWithoutM)
+		{
+			$dontLeaveWithout = $dontLeaveWithoutM;
+		}
+	}
+}
+?>
+<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" id="table_dontleave">
+		<?php 
+		if(count($dontLeaveWithout)>0)
+		{
+			$pracCount = 1;
+			foreach($dontLeaveWithout AS $pracRow){
+		?>
+		<input type="hidden" name="dontLeaveWithoutId[]" value="<?php echo $pracRow->getId();?>">
+		<tr><td valign="top">Title <? //echo $pracCount?></td><td><input type="text" name="pracTitle[]" value="<?php echo $pracRow->getTitle();?>" class="title-input-box"></td></tr>
+		<tr><td valign="top">Copy <? //echo $pracCount?></td><td><textarea cols="40" rows="4" name="pracCopy[]" class="title-input-box"><?php echo $pracRow->getCopy();?></textarea></td></tr>
+		<tr><td colspan="2" class="button_right_dont"><input type="button" value="Remove" onclick="deleteDontLeaveRow(this);"></td></tr>
+		<?php 
+			$pracCount++;
+			}//end foreach
+		}
+		else
+		{	
+		?>
+		<!--<input type="hidden" name="dontLeaveWithoutId[]" value="">-->
+		<tr><td valign="top">Title</td><td><input type="text" name="pracTitle[]" value="" class="title-input-box"></td></tr>
+		<tr><td valign="top">Copy</td><td><textarea cols="40" rows="4" name="pracCopy[]" class="title-input-box"></textarea></td></tr>
+		<?php }?>
+</table>

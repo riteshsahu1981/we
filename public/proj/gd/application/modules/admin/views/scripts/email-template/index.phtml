@@ -1,0 +1,70 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+
+	<div id="rightsideheading">
+	<img src="/images/admin-images/bl-tl.gif" align="left" /><img src="/images/admin-images/bl-tr.gif" align="right" />
+	Email Templates- <span class='msg'>Total <?php echo $this->total_templates?> email-templates(s) found! </span></div>
+	
+ <div id="rightsidecontentpart">
+<?php
+if($this->total_templates>0)
+{
+?>
+<br />
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+<br />
+
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>SNo.</th>
+    <th>Template Name</th>
+    <th>Subject</th>
+    <th>Identifire</th>
+    <th>Action</th>
+  </tr>
+  
+	<?
+	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			
+			
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['name']?></td>
+    		<td><?=$row['subject']?></td>
+    		<td><?=$row['identifire']?></td>
+    		<td><a href='/admin/email-template/edit/id/<?=$row['id']?>/page/<?=$page?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a></td>
+  		</tr>
+	<? 	
+	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?></div>
+  
+	</div>
+	<div class="btm-curve"><img src="/images/admin-images/btm-r-l.gif" align="left" /><img src="/images/admin-images/btm-r-r.gif" align="right" /></div>
+</div>

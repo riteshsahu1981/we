@@ -1,0 +1,168 @@
+<script>
+function checkData(fileObj)
+{
+
+    alert('The file ' + fileObj.name + ' was added to the queue.');
+    var fileType		=	fileObj.type;
+alert(fileType);
+    if(fileType == null || fileType == '')
+        {
+            alert('hi');
+            //return false;
+        }
+
+}
+function captureData(event, ID, fileObj, response, data)
+{
+	var fileName		=	fileObj.name;
+	var fileSize		=	fileObj.size;
+	var fileType		=	fileObj.type;
+	var album		=	$("#album_id").val();
+        var review_edit		=	$("#review_edit").val();
+	var album_new		=	$("#album_new").val();
+        var uploading_type      =       $("#uploading_type").val();
+	var quality		=	$('input:radio[name=quality]:checked').val();
+	var uploadedCount	=	$("#uploadedCount").val();
+	var uploadedCounting	=	parseInt(uploadedCount)+1;
+
+	if(album_new != "")
+	{
+		albumId	=	album_new;
+	}else{
+		albumId	=	album;
+	}
+				
+	$("input#uploadedCount").val(uploadedCounting);
+
+	var requesturl	=	"/album/my-photos/process-image";
+	
+	
+	$.post(requesturl, {uploadingType:uploading_type,review_edit:review_edit,fileName:fileName,fileSize:fileSize,fileType:fileType,album:albumId,quality:quality,uploadedCount:uploadedCounting},
+			   function(html){
+				if(html == 'completed')
+                                    {
+                                        var uploadError = $("#upload-error").html();
+                                        $("#upload-complete").html(uploadError);
+                                        $("#upload-complete").attr('id', 'upload-complete-color');
+                                        return false;
+                                    }else{
+                                        if(data.fileCount==0)
+                                        {
+                                            $("#upload-complete").html(html);
+                                            $("#upload-complete").attr('id', 'upload-complete-color');
+                                        }
+                                            return true;
+                                    }
+					
+			});
+         
+
+}
+
+function checkForm()
+{
+	var album	=	$("#album_id").val();
+	var album_new=	$("#album_new").val();
+	var quality	=	$('input:radio[name=quality]:checked').val();
+
+	if(album == "" && album_new == "")
+	{
+		alert("Please choose an album!");
+		return false;
+	}
+}
+
+$(document).ready(function(){
+	$("a#create-album-box").click(function(){
+
+		 $("#select-album").hide();
+		 $("#album-name").slideDown(500);
+
+	});
+});
+
+$(document).ready(function(){
+	$("a#select-album-box").click(function(){
+		$("#album-name").hide();
+		 $("#select-album").slideDown(500);
+		 
+
+	});
+});
+
+$("#album_name").focusout(function() {
+	
+	var album_name	=	$("#album_name").val();
+	var album_new	=	$("#album_new").val();
+	if(album_name==""){
+		alert("Please enter Album Name.");
+		return false;
+	}
+
+	var requesturl	=	"/album/create-album/add-album";
+
+	$.post(requesturl, {album_name:album_name,album_new:album_new},
+			   function(html){
+					$("#album_new").val(html);
+			});
+});
+</script>
+
+
+
+
+<div id="upload-complete">
+<div class="quality">
+<h2 class="heading">Browse photos, select quality and upload</h2>
+
+<?php if($this->albumId != ""){ // This is for, if any uploading photo with pre-select Album ?>
+        <p>To add photos to this album, you need to browse, select the quality<br /> and upload</p>
+        <input type="hidden" name="album_id" id="album_id" value="<?php print $this->albumId;?>" />
+        <input type="hidden" name="review_edit" id="review_edit" value="<?php print $this->review_edit;?>" />
+        <input type="hidden" name="album_new" id="album_new" value="" />
+        <input type="hidden" name="uploading_type" id="uploading_type" value="album" />
+<?php }else{ // This is for, if any uploading photo without pre-select Album ?>
+<p>To add photos, you need to either select an existing album or create<br /> a new one. Then browse, select and upload the photos to that album</p>
+<label id="select-album">Select Album <select name="album_id" id="album_id">
+<option value="">Choose...</option>
+<?php foreach ($this->arrAlbum as $album){?>
+<option value="<?php print $album->id;?>"><?php print $album->name;?></option>
+<?php }?>
+</select>
+<br /><br />
+<span style="margin-left:90px; float:left;"><a href="javascript:void(0);" id="create-album-box">Create New?</a></span>
+</label>
+
+<label id="album-name" style="display:none; float:left; width:100%;">
+<span style="margin-left:80px;"><a href="javascript:void(0);" id="select-album-box">Select Album</a></span>
+<br /><br />Album Name <input type="text" name="album_name" id="album_name" class="input" value="" />
+<input type="hidden" name="review_edit" id="review_edit" value="<?php print $this->review_edit;?>" />
+<input type="hidden" name="album_new" id="album_new" value="" />
+<input type="hidden" name="uploading_type" id="uploading_type" value="external" />
+</label>
+<?php }?>
+
+<input type="hidden" name="uploadedCount" id="uploadedCount" value="0" />
+<div class="f-left"><?php print $this->form; ?></div>
+</div>	 
+<div class="quality">
+<h3 class="heading">Please select the quality of your photos</h3>
+<ul class="resolution">
+<li><span><input type="radio" name="quality" id="quality_small" value="small" checked="checked" /> Small</span><p>Low Quality<br />Fine for sharing<br />on the web (40-60K)</p></li>
+<li><span><input type="radio" name="quality" id="quality_medium" value="medium" /> Medium</span><p>Perfect for slide<br />shows on your<br />computer screen<br />(200-300k)</p> </li>
+<li class="nomrgn"><span><input type="radio" name="quality" id="quality_high" value="high" /> High-Res</span><p>Choose this if you want<br /> to print your photos,<br /> as it'll store them<br /> in original quality. </p></li>
+</ul>
+</div>
+
+<a href="javascript:$('#file').uploadifyUpload();" id="fileUpload" onclick="return checkForm();" class="button">UPLOAD</a>
+<img class="f-left" alt="" src="<?php print $this->capacityImage;?>" /> <dd class="f-left">&nbsp;&nbsp;<?php print $this->capacityPercent;?>% Photo Capacity</dd>
+<p></p>
+</div>
+
+<div id="upload-error" style="display:none;" >
+<div class="upload">
+<h2 class="heading">Upload Size Limit</h2>
+<div>You have used your limit.</div>
+<!--<div>Wow, you've been snap happy! Sorry, but you've reached the maximum amount of photos we'll let you store on Gap Daemon.</div>-->
+</div>
+</div>

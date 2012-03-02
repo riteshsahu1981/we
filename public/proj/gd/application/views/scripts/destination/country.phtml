@@ -1,0 +1,661 @@
+<link href="/style/rating.css" media="screen" rel="stylesheet" type="text/css" />
+<?php
+if($this->invalidCountry=="1")
+{
+    echo "<div style='min-height:10px;'>Invalid Request. Please try again.</div>";
+}
+else if($this->invalidCountry=="2")
+{
+    echo "<div style='min-height:10px;'>Data not found for this country.</div>";
+}
+else
+{
+?>
+<?php $this->mapLib(null, "false")->setGear();?>
+<script type="text/javascript">
+$(document).ready(function() {
+	//Default Action
+	$(".tab_content").hide(); //Hide all content
+	$("ul.destination-tabs li:first").addClass("active").show(); //Activate first tab
+	$(".tab_content:first").show(); //Show first tab content
+	
+	//On Click Event
+	$("ul.destination-tabs li").click(function() {
+		$("ul.destination-tabs li").removeClass("active"); //Remove any "active" class
+		$(this).addClass("active"); //Add "active" class to selected tab
+		$(".tab_content").hide(); //Hide all tab content
+		var activeTab = $(this).find("a").attr("href"); //Find the rel attribute value to identify the active tab + content
+		$(activeTab).fadeIn(); //Fade in the active content
+		return false;
+	});
+});
+function displayCountryMap()
+{
+	$("#country_map_div").slideToggle();
+	if(document.getElementById('country_map_link').innerHTML=="Show Map")
+	{
+		document.getElementById('country_map_link').innerHTML="Hide Map";
+	}
+	else
+	{
+		document.getElementById('country_map_link').innerHTML="Show Map";
+	}
+}
+function displayGoogleMap()
+{
+	if(document.getElementById('country_map_link').innerHTML=="Show Map")
+	{
+		$("#country_map_link").html("Show Photos");
+		RAVIN_HideHandler('image-gallery');
+		$("#country_map_div").show();
+		//plotAddress("<?php echo $this->countyName;?>");
+		plotAddress("<?php echo $this->searchAddress;?>");
+	}
+	else
+	{
+		$("#country_map_link").html("Show Map");
+		RAVIN_HideHandler('country_map_div');
+		$("#image-gallery").show();
+	}
+}
+function plotAddress(strAddress)
+{
+    //alert(strAddress);
+	var geocoder;
+	var map;
+  
+	geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(<?php echo $this->latitude;?>, <?php echo $this->longitude;?>);
+    var myOptions = {
+      zoom: 4,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("city_map_holders"), myOptions);
+	
+	var address = strAddress;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+		  
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map, 
+            position: results[0].geometry.location
+        });
+      } else {
+        //alert("Geocode was not successful for the following reason: " + status);
+		alertBox("Warning","Google is unable to locate \"<b><?php echo $this->countyName;?></b>\" ");
+      }
+    });
+}
+</script>
+<script type="text/javascript" src="/js/scripts.js"></script>
+
+<div id="main-left">
+  <div class="desitnation-name">
+    <h2 class="main-heading f-left"><?php echo $this->countyName?><a name="country_top">&nbsp;</a></h2>
+    <div class="f-right"><a href="javascript://" class="show-map-btn f-right" onclick="displayGoogleMap();" id="country_map_link">Show Map</a></div>
+  </div>
+  <!-- MAP div START -->
+	<div id="country_map_div" class="mapplaceholder" style='display:none;'>
+		<?php //$country_map = unserialize($this->countryInfo->map);?>
+		<!--<img id="<?php //echo $country_map['map_name'];?>" src="<?php //echo $this->cdnUri();?>/media/picture/country<?php //echo $country_map['map_filename'];?>" alt="<?php //echo $country_map['map_name'];?>" />
+        <div class="map-title"><h3><?php //echo $this->countryInfo->full_destination_name;?></h3></div>-->
+        <div id="city_map_holders" style="width:100%; height:300px;"></div>
+	</div>
+  <!-- MAP div END -->
+  
+  <?php if(isset($this->countryImagesArr) && count($this->countryImagesArr)>0){?>
+  <div id="image-gallery">
+    <div id="slide-holder">
+      <div id="slide-runner">
+	  <?php 
+	  $country_images	= $this->countryImagesArr;
+	  $slider_data		= "";
+	  
+	  for($imgCnt=0; $imgCnt<count($country_images); $imgCnt++)
+	  {
+		$slide_title		= $this->countyName;
+		$slide_alttext		= $this->countyName;
+		$slide_link_url		= "";
+		$slide_link_target	= "";
+	  
+		if($country_images[$imgCnt]['slide_title']!="")
+		{
+			$slide_title		= $country_images[$imgCnt]['slide_title'];
+		}
+		if($country_images[$imgCnt]['alt_text']!="")
+		{
+			$slide_alttext		= $country_images[$imgCnt]['alt_text'];
+		}
+		if($country_images[$imgCnt]['slide_link_url']!="")
+		{
+			$slide_link_url		= $country_images[$imgCnt]['slide_link_url'];
+		}
+		if($country_images[$imgCnt]['slide_link_target']!="")
+		{
+			$slide_link_target		= $country_images[$imgCnt]['slide_link_target'];
+		}
+		$slider_data .= '{"id":"slide-img-'.$imgCnt.'","client":"'.$slide_title.'","desc":"'.$slide_title.'"},';
+	  ?>
+	  <a href="<?php echo $slide_link_url;?>" target="<?php echo $slide_link_target;?>" title="<?php echo $slide_alttext;?>">
+	  <img align="middle" id="slide-img-<?php echo $imgCnt;?>" src="<?php echo $this->cdnUri();?>/image.php?src=media/picture/country/images/<?php echo $country_images[$imgCnt]['country_image'];?>&h=347&w=623" class="slide" alt="<?php echo $slide_alttext;?>" />
+	  </a>
+	  <?php
+	  }//end for
+	  $slider_data = substr($slider_data, 0, strlen($slider_data)-1);
+	  ?>
+	  <div id="slide-controls">
+          <div id="slide-client" class="text"><strong></strong><span></span></div>
+          <div id="slide-nav"></div>
+        </div>
+      </div>
+      <!--content featured gallery here -->
+    </div>
+    <script type="text/javascript">
+		if(!window.slider) var slider={};
+		slider.data = [<?php echo $slider_data;?>];
+	</script>
+  </div>
+  <?php } //end of if?>
+  
+  <ul class="destination-tabs">
+    <li><a href="#tab1">OVERVIEW </a></li>
+    <li><a href="#tab2">PRACTICAL INFO</a></li>
+    <li><a href="#tab3">Travel </a></li>
+    <li><a href="#tab4">Culture</a></li>
+    <li><a href="#tab5" class="last">Points of Interest</a></li>
+  </ul>
+  <div class="tab_container">
+    <div id="tab1" class="tab_content">
+	  <?php 
+	  if(isset($this->countryInfo->intro_mini) && $this->countryInfo->intro_mini!="")
+	  {
+	  ?>
+	  <!--<h2 class="heading-green">OVERVIEW<a name="country_overview">&nbsp;</a></h2>
+      <p class="intro"><?php //echo $this->countryInfo->intro_mini;?></p>
+      <hr class="dest-hr" />-->
+	  <?php 
+	  }
+	  ?>
+      
+	  <?php 
+	  if(isset($this->countryInfo->intro_short) && $this->countryInfo->intro_short!="")
+	  {
+	  ?>
+	  <h2 class="heading-green">IN A NUTSHELL<a name="country_nutshell">&nbsp;</a></h2>
+      <p class="intro"><?php echo $this->countryInfo->intro_short;?></p>
+      <hr class="dest-hr" />
+	  <?php }?>
+	  
+      <?php if(count($this->dontLeaveWithout)>0){?>
+      <h2 class="heading-green">DON'T LEAVE HERE WITHOUT...<a name="country_dontleave">&nbsp;</a></h2>
+      <?php foreach($this->dontLeaveWithout as $_dontLeaveWithout){?>
+      <h4><?php echo $_dontLeaveWithout->getTitle()?></h4>
+      <p><?php echo $_dontLeaveWithout->getCopy()?></p>
+      <?php } ?>
+      <?php }?>
+	  
+	  <?php if(isset($this->bank_breaker['bankBreaker']) && count($this->bank_breaker['bankBreaker'])>0){?>
+	  <hr class="dest-hr" />
+	  <h2 class="heading-green">BANK BREAKER OR PENNY PINCHER<a name="country_bankbreaker">&nbsp;</a></h2>
+      <h3>What's the Damage?</h3>
+	  <br />
+	  <?php if(isset($this->bank_breaker['bankBreaker']) && count($this->bank_breaker['bankBreaker'])>0){?>
+	  <table cellpadding="0" cellspacing="0" border="0" class="dest-dis-table">
+      	<tr>
+        	<th width="195">&nbsp;</th>
+            <th width="425"><span class="blue-txt f-left">PENNY PINCHER</span> <span class="blue-txt f-right">BANK BREAKER</span></th>
+        </tr>
+        <?php		
+		$bank_breaker	= $this->bank_breaker['bankBreaker'];
+		$dailyBudget	= $this->bank_breaker['dailyBudget']; 
+		if(count($bank_breaker)>0)
+		{
+			foreach($bank_breaker AS $item=>$rating)
+			{
+				$ratingArr = explode("/", $rating);
+				//$ratingWidth = ($ratingArr[0]*100)/$ratingArr[1];
+				$ratingWidth = $ratingArr[0] * 84;
+				
+				//set class for each item here
+				$row_class = "none";
+				$itemStr = strtolower($item);
+				if (preg_match("/bed/i", $itemStr))
+				{
+					$row_class = "bed";
+				}
+				if (preg_match("/beer/i", $itemStr))
+				{
+					$row_class = "beer";
+				}
+				if (preg_match("/taxi/i", $itemStr))
+				{
+					$row_class = "texi";
+				}
+				if (preg_match("/cigarette/i", $itemStr))
+				{
+					$row_class = "cigar";
+				}
+				if (preg_match("/mac/i", $itemStr) || preg_match("/burger/i", $itemStr))
+				{
+					$row_class = "mac";
+				}				
+		?>
+		<tr>
+        	<td><span class="title"><?php echo $item;?></span> <?php //echo $rating;?></td>
+            <td>
+			<ul id="review_rating" class="unit-rating <?php echo $row_class;?>">
+				<li class="current-rating" style="width:<?php echo $ratingWidth;?>px;"></li>
+				<li><a href="javascript://" title="PENNY PINCHER" class="r1-unit">1</a></li>
+				<li><a href="javascript://" title="Average" class="r2-unit">2</a></li>
+				<li><a href="javascript://" title="Good" class="r3-unit">3</a></li>
+				<li><a href="javascript://" title="Very Good" class="r4-unit">4</a></li>
+				<li><a href="javascript://" title="Bank Breaker" class="r5-unit">5</a></li>
+			</ul>
+			</td>
+        </tr>
+		<?php
+			}//end of foreach
+		}//end of if
+		else
+		{
+		?>
+		<tr>
+        	<td colspan="2"><span class="title">No data available.</span></td>
+        </tr>
+		<?php
+		}
+		?>
+	  </table>
+	  <?php }?>
+	  
+	  <?php if(isset($this->bank_breaker['dailyBudget']) && count($this->bank_breaker['dailyBudget'])>0){?>
+	  <table cellpadding="0" cellspacing="0" border="0" class="dest-rate-table">
+      	<tr>
+        	<td width="175">Typical Daily Budget</td>
+            <td width=""265><strong><?php echo $dailyBudget['currency'];?> <?php echo number_format($dailyBudget['amount'],2,'.','');?></strong></td>
+        </tr>
+        <!--<tr>
+        	<td>Your Exchange Rate</td>
+            <td><strong>&pound; 1.00 GBP = <?php //echo number_format($dailyBudget['rate'],2,'.','');?> <?php //echo $dailyBudget['currency'];?></strong></td>
+        </tr>
+		-->
+	  </table>
+	  <?php 
+		}
+	  } //end of if
+	  ?>
+	</div>
+    <div id="tab2" class="tab_content">
+      <div class="destination-submenu">
+        <ul>
+          <li><a href="#country_facts">FACTS</a></li>
+          <!--<li><a href="#country_language">LANGUAGE</a></li>
+          <li><a href="#country_weights">WEIGHTS AND MEASUREMENTS</a></li>-->
+		  
+		  <?php if(isset($this->countryInfo->visas_overview) && $this->countryInfo->visas_overview!="") { ?>
+		  <li><a href="#country_visas">VISAS</a></li>
+		  <?php }?>
+		  
+		  <?php if(isset($this->countryInfo->dangers_and_annoyances) && $this->countryInfo->dangers_and_annoyances!="") { ?>
+          <li><a href="#country_health">HEALTH</a></li>
+		  <?php }?>
+		  
+		  <?php if(isset($this->countryInfo->weather_overview) && $this->countryInfo->weather_overview!="") { ?>
+          <li><a href="#country_weather">WEATHER</a></li>
+		  <?php }?>
+        </ul>
+      </div>
+      <h2 class="heading-green">FACTS<a name="country_facts">&nbsp;</a></h2>
+      <div class="pract-info-gen-l">
+        <h3 class="heading-black">GENERAL</h3>
+        <span>Full Name:</span> <?php echo $this->countryInfo->full_destination_name;?><br />
+        <span>Timezones:</span> <?php $timezone  = unserialize($this->countryInfo->timezones);
+		$timezone_str = "N/A";
+		for($ti=0; $ti<count($timezone); $ti++)
+		{
+			$timezone_str .= $timezone[$ti]['gmt_utc']." GMT, ";
+		}
+		echo substr($timezone_str, 3, strlen($timezone_str)-5);
+		?><br />
+        <span>Capital City:</span> <?php echo $this->countryInfo->capital_city;?><br />
+        <span>Tel Dialing Code:</span> +<?php echo $this->countryInfo->country_dialling_code;?><br />
+        <span>Currency:</span> <?php echo $this->countryInfo->currency_name;?> (<?php echo $this->countryInfo->currency_code;?>)<br />
+        <span>Currency Unit:</span> <?php echo $this->countryInfo->currency_unit;?> <br />
+        <span>Language:</span> <?php $languages = unserialize($this->countryInfo->language_spokens);
+		$language_name	= "N/A";
+		$language_des	= "";
+		$found_lang = false;
+        if($languages){
+		foreach($languages AS $language)
+		{
+			if(($language["language_spoken_type"]=="official" || $language["language_spoken_type"]=="essential") && $found_lang==false)
+			{
+				$language_name	= $language["language_spoken_name"];
+				if(isset($language["language_spoken_description"]))
+				{
+					$language_des	= $language["language_spoken_description"]["p"];
+				}	
+				$found_lang = true;
+			}	
+		}//end of foreach
+        }
+		echo $language_name;
+		?>
+		</div>
+      <div class="pract-info-gen-r">
+        <h3 class="heading-black">ENVIRONMENT</h3>
+        <span>Total Area:</span>
+		<?php
+        if($this->countryInfo->area_sqkm)
+		{
+			echo number_format($this->countryInfo->area_sqkm,2,'.',',')." square kilometres<br />";
+		}
+		?>	
+        <span>Population:</span>
+		<?php
+        if($this->countryInfo->population)
+		{
+			//echo number_format($this->countryInfo->population,2,'.',',')."<br />";
+			echo $this->countryInfo->population."<br />";
+		}
+		?>
+		<span>Electric Plug:</span>
+		<?php
+        if($this->countryInfo->electrical_plugs)
+		{
+			$electricalPlugsArr = unserialize($this->countryInfo->electrical_plugs);
+			if(count($electricalPlugsArr)>0)
+			{
+				for($ep=0; $ep<count($electricalPlugsArr); $ep++)
+				{
+					echo $electricalPlugsArr[$ep]["electrical_plug_description"].".<br />";
+				}
+			}
+		}
+		?>
+		<span>Electric Voltage:</span>
+		<?php
+        if($this->countryInfo->electricity_voltage)
+		{
+			echo $this->countryInfo->electricity_voltage;
+		}
+		?>
+        <!--<span>Latitude:</span> (51 30'N)<br />
+        <span>Longitude:</span> (0 07'W)-->
+	  </div>
+      <div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+      <!--
+	  <h2 class="heading-green">LANGUAGE<a name="country_language">&nbsp;</a></h2>
+      <p><span class="grey">Language:</span> <?php //echo $language_name;?></p>
+      <p><?php //echo $language_des;?></p>
+      <div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+      <h2 class="heading-green"><a name="country_weights">WEIGHTS</a></h2>
+      <p><?php //echo $this->countryInfo->weights_measures_system;?></p>
+      <div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+	  -->
+	  
+	  <?php if(isset($this->countryInfo->visas_overview) && $this->countryInfo->visas_overview!="") { ?>
+	  <h2 class="heading-green">VISAS<a name="country_visas">&nbsp;</a></h2>
+      <p><?php echo $this->countryInfo->visas_overview;?></p>
+      <div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+	  <?php }?>
+	  
+	  <?php if(isset($this->countryInfo->dangers_and_annoyances) && $this->countryInfo->dangers_and_annoyances!="") { ?>
+      <h2 class="heading-green">HEALTH<a name="country_health">&nbsp;</a></h2>
+	  <h3 class="heading-black">Dangers & Annoyances</h3>
+      <p><?php echo $this->countryInfo->dangers_and_annoyances;?></p>
+      <div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+	  <?php }?>
+	  
+	  <?php if(isset($this->countryInfo->weather_overview) && $this->countryInfo->weather_overview!="") { ?>
+      <h2 class="heading-green">WEATHER<a name="country_weather">&nbsp;</a></h2>
+      <h3 class="heading-black">Overview</h3>
+      <p><?php echo $this->countryInfo->weather_overview;?></p>
+	  <div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+	  <?php }?>
+    </div>
+	
+    <div id="tab3" class="tab_content">
+	<?php
+	     $travelArr = unserialize($this->countryInfo->transport);
+	?>
+		<div class="destination-submenu">
+        <ul>          
+		  <?php if(count($travelArr)>0 && isset($travelArr["getting there and away"])){	?>
+		  <li><a href="#country_travel_thraway">GETTING THERE AND AWAY</a></li>
+		  <?php }//end of if?>
+		  
+		  <?php if(count($travelArr)>0 && isset($travelArr["getting around"])){ ?>
+          <li><a href="#country_travel_around">GETTING AROUND </a></li>
+		  <?php }//end of if?>
+        </ul>
+      </div>
+        <?php if(count($travelArr)>0 && isset($travelArr["getting there and away"])){	?>
+		<h2 class="heading-green">GETTING THERE AND AWAY<a name="country_travel_thraway">&nbsp;</a></h2>
+		<p><?php echo $travelArr["getting there and away"];?></p>
+		<div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+		<?php }//end of if?>
+		
+		<?php if(count($travelArr)>0 && isset($travelArr["getting around"])){ ?>
+		<h2 class="heading-green">GETTING AROUND<a name="country_travel_around">&nbsp;</a></h2>
+		<p><?php echo $travelArr["getting around"];?></p>
+		<div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+		<?php }//end of if?>
+	</div>
+	
+    <div id="tab4" class="tab_content">
+		<div class="destination-submenu">
+			<ul>
+			  <?php if(isset($this->countryInfo->history_recent) && $this->countryInfo->history_recent!="") { ?>
+			  <li><a href="#country_recent">RECENT</a></li>
+			  <?php }//end of if?>
+			  
+			  <?php if(isset($this->countryInfo->history_modern) && $this->countryInfo->history_modern!="") { ?>
+			  <li><a href="#country_modern">MODERN </a></li>
+			  <?php }//end of if?>
+			  
+			  <?php if(isset($this->countryInfo->history_pre_20c) && $this->countryInfo->history_pre_20c!="") { ?>
+			  <li><a href="#country_pre20">PRE-20TH CENTURY</a></li>
+			  <?php }//end of if?>
+			</ul>
+		  </div>
+		<?php if(isset($this->countryInfo->history_recent) && $this->countryInfo->history_recent!="") { ?>
+		<h2 class="heading-green">RECENT<a name="country_recent">&nbsp;</a></h2>
+		<p><?php echo $this->countryInfo->history_recent;?></p> 
+		<div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+		<?php }//end of if?>
+		
+		<?php if(isset($this->countryInfo->history_modern) && $this->countryInfo->history_modern!="") { ?>
+		<h2 class="heading-green">MODERN<a name="country_modern">&nbsp;</a></h2>
+		<p><?php echo $this->countryInfo->history_modern;?></p>
+		<div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+		<?php }//end of if?>
+		
+		<?php if(isset($this->countryInfo->history_pre_20c) && $this->countryInfo->history_pre_20c!="") { ?>
+		<h2 class="heading-green">PRE-20TH CENTURY<a name="country_pre20">&nbsp;</a></h2>
+		<p><?php echo $this->countryInfo->history_pre_20c;?></p>
+		<div class="page-top-hr"><a href="#country_top" class="top-of-page">Top of Page</a></div>
+		<?php }//end of if?>
+	</div>
+    <div id="tab5" class="tab_content">
+		<h2 class="heading-green">POINTS OF INTEREST</h2>
+        <?php
+		if(isset($this->countryInfo->pois))
+		{
+		$pois = unserialize($this->countryInfo->pois);
+		if(count($pois)>0)
+		{
+			$totalPoi		= count($pois)+1;
+			$leftColCount	= round($totalPoi/2);
+			?>
+			<!-- START left column -->
+			<div class="poi-leftcol">
+			<?php
+			for($poi=0; $poi<$leftColCount; $poi++)
+			{		
+			?>
+			<div class="poi-box">
+				<h3><?php echo isset($pois[$poi]['poi_name']) ? $pois[$poi]['poi_name'] :"";?></h3>
+				<!--<img src="/images/poi-img-1.jpg" alt="" class="poi-img" />-->
+				<?php 
+				if(isset($pois[$poi]['review_summary']))
+				{
+					echo $pois[$poi]['review_summary'];
+				}
+				if(isset($pois[$poi]['review_full']))
+				{	
+					//echo "<br />";
+					echo $pois[$poi]['review_full'];
+				}	
+				?>
+				<!--<a class="read-more" href="javascript://">Read More</a>-->
+			</div>
+			<?php
+			}//end of for
+			?>
+			</div>
+			<!-- END left column -->
+			
+			<!-- START right column -->
+			<div class="poi-rightcol">
+			<?php
+			for($poi=$poi; $poi<count($pois); $poi++)
+			{		
+			?>
+			<div class="poi-box">
+				<h3><?php echo isset($pois[$poi]['poi_name']) ? $pois[$poi]['poi_name'] :"";?></h3>
+				<?php 
+				if(isset($pois[$poi]['review_summary']))
+				{
+					echo $pois[$poi]['review_summary'];
+				}
+				if(isset($pois[$poi]['review_full']))
+				{	
+					//echo "<br />";
+					echo $pois[$poi]['review_full'];
+				}	
+				?>
+			</div>
+			<?php
+			}//end of for
+			?>
+				<?php
+				//disable form as per http://gdmantis.ortegradev.com/view.php?id=403 ticket BY Mahipal Adhikari 0n 14-Dec-2010
+				$display_poi_form = false;
+				if($display_poi_form)
+				{
+				?>
+				<!-- Suggestion form START -->
+				<div class="poi-box">
+					<h2 class="heading-green" id="recommend_heading">GOT A POINT OF INTEREST THAT YOU CAN RECOMMEND?</h2>
+					<div id="recommend_comment">
+						<form name="frmPoi" id="frmPoi" method="post">
+						<input type="hidden" name="country_id" value="<?php echo $this->country_id;?>">
+						<table cellspacing="0" cellpadding="2" border="0" align="left">
+							<tr><td id="recommend_response" style="display:none;"></td></tr>
+							<tr><td><b>Name</b></td></tr>
+							<tr><td><input type="text" name="poi_name" id="poi_name" class="search-city" style="width:240px;margin:0px;padding:0px;" value="" maxlength="50"></td></tr>
+							<tr><td><b>Email</b></td></tr>
+							<tr><td><input type="text" name="poi_email" id="poi_email" class="search-city" style="width:240px;margin:0px;padding:0px;" value="" maxlength="80"></td></tr>
+							<tr><td><b>Your Recommendation</b></td></tr>
+							<tr><td><textarea name="poi_comments" id="poi_comments" cols="30" rows="5" class="search-city" style="width:240px;margin:0px;padding:0px;"></textarea></td></tr>
+							<tr><td><b>Spam Protection</b></td></tr>
+							<tr><td>Enter This Word: <img src="/securimage.php?sid=<?php echo md5(uniqid(time())); ?>" id="image" align="absmiddle" />
+			<a href="javascript://" onclick="document.getElementById('image').src = '/securimage.php?sid=' + Math.random(); return false" title="Reload"><img src="<?php echo $this->cdnUri();?>/images/reload.jpeg" border="0"></a></td></tr>
+							<tr><td><input type="text" name="poi_captcha" id="poi_captcha" class="search-city" style="width:50px;margin:0px;padding:0px;" value="" maxlength="4"></td></tr>
+							<tr><td><input type="button" name="btnSubmit" value="SUBMIT FORM" onclick="sendPoi(<?php echo $this->country_id;?>);"></td></tr>
+						</table>
+						</form>
+					</div>
+				</div>
+				<!-- Suggestion form END -->
+				<?php }?>
+			</div>
+			<!-- END right column -->
+		<?php	
+		} //end of if
+	}//end of if 
+	?>
+	
+	</div>
+  </div>
+</div>
+<script language="javascript" type="text/javascript">
+function sendPoi(country_id)
+{
+	//validate form
+	if(trim($('#poi_name').val())=="")
+	{
+		//alert("Name can not be left blank.");
+		alertBox("Warning","Name can not be left blank.");
+		return false;
+	}
+	if(trim($('#poi_email').val())=="")
+	{
+		//alert("Email can not be left blank.");
+		alertBox("Warning","Email can not be left blank.");
+		return false;
+	}
+	if(trim($('#poi_email').val())!="" && checkEmail(trim($('#poi_email').val()))==false)
+	{
+		alertBox("Warning","Email address is not valid.");
+		return false;
+	}
+	if(trim($('#poi_comments').val())=="")
+	{
+		//alert("Recommendation can not be left blank.");
+		alertBox("Warning","Recommendation can not be left blank.");
+		return false;
+	}
+	if(trim($('#poi_captcha').val())=="")
+	{
+		//alert("Spam protection code can not be left blank.");
+		alertBox("Warning","Spam protection code can not be left blank.");
+		return false;
+	}
+	
+	var params='';
+	var poi_name = trim($('#poi_name').val());
+	var poi_email = trim($('#poi_email').val());
+	var poi_comments = trim($('#poi_comments').val());
+	var poi_captcha = trim($('#poi_captcha').val());
+	
+	params	= ($("#frmPoi").serialize());
+	$("#recommend_response").show();
+	$("#recommend_response").html("<img src='/images/ajax-loader.gif'>");
+	$.ajax({
+		   type: "POST",
+		   url: "/destination/sendpoi/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json)
+		   {
+				//alert("resp="+json);
+				if(json.error==1)
+				{
+					$("#recommend_response").show();
+					$("#recommend_response").html(json.response);
+				}
+				else
+				{
+					$("#recommend_response").hide();
+					//$("#recommend_response").html(json.response);
+					$("#recommend_heading").html("THANK YOU FOR YOUR RECOMMENDATION!");
+					$("#recommend_comment").html(json.response);
+					$('#poi_name').val('');
+					$('#poi_email').val('');
+					$('#poi_comments').val('');
+					$('#poi_captcha').val('');
+				}	
+		   },
+		   error: function (json, status, e)
+		   {
+				alert("json="+json+" status="+status+" e="+e);
+		   }
+	 });
+}
+</script>
+<div id="journal-right"> </div>
+<?php }?>

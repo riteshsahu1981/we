@@ -1,0 +1,96 @@
+
+<?php
+		$objModelVote	=	new Application_Model_Vote();
+		foreach ($this->arrComment as $comment)
+		{
+			if($comment['imageName'] == "")
+			{
+				$imagePath	=	"/images/no-image.jpg";
+			}else{
+				$imagePath	=	"/media/picture/profile/".$comment['imageName'];
+			}	
+		/*-------- GET NUMBER OF VOTE -----------*/
+	    $numVotes	=	$objModelVote->numVotes($this->item_type1, $comment['commentId']);
+/*---------------------- CHECK CURRENT USER LIKE ---------------------*/
+	   $whereLike = " item_type = '{$this->item_type1}' AND item_id = '{$comment['commentId']}' AND vote='1' AND user_id='{$this->userId}' ";
+	   $arrVote	=	$objModelVote->fetchAll($whereLike);
+	   $countVote=	count($arrVote);
+
+           $date = new Base_Date();
+           $strTime = $date->timeAgo($comment['addedon']);
+?>
+<li id="<?php print "album_comment_".$comment['commentId'];?>">
+<div class="commnetor"><img src="<?php print $imagePath;?>" width="35" height="41" /></div>
+<div class="commnetarea"><span><?php print $comment['commenterName'];?> </span> <?php print $comment['comment'];?>
+<div class="post">Posted <?php print $strTime;?>  |
+<?php if($countVote > 0){?>
+<span id="<?php print "com_".$comment['commentId'];?>"><?php if($numVotes > 0){ print $numVotes;?> people like this <?php }?> <a href="javascript:void(0);" onclick="return albumCommentUnlike(<?php print $comment['commentId'];?>);">Unlike</a></span>
+<?php }else{?> 
+<span id="<?php print "com_".$comment['commentId'];?>"><?php if($numVotes > 0){ print $numVotes;?> people like this <?php }?> <a href="javascript:void(0);" onclick="return albumCommentLike(<?php print $comment['commentId'];?>);">Like</a></span>
+<?php }
+if($comment['permission'] == 1){ // Checking permission for remove comment
+?>
+|  <a href="javascript:void(0);" onclick="removeAlbumComment(<?php print $comment['commentId'];?>);" >Remove</a>
+<?php }?>
+</div>
+</div>
+</li>
+<?php }?>
+
+
+<script>
+
+
+
+
+
+
+function albumCommentLike(commentId)
+{
+	var requesturl	=	"/album/my-photos/like-album-comment";
+	var item_type	=	'album_comment';
+	var spanId		=	'com_'+commentId;
+
+		$.post(requesturl, {commentId:commentId,item_type:item_type},
+				   function(html){					
+					$("#"+spanId).html(html);
+						
+				});	
+	
+}
+
+function albumCommentUnlike(commentId)
+{
+	var requesturl	=	"/album/my-photos/unlike-album-comment";
+	var item_type	=	'album_comment';
+	var spanId		=	'com_'+commentId;
+
+		$.post(requesturl, {commentId:commentId,item_type:item_type},
+				   function(html){					
+					$("#"+spanId).html(html);
+						
+				});	
+	
+}
+
+function removeAlbumComment(albumCommentId)
+{
+var answer= confirm('Are you sure you want to delete this comment?');
+	
+	if(!answer){
+    return false;
+  }
+	var liId	=	'album_comment_'+albumCommentId;
+
+	var requesturl	=	"/album/my-photos/remove-comment";
+
+	$.post(requesturl, {albumCommentId:albumCommentId},
+			   function(html){					
+				$("#"+liId).slideUp('slow');
+					
+			});	
+	
+}
+
+
+</script>

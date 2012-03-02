@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>Gap Daemon</title>
+<style>
+body{margin:0px; padding:0px; width:100%; height:auto;}
+.head-popup{background:#333 url(../images/logo.png) no-repeat top left; width:100%; height:100px;}
+.popup{margin:0px; height:auto; padding:0px; width:98.9%; font:bold 13px/20px Arial; color:#000; border:5px solid #333;}
+.mssg{ width:60%; font:bold 13px/20px Arial; color:#000; margin:auto;}
+.mssg a{ color:#FF2400; text-decoration:none; text-align:right;}
+.mssg a:hover{ color:#348698; text-decoration:underline; text-align:right;}
+.mrgn-btm-popbox{ margin:0px 0px 50px 0px;}
+.f-right{float:right; position:absolute; right:0px; bottom:10px;}
+.logo-popup{ background:#333; margin:40px 0px 0px 0px; padding:4px; overflow:hidden; width:160px;}
+.logo-popup img{ margin-left:6px;}
+.popup-box-content{ height:auto; position:relative; min-height:100px; margin:50px 0px; border:4px solid #348698; padding:8px; overflow:hidden; min-width:152px;}
+.button-link {
+    background: none repeat scroll 0 0 #F74239;
+    color: #FFFFFF !important;
+    cursor: pointer;
+    font:bold 13px Arial,Helvetica,sans-serif;
+    margin: 0 10px 0 0;
+    padding: 2px 6px;
+    text-decoration: none;
+    text-transform: uppercase;
+	display:inline-table;
+}
+</style>
+</head>
+<body>
+<!--#348698-->
+<div class="head-popup"></div>
+<div class="popup">
+<div class="mssg">
+<div class="popup-box-content"><?php echo $this->errorMsg;?>
+<br>
+<div class="f-right"><a class="button-link" href="javascript://" onclick="window.close();">Close This Window</a></div></div>
+</div>
+</div>
+</body>
+</html>

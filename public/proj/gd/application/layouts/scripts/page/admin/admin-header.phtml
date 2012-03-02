@@ -1,0 +1,29 @@
+<!-- Header Area -->
+<?php 
+		$usersNs = new Zend_Session_Namespace("members");
+        
+?>
+<div id="main">
+  <div id="header">
+  	<a href='/admin' class="logo"></a>
+	<div class="account-info">
+      <div class="mid">
+        
+          <?php if (Zend_Auth::getInstance()->hasIdentity()){?>
+        <div id="userwelcome" class="welcome-user"><img src="/images/admin-images/user.png" class="f-left" /><div class="user-info">Welcome <?php echo $usersNs->userFullName?> (<?php echo $usersNs->userTypeLabel?>) <br /><a href="/admin/login/logout">Sign out</a></div> </div>
+        <?php }?>
+		<div id="loginhighlight" class="pagetextwht"><?=date("F d Y h:i:s A") ?></div>
+        <div class="clear"></div>
+      </div>
+    </div>  
+  </div>
+  
+  
+  <?php if (Zend_Auth::getInstance()->hasIdentity()){?>
+ 
+   
+<?php 
+      	}
+       ?>
+	
+  <!-- End Header Area --> 

@@ -1,0 +1,163 @@
+<?php
+$blogM		= new Application_Model_Blog();
+//$whereCondition	= "publish='published' AND status=5 AND featured=1";
+$whereCondition	= "publish='published' AND featured=1";
+$featurePostArr	= $blogM->fetchAll($whereCondition, "updatedon DESC",1);
+$featurePost = array();
+if(false!==$featurePostArr && count($featurePostArr)>0)
+{
+	$featurePost 	= $featurePostArr[0];
+}
+
+if(count($featurePost)>0)
+{
+	$date		= new Base_Date();
+	$date->setSysDateFormat("dS F Y");
+	 
+	$userNs		= new Zend_Session_Namespace('members');
+	$isLoggedIn = $userNs->userId;
+
+	//now select blog Journal settings to appear in featured journal
+	$journalM	= new Application_Model_Journal();
+	$journalM	= $journalM->find($featurePost->getJournalId());
+	$jStatus	= $journalM->getStatus();
+	$jPublish	= $journalM->getPublish();
+	
+	//check journal status
+	if($jStatus=="public" && $jPublish=="published")
+	{
+		$userM = new Application_Model_User();
+		$user = $userM->find($featurePost->getUserId());
+
+		$voteM = new Application_Model_Vote();
+		$userVote = $voteM->getTotalVotes($featurePost->getId(),"blog", 1, $isLoggedIn);
+
+		$tagsM = new Application_Model_Tags();
+		$tagStr = $tagsM->getBlogTags($featurePost->getId());
+		$blog_seo_url 	=	$this->seoUrl("/journal/view-post/blog_id/{$featurePost->getId()}");
+?>
+<div class="m-box-img">
+<!--<img src="/images/mj.png" width="128" height="128" alt="" align="left" />-->
+<a href="/<?php echo $user->getUsername()?>">
+<img src="/image?src=<?php echo $user->getThumbnail();?>&size=journal" border="0" alt="" />
+</a>
+<span><a href="<?php echo $blog_seo_url;?>"><?php echo $featurePost->getTitle();?></a></span><br />
+
+<span class="posted">Posted by <a href="<?php echo $this->seoUrl('/'.$user->getUsername()); ?>"><b><?php echo $user->getFirstName().' '.$user->getLastName();?></b></a> <?php echo $date->timeAgo($featurePost->getAddedon());?></span><br />
+<!--<span class="posted">|</span>--> <span class="comment"><a href="<?php echo $blog_seo_url;?>#blog_comments_list">Comment</a></span>  <span class="posted">|</span>  
+<?php
+$likeStyle="";
+$unlikeStyle="display:none";
+if($userVote>0)
+{
+   $likeStyle="display:none";
+   $unlikeStyle="";
+}
+?>
+<span style="display: none;" id="loading_<?php echo $featurePost->getId();?>">
+<img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif">
+</span>
+<span class="comment" style="<?php echo $unlikeStyle?>" id="unlike_<?php echo $featurePost->getId();?>">
+<a href="javascript: like(<?php echo $featurePost->getId();?>, -1);">Unlike</a>
+</span>
+
+<span class="comment" style="<?php echo $likeStyle?>"  id="like_<?php echo $featurePost->getId();?>">
+<a href="javascript: like(<?php echo $featurePost->getId();?>, 1);">Like</a>
+</span>
+<br />
+<span id="text-p"><?php echo substr(strip_tags($featurePost->getContent()),0,250);?>...</span>
+</div>
+<?php
+		}//end if
+?>
+<script language="javascript">
+function like(item_id,vote)
+{
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=blog";
+	$("span#like_"+item_id).hide();
+	$("span#loading_"+item_id).show();
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+				$("span#loading_"+item_id).hide();
+				
+				if(vote==1)
+				{
+					$("span#unlike_"+item_id).show();
+					$("span#like_"+item_id).hide();
+					//$("#you-like-this-"+item_id).show();
+					//$("#you-like-this-thumb-"+item_id).show();
+				}
+				else
+				{
+					$("span#unlike_"+item_id).hide();
+					$("span#like_"+item_id).show();
+					//$("#you-like-this-"+item_id).hide();
+					//$("#you-like-this-thumb-"+item_id).hide();
+				}
+				/*
+				//display main DIV and other as per user vote and total likes
+				if(vote==1)
+				{
+					$("div#journal_tag_div_"+item_id).show();
+					$("div#journal_tag_div_"+item_id).addClass('like-dislike-img');					
+					//if Tags are available then display seperator
+					if($("span#journal_tag_str_"+item_id).html()!=null)
+					{
+						$("span#journal_tag_sep_"+item_id).show();
+					}					
+				}
+				else
+				{
+					if(json.total_up==0)
+					{
+						$("span#journal_tag_sep_"+item_id).hide();
+						//if Tags are not available then hide main DIV
+						if($("span#journal_tag_str_"+item_id).html()==null)
+						{
+							$("div#journal_tag_div_"+item_id).hide();
+						}
+					}
+				}
+				
+				if(json.total_up>1)
+				{
+					$("span#total_likes_"+item_id).html(json.total_up + " members like this");
+				}
+				else if(json.total_up==1)
+				{
+					$("span#total_likes_"+item_id).show();
+					$("span#total_likes_"+item_id).html(json.total_up + " member like this");
+				}
+				else
+				{
+					$("span#total_likes_"+item_id).hide();
+					$("span#total_likes_"+item_id).html(json.total_up);
+				}*/
+			 }
+		   },
+		   error: function (json, status, e){
+
+			}
+		});
+}
+</script>		
+<?php
+}//end if
+else
+{	
+	//echo "<span>No featured journal available.</span>";
+}
+?>

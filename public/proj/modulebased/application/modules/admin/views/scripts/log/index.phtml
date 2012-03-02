@@ -1,0 +1,130 @@
+<?php //echo $this->totalItemCount; ?>
+
+<form method="post" action="<?php echo $this->seoUrl("/admin/log/index")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Config Name</th>
+            <th>Config Id</th>
+            <th>Config Parent Id</th>
+             <th>Config Desc</th>
+             <th>Param1</th>
+            
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+       
+        foreach ($this->paginator as $item): ?>
+        <?php  $sno++?>
+        <tr id="config_<?php echo $item->config_id;?>">
+            <td><?php echo $sno?></td>
+            <td><?php echo $item->config_name;?></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->config_id?>','<?php echo $item->config_name; ?>')"><?php echo $item->config_id;?></a></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->parent_config_id?>','<?php echo $item->config_name; ?>')"><?php echo $item->parent_config_id;?></a></td>
+            <td><?php echo $item->config_desc; ?></td>
+            <td><?php echo $item->param1; ?></td>
+            
+             <td>
+                <!-- Icons -->
+                <a title="Edit" href="<?php echo $this->seoUrl("/admin/log/edit-log/configid/".$item->config_id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                 <?php 
+                    $image="/images/icons/cross_circle.png";
+                    $title="Click here to delete Configuration!";
+                ?>
+               
+                &nbsp;&nbsp;
+                <a title="<?php echo $title?>" href="<?php echo $this->seoUrl("/admin/log/delete-log/id/".$item->config_id)?>" onclick="javascript: return confirm('Are you sure you want to delete?');"><img alt="<?php echo $title?>"  src="<?php echo $image?>"></a> 
+               
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="8">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+
+
+<script>
+    
+    function openD(config_id,config_name)
+    {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+        $("#userInfo").html("");
+        $( "#dialog-modal" ).dialog({
+                height: 460,
+                width: 420,
+                modal: true,
+                title: "Configuration Detail"
+        });
+        $("#imgLoading").show();
+        var params='config_id='+config_id;
+        
+        $.ajax({
+                   type: "POST",
+                   url: "/admin/log/config-info",
+                   data: params,
+                   dataType: "html",
+                   success: function(html)
+                   {
+                       $("#imgLoading").hide();
+                        $("#userInfo").html(html);
+                    
+                        
+                   },
+                   error: function (json, status, e)
+                   {
+                      $("#userInfo").html("Error");
+                       $("#imgLoading").hide();
+                   }
+               });
+
+
+       
+    }
+
+</script>
+
+<div id="dialog-modal" title="User Information" style="display:none">
+    <img style="display:none" id="imgLoading" src="/images/loading.gif"/>
+	<div id="userInfo"></div>
+        
+</div>

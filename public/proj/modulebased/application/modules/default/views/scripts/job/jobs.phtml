@@ -1,0 +1,135 @@
+<form method="post" action="<?php echo $this->seoUrl("/job/jobs")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <?php if(count($this->departments)>0){?>
+    <select name='department_id'>
+        <option value=''>Department</option>
+        <?php foreach($this->departments as $k=>$v){?>
+        <option <?php if($this->department_id==$k){echo "selected='selected'";}?>value="<?php echo $k?>"><?php echo $v ?></option>
+        <?php }?>
+    </select>
+    <?php }?>
+    <select name='status'>
+        <option value=''>Status</option>
+        <option <?php if($this->status=="open"){echo "selected='selected'";}?>value="open">Open</option>
+        <option <?php if($this->status=="close"){echo "selected='selected'";}?>value="close">Close</option>
+    </select>
+  
+   
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Title</th>
+            <th>Department</th>
+            <th>No. of Openings</th>
+            <th>Status</th>
+            <th>Posted By</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            
+            <td><a href="javascript:#" onclick="jobDetail('<?php echo $item->id; ?>','<?php echo $item->title; ?>')"><?php echo $item->title; ?></a></td>
+            <td><?php echo $item->department_title; ?></td>
+            <td><?php echo $item->no_of_openings; ?></td>
+            <td <?php if($item->status=="close"){?> style="color:red" <?php }?>    > <?php echo $item->status; ?></td>
+            <td><?php echo $item->first_name." ".$item->last_name; ?></td>
+            <td>
+                <!-- Icons -->
+                <a title="Edit" href="<?php echo $this->seoUrl("/job/edit-job-opening/id/".$item->id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="7">
+                        <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+
+
+<script>
+    
+    function jobDetail(job_id,job_title)
+    {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+         $("#userInfo").html("");
+        $( "#dialog-modal" ).dialog({
+                height: 460,
+                width: 420,
+                modal: true,
+                title: job_title
+        });
+        $("#imgLoading").show();
+        var params='id='+job_id;
+        $.ajax({
+                   type: "POST",
+                   url: "/job/job-detail",
+                   data: params,
+                   dataType: "html",
+                   success: function(html)
+                   {
+                       $("#imgLoading").hide();
+                        $("#userInfo").html(html);
+                    
+                        
+                   },
+                   error: function (json, status, e)
+                   {
+                      $("#userInfo").html("Error");
+                       $("#imgLoading").hide();
+                   }
+               });
+
+
+       
+    }
+
+</script>
+
+<div id="dialog-modal" title="User Information" style="display:none">
+    <img style="display:none" id="imgLoading" src="/images/loading.gif"/>
+	<div id="userInfo"></div>
+        
+</div>
+

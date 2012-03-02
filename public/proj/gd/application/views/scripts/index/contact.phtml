@@ -1,0 +1,39 @@
+<div class="normal-txt">
+<?php if($this->status==1 || $this->preview==true){?>
+<h2><?php echo $this->title?></h2>
+<?php echo $this->content?>
+
+<?php if(isset($_SESSION["flash_msg"]) && $_SESSION["flash_msg"]!=""){?>
+<div><h3>
+	<?php 
+	echo $_SESSION["flash_msg"];
+	unset($_SESSION["flash_msg"]);
+	?></h3>
+</div>
+
+<?php }else{?>
+
+<form name="frmContact" id="frmContact" method="post" enctype="multipart/form-data">
+<div class="registration">
+	<label><?php echo $this->puts($this->form->contact_name->getLabel());?></label>
+	<?php echo $this->form->contact_name;?>
+</div>
+<div class="registration">
+	<label><?php echo $this->puts($this->form->contact_email->getLabel());?></label>
+	<?php echo $this->form->contact_email;?>
+</div>
+<div class="registration">
+	<label><?php echo $this->puts($this->form->contact_reason->getLabel());?></label>
+	<?php echo $this->form->contact_reason;?>
+</div>
+<div class="reg_con3">
+<?php echo $this->form->submit;?>
+</div>	
+</form>
+<?php }?>
+<?php } else{?>
+<h2 class="main-heading" style="text-transform:none;">
+<span>This page is not published.</span>
+</h2>
+<?php }?>
+</div>

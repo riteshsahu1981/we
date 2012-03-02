@@ -1,0 +1,129 @@
+<?php
+if($this->numRecord == 1){
+    $strTaggedPhoto = $this->numRecord." Photo";
+}else{
+    $strTaggedPhoto = $this->numRecord." Photos";
+}
+
+if($this->totalAlbum == 1){
+    $strNumberAlbum = $this->totalAlbum." Album";
+}else{
+    $strNumberAlbum = $this->totalAlbum." Albums";
+}
+
+if(isset($this->uploadAllowed))
+{
+$uploadPhotosButton = <<<EOD
+<a class="button" href="javascript:;" onclick="alertBox('Wow, you\'ve been snap happy! Sorry, but you\'ve reached the maximum amount of photos we\'ll let you store on Gap Daemon.','');">UPLOAD PHOTOS</a>
+EOD;
+$createAlbumButton = <<<EOD
+<a class="button" href="javascript:;" onclick="alertBox('Wow, you\'ve been snap happy! Sorry, but you\'ve reached the maximum amount of photos we\'ll let you store on Gap Daemon.','');">CREATE ALBUM</a>
+EOD;
+}else{
+   $uploadPhotosButton = "<a class='button' href='/image/album-upload-photo' rel='facebox'>UPLOAD PHOTOS</a>";
+$createAlbumButton = <<<EOD
+<a class='button' href='/album/create-album'>CREATE ALBUM</a>
+EOD;
+}
+
+?>
+<div id="center" class="my-photo">
+<h2><?php echo $this->puts("MY PHOTOS");?></h2>
+
+<!-- Start Btns Area -->
+<div class="btns">
+<?php print $createAlbumButton;?>
+<?php print $uploadPhotosButton;?>
+<!--<a class="button" href="/album/test-upload/index/">Test Upload</a>-->
+<img alt="" src="<?php print $this->capacityImage;?>" /><dd><?php print $this->capacityPercent;?>% Photo Capacity</dd>
+</div>
+<!-- End Btns Area -->
+
+<!-- Start Heading -->
+<h4 class="logger_name">Tagged photos of <?php print $this->userFullName;?>: <span><?php print $strTaggedPhoto;?> </span></h4>
+<?php print $this->pagingStr;?>
+<!-- End Heading -->
+
+<!-- Start Tagged Images -->
+<div class="viewallmyphoto"><?php //print_r($this->arrTaggedUser);?>
+    <?php foreach($this->arrTaggedUser as $tagged){?>
+    <a href="/album/my-photos/tagged-photo/id/<?php print $tagged->photo_id;?>">
+	<table border="0" align="center" cellpadding="0" cellspacing="0" class="middle">
+  <tr>
+    <td colspan="3" align="center" valign="middle">
+	<img alt="" src="/media/album/thumb/<?php print $tagged->image;?>" />
+	</td>
+  </tr>
+</table>
+	</a>
+    <?php }?>
+</div>
+<!-- End Tagged Images -->
+<p></p>
+<!-- Start Heading -->
+<h4 class="logger_name"><?php print $this->userFullName;?>'s Albums: <span><?php print $strNumberAlbum;?></span></h4>
+<?php	if($this->totalAlbum	>	0)
+{ 
+		print $this->paginationControl($this->arrAlbum, 'Sliding', 'album-page.phtml');
+?>
+<div class="viewallmyphoto">
+<?php 
+			foreach($this->arrAlbum as $row)
+			{
+				$objModelAlbumPhoto	=	new Album_Model_AlbumPhoto();
+				
+				$albumId	=	$row['id'];
+				
+				$whereAlbumPhoto	=	"album_id='{$albumId}'";
+				
+				$arrAlbumPhoto		=	$objModelAlbumPhoto->fetchAll($whereAlbumPhoto);
+				
+				$numAlbumPhoto	=	count($arrAlbumPhoto);
+				
+				if($numAlbumPhoto > 0)
+				{
+					$arrPhoto	=	array();
+					foreach ($arrAlbumPhoto as $photo)
+					{
+						$arrPhoto[]	=	$photo->image;
+					}
+					$rand_keys = array_rand($arrPhoto, 1);
+					
+					$coverImg	=	"/media/album/thumb/".$arrPhoto[$rand_keys];
+				}else{
+					$coverImg	=	"/images/blank-album.jpg";
+				}
+				
+                            $albumPhotoUrl = "/album/my-photos/album-photos/id/".$albumId;
+                            if($numAlbumPhoto == 1)
+                            {
+                                $numPhotoStr = $numAlbumPhoto." Photo";
+                            }else{
+                                $numPhotoStr = $numAlbumPhoto." Photos";
+                            }
+?>
+<!-- End Heading -->
+
+<!-- Start Album Images -->
+
+<dd>
+<a href="<?php print $this->seoUrl($albumPhotoUrl);?>">
+<table border="0" align="center" cellpadding="0" cellspacing="0" class="middle">
+  <tr>
+    <td colspan="3" align="center" valign="middle"><img alt="" src="<?php print $coverImg;?>" /></td>
+  </tr>
+</table>
+</a>
+<div class="album-title"><a href="<?php print $this->seoUrl($albumPhotoUrl);?>"><?php print $row['name'];?></a></div> 
+<div class="f-left mrgn-top5"><?php print $numPhotoStr;?></div>
+
+</dd>
+
+<!-- End Album Images -->
+<?php } ?>
+</div>
+<?php }else{ 
+?>
+<!-- <div><?php //print $this->userFullName;?> hasn't album.</div> -->
+<?php }?>
+</div>

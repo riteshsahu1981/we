@@ -1,0 +1,77 @@
+<?php
+$cache = Zend_Cache::factory("Output","File");
+if (!($cache->start('TravelGuides123'))){
+//if (!($cache->start('destination_tab'.rand(1,1000)))) {
+
+$continentM = new Application_Model_Continent();
+$continents = $continentM->getContinent();
+$travelGuides = "";
+if(count($continents)>0)
+{
+	$travelGuides .= "<ul class=\"menu hidden\">";
+	
+	foreach($continents as $continent_id=>$continents)
+	{
+		$countryM	= new Application_Model_Country();
+		$countries	= $countryM->getCountry(null, $continent_id);
+		$total_countries = count($countries);
+		
+		$travelGuides .= "<li>\n\t";
+		$travelGuides .= "<img class=\"arrow\" src=\"/images/15x15_trans.gif\" alt=\"More\" />\n\t";
+		$travelGuides .= "<a href=\"javascript://\" rel=\"nofollow\">\n\t".$continents."\n\t</a>\n\t";
+		
+		//get continents countries
+		if($total_countries>0)
+		{
+			$per_column=20;
+			if($total_countries<=$per_column  )
+			{
+				$ctr=1;
+			}
+			else
+			{
+				$rem = $total_countries/$per_column;
+				$q = (int)($total_countries/$per_column);
+				if($rem>0)
+				{
+					$ctr=$q+1;
+				}
+				else
+				{
+					$ctr=$q;
+				}
+			}
+			$ulctr=0;
+			$travelGuides .= "<div class=\"submenu hidden col{$ctr}\">\n\t";
+			$travelGuides .= "<ul>\n\t";
+			$total_block=0;
+			foreach($countries as $country_id=>$country)
+			{
+				//check country data into lonely planet feeds if exists then will appear here
+				$destinationM	=	new Application_Model_Destination();
+				$destinationCountry = $destinationM->checkCountryData($country_id);
+				if(false!==$destinationCountry)
+				{
+					$countryUrl = $this->seoUrl('/destination/country/id/'.$country_id);
+					$travelGuides .= "<li><a href=\"{$countryUrl}\" rel=\"nofollow\">{$country}</a></li>\n\t";
+					$ulctr++;
+					if($ulctr==$per_column)
+					{
+						$travelGuides .= "</ul>\n\t";
+						$total_block++;
+						if($total_block<$ctr)
+						$travelGuides .= "<ul>\n\t";
+						$ulctr=0;
+					}
+				}//end of if
+			}//end of country foreach
+			$travelGuides .= "</div>\n\t";
+		}//end if
+		$travelGuides .= "</li>\n";
+	}//end of continent foreach
+	$travelGuides .= "</ul>";
+}//end of if
+echo Zend_Json::encode($travelGuides);
+$cache->end();
+}//caching
+?>

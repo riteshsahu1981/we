@@ -1,0 +1,85 @@
+<?php //echo $this->totalItemCount; ?>
+
+<form method="post" action="<?php echo $this->seoUrl("/admin/log/error-logs")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Message</th>
+             <th>Machine Name</th>
+            <th>App. Name</th>
+            <th>Process Name</th>
+            <th>Module Name</th>
+            <th>Method Name</th>
+            <th>Log Message</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+       
+        foreach ($this->paginator as $item): ?>
+        <?php  $sno++?>
+        <tr >
+            <td><?php echo $sno?></td>
+            <td><?php echo $item->msg_id;?></td>
+            <td><?php echo $item->machine_name; ?></td>
+            <td><?php echo $item->app_name; ?></td>
+            <td><?php echo $item->process_name; ?></td>
+            <td><?php echo $item->module_name; ?></td>
+            <td><?php echo $item->method_name; ?></td>
+            <td><?php echo $item->log_message; ?></td>
+             <td>
+                <!-- Icons -->
+           
+                 <?php 
+                    $image="/images/icons/cross_circle.png";
+                    $title="Click here to delete error  Message!";
+                ?>
+               
+                &nbsp;&nbsp;
+                <a title="<?php echo $title?>" href="<?php echo $this->seoUrl("/admin/log/delete-error-log/id/".$item-log_id)?>" onclick="javascript: return confirm('Are you sure you want to delete?');"><img alt="<?php echo $title?>"  src="<?php echo $image?>"></a> 
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="9">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+

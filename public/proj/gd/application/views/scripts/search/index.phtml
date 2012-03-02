@@ -1,0 +1,143 @@
+<style>
+.resultRow
+{
+	font-size: 14px;
+}
+.resultRow:hover
+{
+	font-size: 14px;
+	background-color: #e6e6e6;
+	/*cursor:pointer;*/
+}
+.resultFound
+{
+	font-size: 14px;
+	font-weight:bold;
+	color:#000000;
+}
+.resultFound span
+{
+	font-size: 14px;
+	font-weight:bold;
+	color:#348698;
+}
+</style>
+<div class="register_area_wide" style="min-height:600px;">
+<?php 
+if($this->total>0)
+{
+	$results = ($this->total==1) ? "result" : "results";
+?>
+<h2 style="color:#348698; font:bold 19px Arial,Helvetica,sans-serif; text-transform:uppercase;">Search Results</h2>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" align="center" style="border:1px solid #E6E6E6;">
+<tr><td colspan="2" class="resultFound" style="padding:10px;">
+<span><?php echo $this->total;?></span> <?php echo $results;?> found for <span><?php echo $this->searchtext;?></span>
+</td></tr>
+<?php
+	$searchTxt = $this->searchtext;
+	$replaceTxt = "<b>".$this->searchtext."</b>";
+	foreach($this->paginator as $row)
+	{
+		$title = $row['title'];
+		//$title = str_replace($searchTxt, $replaceTxt, $title);
+		
+		$description = substr(strip_tags($row['description']),0,250);
+		//$description = str_replace($searchTxt, $replaceTxt, $description);
+		
+		$strUrl = "";
+		if($row['type']=='user')
+		{
+			$title = $row['title'];
+			$userM	= new Application_Model_User();
+			$user	= $userM->find($row['id']);
+			$strUrl	= "/".$user->getUsername();			
+		}
+		else if($row['type']=='blog')
+		{
+			$strUrl = "/journal/view-post/blog_id/".$row['id'];
+		}	
+	    else if($row['type']=='advice')
+		{
+			//$adviceM	= new Application_Model_Advice();
+			//$advice		= $adviceM->find($row['id']);
+			//$strUrl		= "/advice/".$advice->getIdentifire();
+			$strUrl		= "/advice/detail/id/".$row['id'];
+		}
+        else if($row['type']=='articles')
+		{
+			//$articlesM	= new Application_Model_Articles();
+			//$articles	= $articlesM->find($row['id']);
+			//$strUrl="/work-study-volunteer/".$articles->getIdentifire();
+            $strUrl='/work-study-volunteer/article-detail/id/'.$row['id'];
+		}
+		else if($row['type']=='tags')
+		{
+			//$strUrl="/journal/index/search-cloud/".$row['title'];
+			$strUrl="/journal/index/search-cloud/".$row['id'];
+		}
+		else if($row['type']=='category')
+		{
+			if($row['location']=='blog')
+			{
+				$strUrl="/journal/index/search-filtr/".$row['id'];
+			}
+			else if($row['location']=='work' || $row['location']=='study' || $row['location']=='volunteer')
+			{
+				$strUrl="/work-study-volunteer/detail/id/".$row['id'];
+			}
+			else if($row['location']=='wsv')
+			{
+				$strUrl="/work-study-volunteer/category/id/".$row['id'];
+			}
+			else if($row['location']=='advice')
+			{
+				$strUrl="/advice/category/id/".$row['id'];
+			}
+		}
+		else if($row['type']=='country')
+		{
+			$strUrl="/destination/country/id/".$row['id'];
+		}
+		else if($row['type']=='city')
+		{
+			$strUrl="/destination/city/id/".$row['id'];
+			$destinationM = new Application_Model_Destination();
+			$destinationM = $destinationM->fetchRow("location_id={$row['id']} AND location_type='city'");
+			if(false!==$destinationM)
+			{
+				$description	=	$description;
+				$title			=	$destinationM->getTitle();
+			}	
+		}
+        ?>
+		 <tr class="resultRow">
+		 	<td style="border-bottom:1px solid #e6e6e6;">
+			<div class="friends-box" style="padding:10px;">
+			<div>
+			<?php if($row['type']=='user'){?>
+			<a href="javascript://" onclick="commonUserLogin('<?php echo $strUrl;?>',<?php echo $row['id'];?>);"><b><?php echo $title;?></b></a>
+			<?php } else {?>
+			<a href="<?php echo $this->seoUrl($strUrl);?>"><b><?php echo $title;?></b></a>
+			<?php }?>
+			</div>
+			<div><?php echo $description = ($description!="NULL") ? $description."..." : "";?></div>
+			</div>
+			</td>			
+		 </tr>         
+   <?php
+   }//end of foreach
+ ?>
+ </table>
+ <?php 
+ echo $this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml', array("linkArray"=>array('q'=>$this->searchtext))); ?>
+ <?php
+}//end of if
+else
+{
+?>
+<br class="clear" /><br class="clear" />
+<h3 class="red-alert"><?php echo $this->message;?></h1>
+<?php
+}
+?>
+</div>

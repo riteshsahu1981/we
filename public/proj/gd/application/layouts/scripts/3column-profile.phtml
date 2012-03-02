@@ -1,0 +1,57 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<?php echo $this->headTitle(); ?>   
+	<?php echo $this->headMeta(); ?>
+	
+  
+	  <?php 
+	  /*-------------- jquery ui----------------------*/
+	  if($this->jQuery()->isEnabled())
+		echo $this->jQuery();
+	  /*-----------------------------------------------*/
+	 ?>
+  
+  <?php echo $this->headScript(); ?>
+  
+  <?php echo $this->headLink(); ?>
+</head>
+<body  >
+<div class="main-pager"><div id="main" >
+
+	<!-- Header -->
+	<?php echo $this->pageElement('header')?>
+	<!-- Header -->
+
+	<div id="contentArea">
+		<!-- Left -->
+		<div id="contentLeft">
+			<?php echo $this->pageElement('left-profile')?>
+		</div>
+		<!-- Left -->
+		<div class="google-rgt-banner">
+		<img src="/images/r-ban.jpg" />
+	</div>
+		<div id="contentRight">
+
+               
+                <div id="content">
+                        
+                    <?php echo $this->layout()->content ?>
+                   <?php echo $this->pageElement('right-profile');?>
+
+                </div>
+
+                </div>
+
+	</div>
+</div>
+</div>
+	<!-- Footer -->
+	<?php echo $this->pageElement('footer')?>
+	<!-- Footer -->
+
+
+</body>
+</html>

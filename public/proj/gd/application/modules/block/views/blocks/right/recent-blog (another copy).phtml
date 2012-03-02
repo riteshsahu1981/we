@@ -1,0 +1,74 @@
+<?php
+$date	=	new Base_Date();
+$blogM	=	new Application_Model_Blog();
+//$blogs	=	$blogM->fetchAll(null,"addedon desc",10);
+$blogs = $blogM->getRecentBlogs(10);
+//print_r($blogs);exit;
+?>
+
+<div class="right-box-wide" >
+	<h2 class="box-heading">RECENTLY ADDED JOURNALS</h2>
+	<div class="clear"></div>
+	<br />
+	<?php 
+	if(count($blogs)>0)
+	{
+		foreach($blogs as $_blog)
+		{
+			//$user			=	$_blog->getUserObj();
+
+			$userM			=	new Application_Model_User();
+			$userM			=	$userM->find($_blog->user_id);
+			$ustatus        =$userM->getStatus();
+			$thumbNail		=	$userM->getThumbnail();
+			$username		=	$userM->getUsername();
+			$first_name		=	$userM->getFirstname();
+			$last_name		=	$userM->getLastname();
+			$strTime		=	$date->timeAgo($_blog->addedon);
+			
+			$voteM			=	new Application_Model_Vote();
+			$total_likes	=	$voteM->getTotalVotes($_blog->id,"blog", 1,null);
+                        if($total_likes > 1){
+						$textPrint	=	"members like this";
+					}else{
+						$textPrint	=	"member likes this";
+					}
+					if($ustatus=="active")
+					{
+				      $viewJournal = true;
+				    }
+					else
+					{
+					$viewJournal = false;	
+					}
+	if($viewJournal)
+	{				
+	?>
+	<div class="recently-added">
+		<div class="recently-added-img">
+		<a href="/<?php echo $username;?>">
+		<!--<img src="<?echo $thumbNail;?>" width="37px" height="43px" alt="" /></a>-->
+		<img border="0" src="/image?src=<?php echo $thumbNail;?>&size=comment" alt="" />
+		</div>
+		<div class="recently-added-txt">
+			<div class="recently-mood"><a href="/journal/view-post/blog_id/<?php echo $_blog->id;?>"><?php echo $_blog->title;?></a></div>
+			<div class="recently-posted">Posted by <a href="/<?php echo $username;?>"><?php echo $first_name;?> <?php echo $last_name;?></a> | <?php echo $strTime;?> </div>
+			<div class="recently-like">
+			<?php if($total_likes > 0){?>
+			<a href="/journal/user-like-this/blog_id/<?php echo $_blog->id;?>"><span id="total_likes_left_<?php echo $_blog->id;?>"><?php echo $total_likes." ". $textPrint;?></span></a>
+			<?php }?>
+			
+			
+			</div>
+		</div>
+	</div>
+	<?php 
+		}//end of foreach
+	}//end of if
+}
+	else
+	{
+		echo "<div class='recently-added'>No journal posts available.</div>";
+	}
+	?>	
+</div>

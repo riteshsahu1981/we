@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<nav>
+		<home>
+			<label>Home</label>
+			<uri>/</uri>
+			<pages>
+				<my_gap_deamon>
+					<label>My Gap Daemon</label>
+					<uri>/gapper/where-i-am</uri>
+					<action>where-i-am</action>
+					<controller>gapper</controller>
+					<pages>
+						<where_i_am>
+							<label>Where I am</label>
+							<uri>/gapper/where-i-am</uri>
+							<action>where-i-am</action>
+							<controller>gapper</controller>
+						</where_i_am>
+						<my_profile>
+							<label>My Profile</label>
+							<uri>/gapper/my-profile/</uri>
+							<action>my-profile</action>
+							<controller>gapper</controller>
+							<pages>
+								<permissions>
+									<label>Permissions</label>
+									<uri>/gapper/permission/</uri>
+									<action>permission</action>
+									<controller>gapper</controller>
+								</permissions>
+							</pages>
+						</my_profile>
+						<my_travel_wall>
+							<label>My Travel Wall</label>
+							<uri>/gapper/my-travel-wall</uri>
+							<action>my-travel-wall</action>
+							<controller>gapper</controller>
+						</my_travel_wall>
+						<my_friends>
+							<label>My Friends</label>
+							<uri>/gapper/my-friends</uri>
+							<action>my-friends</action>
+							<controller>gapper</controller>
+							<pages>
+								<add_a_connection>
+									<label>Add a friend</label>
+									<uri>/gapper/add-a-connection</uri>
+									<action>add-a-connection</action>
+									<controller>gapper</controller>
+									<pages>
+									<search_friend>
+									<label>All friends</label>
+									<uri>/gapper/all-friends</uri>
+									<action>all-friends</action>
+									<controller>gapper</controller>
+									</search_friend>
+									</pages>
+								</add_a_connection>
+								<requests>
+									<label>Requests</label>
+									<uri>/gapper/requests</uri>
+									<action>requests</action>
+									<controller>gapper</controller>
+								</requests>                                                                
+							</pages>
+						</my_friends>
+						<my_photos>
+							<label>My Photos</label>
+							<uri>/album/my-photos</uri>
+							<action>index</action>
+							<controller>my-photos</controller>
+							<module>album</module>
+							<pages>
+								<create-album>
+									<label>Create Album</label>
+									<uri>/album/create-album</uri>
+									<action>index</action>
+									<controller>create-album</controller>
+									<module>album</module>
+								</create-album>
+								<album-photos>
+									<label>Album Photos</label>
+									<uri>/album/my-photos/album-photos</uri>
+									<action>album-photos</action>
+									<controller>my-photos</controller>
+									<module>album</module>
+								</album-photos>
+								<photo>
+									<label>Photo</label>
+									<uri>/album/my-photos/photo</uri>
+									<action>photo</action>
+									<controller>my-photos</controller>
+									<module>album</module>
+								</photo>
+								<tagged-photo>
+									<label>Tagged Photo</label>
+									<uri>/album/my-photos/tagged-photo</uri>
+									<action>tagged-photo</action>
+									<controller>my-photos</controller>
+									<module>album</module>
+								</tagged-photo>
+								<review-edit-image>
+									<label>Review Edit Image</label>
+									<uri>/album/my-photos/review-edit-image</uri>
+									<action>review-edit-image</action>
+									<controller>my-photos</controller>
+									<module>album</module>
+								</review-edit-image>
+							</pages>
+						</my_photos>
+						<my_journal>
+							<label>My Journals</label>
+							<uri>/journal/my-journals</uri>
+							<action>my-journals</action>
+							<controller>journal</controller>
+							<pages>
+								<journal_settings>
+									<label>Journal Settings</label>
+									<uri>/journal/journal-settings</uri>
+									<action>journal-settings</action>
+									<controller>journal</controller>
+								</journal_settings>
+								<create_blog>
+									<label>Create Journal Post</label>
+									<uri>/gapper/create-blog</uri>
+									<action>create-blog</action>
+									<controller>gapper</controller>
+								</create_blog>
+								<edit_blog>
+									<label>Edit Journal Post</label>
+									<uri>/gapper/edit-blog</uri>
+									<action>edit-blog</action>
+									<controller>gapper</controller>
+								</edit_blog>
+							</pages>
+						</my_journal>
+						<my_messages>
+							<label>My Messages</label>
+							<uri>/gapper/my-messages</uri>
+							<action>my-messages</action>
+							<controller>gapper</controller>
+						</my_messages>                                              
+					</pages>
+				</my_gap_deamon>
+				<journals>
+					<label>Journals</label>
+					<uri>/journal/</uri>
+					<action>index</action>
+					<controller>journal</controller>
+					<pages>
+							<view_post>
+							<label>View Post</label>
+							<action>view-post</action>
+							<controller>journal</controller>
+							</view_post>
+					</pages>
+				</journals>
+                <destinations>
+					<label>Travel Guides</label>
+					<uri>/destination/index</uri>
+					<action>index</action>
+					<controller>destination</controller>
+					<pages>
+							<country>
+							<label>Country Detail</label>
+							<action>country</action>
+							<controller>destination</controller>
+							</country>
+							<city>
+							<label>City Detail</label>
+							<action>city</action>
+							<controller>destination</controller>
+							</city>
+							<search>
+							<label>Search Result</label>
+							<action>search</action>
+							<controller>destination</controller>
+							</search>
+					</pages>
+				</destinations>
+				
+				<work_study_volunteer>
+					<label>Work/Study/Volunteer</label>
+					<uri>/work-study-volunteer/index</uri>
+					<action>index</action>
+					<controller>work-study-volunteer</controller>
+					<pages>
+						<category>
+						<label>Category</label>
+						<uri>/work-study-volunteer/category/</uri>
+						<action>category</action>
+						<controller>work-study-volunteer</controller>
+						</category>
+						
+						<detail>
+						<label>Detail</label>
+						<uri>/work-study-volunteer/detail/</uri>
+						<action>detail</action>
+						<controller>work-study-volunteer</controller>
+						</detail>
+						
+						<search>
+						<label>Search</label>
+						<uri>/work-study-volunteer/search/</uri>
+						<action>search</action>
+						<controller>work-study-volunteer</controller>
+						</search>
+						
+						<category_detail>
+						<label>Category Detail</label>
+						<uri>/work-study-volunteer/category-detail/</uri>
+						<action>category-detail</action>
+						<controller>work-study-volunteer</controller>
+						</category_detail>						
+						
+						<article_detail>
+						<label>Article Detail</label>
+						<uri>/work-study-volunteer/article/</uri>
+						<action>article-detail</action>
+						<controller>work-study-volunteer</controller>
+						</article_detail>						
+					</pages>
+				</work_study_volunteer>
+				
+				<advice>
+					<label>Advice</label>
+					<uri>/advice/index/</uri>
+					<action>index</action>
+					<controller>advice</controller>
+					<pages>
+						<category>
+						<label>Category</label>
+						<uri>/advice/category/</uri>
+						<action>category</action>
+						<controller>advice</controller>
+						</category>
+						
+						<detail>
+						<label>Detail</label>
+						<uri>/advice/detail/</uri>
+						<action>detail</action>
+						<controller>advice</controller>
+						</detail>
+						
+						<search>
+						<label>Search</label>
+						<uri>/advice/search/</uri>
+						<action>search</action>
+						<controller>advice</controller>
+						</search>
+					</pages>
+				</advice>
+				
+				<travel_shop>
+					<label>Travel Shop</label>
+					<uri>/shop</uri>
+					<action></action>
+					<controller>shop</controller>
+					<pages>
+						<index>
+						<label>Home</label>
+						<uri>/shop/index/</uri>
+						<action>index</action>
+						<controller>shop</controller>
+						</index>
+						<explorer>
+						<label>Explorer</label>
+						<uri>/shop/explorer/</uri>
+						<action>explorer</action>
+						<controller>shop</controller>
+						</explorer>
+						<insurance>
+						<label>Insurance</label>
+						<uri>/shop/insurance/</uri>
+						<action>insurance</action>
+						<controller>shop</controller>
+						</insurance>
+						<amazon>
+						<label>Amazon</label>
+						<uri>/shop/amazon/</uri>
+						<action>amazon</action>
+						<controller>shop</controller>
+						</amazon>
+					</pages>
+				</travel_shop>
+				<login>
+					<label>Login</label>
+					<uri>/index/login/</uri>
+					<action>login</action>
+					<controller>index</controller>
+				</login>
+				<register>
+					<label>Register</label>
+					<uri>/index/register</uri>
+				</register>
+                               
+			</pages>
+		</home>
+	</nav>
+</configdata>

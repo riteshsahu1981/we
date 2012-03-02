@@ -1,0 +1,78 @@
+<?php
+//select available user permissions group
+$group				= new Application_Model_FriendGroup();
+$friendGroupArray	= $group->getFriendGroup(null, null);
+
+//default selected Permission option as per permission settings
+$permission_id = 4; //Travel Journal Permission
+$savedUserPermission = 5; //public
+$userNs	=	new Zend_Session_Namespace('members');
+$userId	=	$userNs->userId;
+$where	=	"user_id='{$userId}' AND permission_id={$permission_id}";
+
+$user_permission	=	new Application_Model_UserPermission();
+$user_permission	=	$user_permission->fetchRow($where);
+if(false!==$user_permission)
+{
+	$savedUserPermission = $user_permission->getFriendGroupId();
+}	
+?>
+<div id="center">
+	<h2>JOURNAL SETTINGS</h2>
+	<?php if(isset($this->error_msg) && $this->error_msg!=""){?>
+	<div class="my-journal-box">
+	<div class="red"><?php echo $this->puts($this->error_msg);?></div>
+	<div class="clear"></div>
+	</div>
+	<?php }else {?>
+	<div class="welcome-content">
+		<p>You can edit the settings of your Travel Journal</p>
+		<p><b>Set up your Travel Journal</b></p>
+		<p>The travel journal is your blog. The Journal URL to the public by default will be <?php echo $this->siteUrl?>/journal/username</p>
+		
+		<?php if($this->success===1){?>
+			<span class="orange">You have successfully updated the journal settings.</span>
+		<?php }else if($this->success===0){?>
+			<span class="orange">An error has occurred during journal settings update.</span>
+		<?php }?>
+		<form method="post">
+		<div class="form-structure">                    
+			<input type="hidden" class="form" value="<?php echo $this->title?>" id="title" name="title">
+                        <?php if($this->noJournal==1){?>
+                        <span class="lbls f-left">Account Active! </span>
+                        <input type="submit" value="Unpublish Journals" id="remove" name="remove" class="f-left" />
+                        <?php }else{?>
+                        <span class="f-left">Account Deactive! </span>
+                        <input type="submit" value="Publish Journals" id="activate" name="activate" class="f-left" />
+			<?php } ?>
+			<br class="clear">
+			<label class="f-left">Journal Status</label>
+			<!--<select tabindex="6" class="form f-left" id="status" name="status">
+			    <option label="Public" <?php if($this->status=="public"){echo "selected='selected'";}?> value="public">Public(Default)</option>
+			    <option label="Private" <?php if($this->status=="private"){echo "selected='selected'";}?> value="private">Private</option>
+			</select>-->
+			<input type="hidden" name="status" id="status" value="public">
+			<input type="hidden" name="permission_id" id="permission_id" value="<?php echo $permission_id;?>">
+			<select class="form f-left" id="friend_group_id" name="friend_group_id">
+			<?php
+			foreach($friendGroupArray AS $key=>$value)
+			{
+				$selectedTxt = "";
+				if($savedUserPermission==$key)
+				{
+					$selectedTxt = "selected='selected'";
+				}
+			?>
+			<option value="<?php echo $key;?>" <?php echo $selectedTxt;?>><?php echo $value;?></option>
+			<? }?>
+			</select>
+			<input type="submit" value="Save" id="save" name="save" class="sub-btn f-left">	
+			<br class="clear">
+			<!--<p>Note: Although your journal is set to public, you can still make individual blogs private as and when you create them.</p>-->
+			<br class="clear">
+			<input type="submit" value="View My Journals" id="view" name="view">
+		</div>
+		</form>		
+	</div>
+	<?php }//end of else?>
+</div>

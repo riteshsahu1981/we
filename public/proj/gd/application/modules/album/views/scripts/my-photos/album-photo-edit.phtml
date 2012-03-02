@@ -1,0 +1,142 @@
+<script type="text/javascript" src="/js/facebox.js"></script>
+<link href="/style/facebox.css" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        loadingImage : '/images/facebox/loading.gif',
+        closeImage   : '/images/facebox/closelabel-grn.png'
+      })
+    })
+  </script>
+
+<div id="album-popup-edit">
+
+<!-- Top -->
+<div class="top">
+<span id="photo-saved" style="display:none;"></span>
+<span><a href="javascript:void(0);" id="close-album-photo-edit-box"><img class="close_image" title="close" src="/images/facebox/closelabel-grn.png"></a></span>
+</div>
+<!-- Top -->
+
+<!-- Left -->
+<div class="form">
+
+<label><span class="lab">Name of Photo</span> <input type="text" name="name" id="name" value="<?php print $this->name;?>" /></label>
+
+<label><span class="lab">Caption</span><textarea name="caption" id="caption" rows="5" cols="25"><?php print $this->caption;?></textarea></label>
+
+<label><span class="lab">Photo Location </span><input type="text" name="photo_location" id="photo_location" value="<?php print $this->location;?>" /></label>
+
+<label><span class="lab">Permissions</span> <select name="permissions" id="permissions">
+<?php foreach($this->arrFriendGroup as $key=>$value){?>
+<option value="<?php print $key;?>" <?php if($this->permission==$key){?> selected="selected" <?php }?>><?php print $value;?></option>
+<?php }?>
+</select></label>
+
+<label><span class="lab">Photo Tags</span> <textarea name="photo_tags" id="photo_tags" rows="5" cols="25"><?php print $this->albumPhotoTag;?></textarea></label>
+
+</div>
+<!-- Left -->	
+
+<!-- Right -->
+<div class="image">
+
+<div style="width:100%; float:left;" class=""><img src="/media/album/thumb/<?php print $this->photo;?>" alt=""></div>
+<!-- <a id="album_photo_delete" href="javascript:void(0);">Delete Photo</a> -->
+<a rel="facebox" href="/album/my-photos/album-photo-delete-confirm/nextId/<?php print $this->nextId;?>">Delete Photo</a>
+
+<label>Move Photo to: <select name="current_album_id" id="current_album_id" class="f-left">
+<?php foreach ($this->arrAlbum as $id=>$name){?>
+<option value="<?php print $id;?>" <?php if($this->albumId==$id){?> selected="selected" <?php }?>><?php print $name;?></option>
+<?php }?>
+</select></label>
+
+
+</div>
+<!-- Right -->
+	
+<!-- Bottom -->
+<div class="bottom">
+<input type="hidden" name="current_photo_id" id="current_photo_id" value="<?php print $this->current_photo_id;?>">
+<input type="hidden" name="current_album_id" id="current_album_id" value="<?php print $this->current_album_id;?>">
+<input type="button" id="save-photo" name="save" value="SAVE" class="button" />
+<span>
+<a href="javascript:void(0);" onclick="slidePhotoEdit(<?php print $this->prevId;?>);">&lt; Previous Photo</a> 
+<a href="javascript:void(0);" onclick="slidePhotoEdit(<?php print $this->nextId;?>);">Next Photo &gt;</a>
+</span>
+</div>
+<!-- Bottom -->
+	
+</div>
+<script>
+$(document).ready(function(){
+	$("a#close-album-photo-edit-box").click(function(){
+
+            var photoId	=	$("#current_photo_id").val();
+            var albumId	=	$("#current_album_id").val();
+            var relodeUrl = "/album/my-photos/photo/album/"+albumId+"/id/"+photoId;
+            window.location=relodeUrl;
+
+                
+		$("a#photo-edit-button").attr("style",""); //change edit button color
+		$("#photo-editing").html("<span id='loading-wall'><img src='<?php echo $this->cdnUri()?>/images/loading.gif' alt=''/></span>");
+		//$("#photo-editing").fadeOut(500);
+                $("#photo-editing").delay(1500).hide("explode", { pieces: 16 }, 1600);
+
+	});
+});
+
+$(document).ready(function(){
+	$("a#album_photo_delete").click(function(){
+
+		 var photoId	=	$("#current_photo_id").val();
+
+		 var requesturl	=	"/album/my-photos/album-photo-delete";
+
+		 $.post(requesturl, {photoId:photoId},
+				   function(html){
+			 		slidePhotoEdit(<?php print $this->nextId;?>);
+			 		$("#photo-saved").show();
+		 			$("#photo-saved").html('Photo has been deleted.');
+		 			RAVIN_DelayedHide('photo-saved');			 				
+				});
+
+	});
+});
+
+$(document).ready(function(){
+	$("input#save-photo").click(function(){
+		
+		$("#photo-loading").show();
+		var photoId		=	$("#current_photo_id").val();
+		var albumId		=	$("#current_album_id").val();
+		var name		=	$("#name").val();
+		var caption		=	$("#caption").val();
+		var location	=	$("#photo_location").val();
+		var permissions	=	$("#permissions").val();
+		var tags	=	$("#photo_tags").val();
+
+		if(name	==	""){
+			alert("Please enter Name of Photo!");
+			return false;
+		}
+
+		 var requesturl	=	"/album/my-photos/album-photo-edit-submit";
+
+		 $.post(requesturl, {photoId:photoId,albumId:albumId,name:name,caption:caption,location:location,permissions:permissions,tags:tags },
+				   function(html){
+			 			$("#photo-loading").hide();	
+			 			$("#photo-saved").show();
+			 			$("#photo-saved").html('Photo details have been saved.');
+			 			RAVIN_DelayedHide('photo-saved');
+						
+						loadLocationTag(photoId); // Load Location, Tag area
+			 				
+				});
+		 
+		 
+
+	});
+});
+
+</script>

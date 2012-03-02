@@ -1,0 +1,56 @@
+<?php 
+echo '<ul class="accord" id="menu">';
+
+// loop root level (only has Home, but later may have an Admin root page?)
+foreach ($this->container as $pages)
+{
+	// loop next level
+	foreach ($pages as $page)
+	{
+		if($page=="My Gap Daemon" )
+		{
+			foreach($page as $p)
+			{
+				// check if it is active (recursive)
+				$isActive = $p->isActive(true);
+				$liClass = $isActive ? ' class="active"' : '';
+				if($p->getLabel() == 'My Photos')
+				{
+                                    $usersNs = new Zend_Session_Namespace("members");
+                                    $userName = $usersNs->userUsername;
+					$url="/".$p->getModule()."/".$p->getController()."/".$p->getAction()."/user-name/".$userName;
+				}
+				else
+				{
+					$url="/".$p->getController()."/".$p->getAction();
+				}
+				echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p->getLabel()).'</a>', PHP_EOL;
+
+				foreach($p as $p1)
+				{
+					//do not display Album module links
+					if($p1->getController() != 'create-album' && $p1->getAction() != 'album-photos' && $p1->getAction() != 'photo' && $p1->getAction() != 'tagged-photo' && $p1->getAction() != 'review-edit-image')
+					{
+						//do not display Journal links 
+						if(($p1->getController() == 'gapper') && ($p1->getAction() == 'create-blog' || $p1->getAction() == 'edit-blog'))
+						{
+							//no need to print anything
+						}
+						else
+						{
+							echo '<ul >';
+							$isActive = $p1->isActive(true);
+							$liClass = $isActive ? ' class="active"' : '';
+							$url="/".$p1->getController()."/".$p1->getAction();
+							echo '<li ' . $liClass . '><a href="' . $this->seoUrl($url) . '">'.$this->puts($p1->getLabel()).'</a> </li>', PHP_EOL;
+							//echo '<li ' . $liClass . '>'. $this->menu()->htmlify($p1) . '</li>', PHP_EOL;
+							echo '</ul>';
+						}
+					}//end if
+				}//end foreach
+			}//end foreach
+			echo "</li>";
+		}//end if
+	}//end foreach
+}//end foreach
+echo '</ul>';

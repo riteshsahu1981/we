@@ -1,0 +1,63 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<?php echo $this->headTitle(); ?>   
+	<?php echo $this->headMeta(); ?>
+	
+  
+	  <?php 
+	  /*-------------- jquery ui----------------------*/
+	  if($this->jQuery()->isEnabled())
+		echo $this->jQuery();
+	  /*-----------------------------------------------*/
+	 ?>
+  
+  <?php echo $this->headScript(); ?>
+  
+  <?php echo $this->headLink(); ?>
+  <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+        loadingImage : '/images/facebox/loading.gif',
+        closeImage   : '/images/facebox/closelabel.png'
+      })
+    })
+  </script>
+</head>
+
+
+
+
+<body  >
+   
+<div id="mainwrapper">
+    <div id="main" >
+
+	<!-- Header -->
+	<?php echo $this->pageElement('header')?>
+	<!-- Header -->
+	<div class="google-rgt-banner">
+		<img src="/images/r-ban.jpg" />
+	</div>
+	<div id="contentArea">
+		<!-- Left -->
+		<div id="contentLeft">
+			<?php echo $this->pageElement('left')?>
+		</div>
+		<!-- Left -->
+		
+		<div id="contentRight">
+		<?php echo $this->layout()->content ?>
+		</div>
+
+	</div>
+</div>
+
+<!-- Footer -->
+<?php echo $this->pageElement('footer')?>
+<!-- Footer -->
+</div>
+
+</body>
+</html>

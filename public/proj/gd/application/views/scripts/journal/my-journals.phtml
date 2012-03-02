@@ -1,0 +1,383 @@
+<script language="javascript" type="text/javascript">
+function mySubmit()
+{
+	$("#searchfrm").submit();
+}
+
+function showComments(blogId)
+{   
+   var  requestUrl	="/journal/comment/blogId/"+blogId;
+   $.ajax({
+		type: "POST",
+		url: requestUrl,
+		success: function(msg){ 
+					 var div = document.getElementById('comment_lisitng_'+blogId);
+					 div.innerHTML = msg;					
+					 $('#comment_lisitng_'+blogId).slideToggle();						 
+			   }				
+	  });
+
+	if(document.getElementById('view_comment_link_'+blogId).innerHTML=="View Comment")
+	{
+		document.getElementById('view_comment_link_'+blogId).innerHTML="Hide Comment";
+	}
+	else
+	{
+		document.getElementById('view_comment_link_'+blogId).innerHTML="View Comment";
+	}
+}
+
+function showEdit(id)
+{ 
+	$(".Edit_Blog_Info_"+id).slideToggle();
+	if(document.getElementById('edit_link_'+id).innerHTML=="EDIT")
+	{
+		document.getElementById('edit_link_'+id).innerHTML="HIDE";
+	}
+	else
+	{
+		document.getElementById('edit_link_'+id).innerHTML="EDIT";
+	}
+}
+
+function editBlock(id)
+{
+	var requestUrl	= "/journal/updateblog/id/"+id;
+	var postData	= ($("#frmBlogInfo_"+id).serialize());
+	$.ajax({
+	type: "POST",
+	url: requestUrl,
+	data: postData,
+	success: function(resp){
+		//alert("resp="+resp);
+		if(resp)
+		{
+			var responseArray=resp.split("~###~");
+			$('#msg_'+id).html(responseArray[0]);
+			if(responseArray.length==2){
+				
+				if(responseArray[1]!="")
+				{
+					$('#tag_container_'+id).html('Tags: ' + responseArray[1]);
+					$('#tag_container_'+id).show();
+				}
+				else
+					{$('#tag_container_'+id).hide();}
+			}
+			showEdit(id);//hide
+		 } 
+		 else
+		 {
+		   alert("Error occured please try again.");      		   
+		 }
+	}
+	}); 
+}
+
+function addComment(item_id)
+{
+	var params='';
+	params+="comment="+escape($("#blog-comment-"+item_id).val());
+	params+="&item_id="+item_id;
+	//params+="&user_id="+user_id;
+	params+="&item_type=blog";
+	
+    $("span#comment_loading_"+item_id).show();
+    $("#saveComment_"+item_id).hide();
+	$.ajax({
+		   type: "POST",
+		   url: "/comment/add-comment/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json)
+		   {
+				//alert("resp="+json);
+				if(json.error==1)
+				{
+					$("#server-response").html(json.response);
+					$("span#comment_loading_"+item_id).hide();
+					$("#saveComment_"+item_id).show();
+				}
+				else
+				{
+					//alert("response="+json.response);
+					$("#server-response").html('');
+					$("#saveComment_"+item_id).show();
+					$("span#comment_loading_"+item_id).hide();
+					$("#no_comment_found_"+item_id).hide();
+					$("#total_comments_"+item_id).html(json.total_comments);
+					$("#comment-list-"+item_id).append(json.response);
+					$("#blog-comment-"+item_id).val('Comment...');
+				}	
+		   },
+		   error: function (json, status, e)
+		   {
+				//alert("json="+json+" status="+status+" e="+e);
+				$("span#comment_loading_"+item_id).hide();
+				$("#saveComment_"+item_id).show();
+		   }
+	 });
+}
+function removeComment(comment_id, item_id)
+{
+	if(confirm("Are you sure? You want to delete this comment?"))
+	{
+		var params='';
+		params+="comment_id="+comment_id;
+		params+="&item_id="+item_id;
+		params+="&item_type=blog";
+		
+		$.ajax({
+			   type: "POST",
+			   url: "/comment/delete-comment/",
+			   data: params,
+			   dataType: "json",
+			   success: function(json)
+			   {
+					//alert("resp="+json);
+					if(json.error==1)
+					{
+						$("#delete_comment_response").show();
+						$("#delete_comment_response").html(json.response);
+					}
+					else
+					{
+						//alert("response="+json.response);
+						//showComments(item_id);
+						$("#delete_comment_response").hide();
+						$("div#comment-detail-"+comment_id).hide();
+						$("#total_comments_"+item_id).html(json.total_comments);
+					}	
+			   },
+			   error: function (json, status, e)
+			   {
+					//alert("json="+json+" status="+status+" e="+e);
+			   }
+		 });
+	}	
+}
+function likeComment(item_id, vote)
+{
+	var params='';
+	params+="item_id="+item_id;
+	params+="&vote="+vote;
+	params+="&item_type=blog_comment";
+	
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/like-comment/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json)
+		   {
+				//alert("resp="+json.response);
+				if(json.error==1)
+				{
+					$("#delete_comment_response").show();
+					$("#delete_comment_response").html(json.response);
+				}
+				else
+				{
+					$("#delete_comment_response").hide();
+					$("#like-comment-label-"+item_id).html(json.response);
+				}
+		  },
+		  error: function (json, status, e)
+		  {
+			  //alert("json="+json+" status="+status+"e="+e);
+		  }
+	 });
+}
+</script>
+<div id="content">
+  <div id="center">
+    <h2><span class="f-left">My Journals</span> <div class="f-left top-blink"><a href="/gapper/create-blog/" class="butttonLink f-left">CREATE JOURNAL POST</a></div></h2>
+	<p>Create a journal of all your your activities during your travels.</p>
+	 <form action = "/journal/my-journals" method="post" name="searchfrm" id="searchfrm" style="display:inline">
+	    <div class="search-blog"><input class="search-input" type="text" id="searchname" name="searchname" value="<?php echo $this->searchname!=''?$this->searchname:'Search Journals'; ?>" onfocus="if(this.value=='Search Journals'){this.value='';}" onblur="if(this.value==''){this.value='Search Journals';}" onchange="mySubmit();">
+		<input type="button" value="" class="search-btn" />
+		</div>
+	</form>
+	<?php if(isset($_SESSION["flash_msg"]) && $_SESSION["flash_msg"]!=""){?>
+	<h3><?php echo $_SESSION["flash_msg"];?></h3>
+	<?php unset($_SESSION["flash_msg"]);}?>
+<div id="blogs_listings" style="border:0px solid #ffcc00;">
+<?php 
+if(count($this->data)>0)
+{ 
+	$date=new Base_Date();
+	$date->setSysDateFormat("jS F Y");
+	
+	$com_obj = new Application_Model_Comment();
+	$vot_obj = new Application_Model_Vote();	
+	
+	foreach($this->data as $row)
+	{
+		$tagsM	=	new Application_Model_Tags();
+		$tagStr	=	$tagsM->getBlogTags($row->getId(),false, false);
+		
+		$tagsStrEdit = $row->getTags();
+		$tagsStrEdit = $tagsM->getTagsForEdit($row->getId());
+		//$user	=	$row->getUserObj();
+?>
+<div class="my-journal-box"> 
+	<div class="hide-view f-right">
+	<a href="javascript://" onclick='showEdit(<?php echo $row->getId();?>)' id="edit_link_<?php echo $row->getId();?>">EDIT</a>
+	</div>
+	 
+	<h3><b><?php echo $row->getTitle();?></b><div id="msg_<?php echo $row->getId() ?>" style="padding:0px 50px 0px 20px;float:right;" class="orange-sml"></div></h3>
+    <div class="post-by">
+		  Posted by <strong><span>Me</span></strong> <span></span> | 
+		  <span><?php echo $date->getSysDate($row->getAddedon());?></span> | 
+		  <span id="total_comments_<?php echo $row->getId();?>"><?php 
+                  $total_comment= $com_obj->numComments('blog', $row->getId()) ;
+                  if($total_comment>1)
+                  {
+                      echo $total_comment." Comments";
+                  }
+                  else
+                  {
+                      echo $total_comment." Comment";
+                  }
+                  ?> </span> |
+		  <?php 
+		  if($vot_obj->numVotes('blog', $row->getId()) > 0)
+		  { 
+				$total_like= $vot_obj->numVotes('blog', $row->getId());
+				$totalLikePrint	=	$this->language("like_singular");
+				if($total_like > 1)
+				{
+					$totalLikePrint	=	$this->language("like_plural");
+				}
+		  ?>
+		  <span><?php echo $total_like." ".$totalLikePrint;?></span>
+		  <?php }?>
+	</div>	  
+	<div class="Edit_Blog_Info_<?php echo $row->getId();?>" style="display:none;padding:10px 0px 10px 0px;">
+		  <div class="clear"></div>
+		  <form name="frmBlogInfo_<?php echo $row->getId();?>" id="frmBlogInfo_<?php echo $row->getId();?>" method="post">
+		  <div class="cat-left"><span>Category</span>
+				<?php 
+				   $this->form->getElement('categoryId')->setName('categoryId_'.$row->getId());
+				   $this->form->getElement('categoryId')->setAttrib('id','categoryId_'.$row->getId());
+				   $this->form->getElement('categoryId')->setValue($row->getCategoryId());
+				   echo $this->form->categoryId
+				?>
+		  </div>
+		  <div class="loc-left"><span>Location</span> 
+				<?php 
+				   $this->form->getElement('location')->setName('location_'.$row->getId());
+				   $this->form->getElement('location')->setAttrib('id','location_'.$row->getId());
+				   $this->form->getElement('location')->setValue($row->getLocation());
+				   echo $this->form->location
+				?>
+		  </div>
+		  <div class="clear"></div>
+		  <div class="tag-div"><span>Tags</span> 
+			  <?php 
+				   $this->form->getElement('tags')->setName('tags_'.$row->getId());
+				   $this->form->getElement('tags')->setAttrib('id','tags_'.$row->getId());
+				   $this->form->getElement('tags')->setValue($tagsStrEdit);
+				   echo $this->form->tags
+			  ?>
+		  </div>
+		  <div class="buttonss">
+			  <!--<input name="btnSave" type="button" value="Edit Entry" class="button" onclick='editBlock(<?php //echo $row->getId() ?>)'/>
+			  <input name="btnDelete" type="button" value="Delete" class="button" onclick='deleteBlock(<?php //echo $row->getId() ?>)'/>-->
+			  <span><a href="javascript://" title="Save changes" onclick="editBlock(<?php echo $row->getId()?>)"><b>Update</b></a></span>&nbsp;&nbsp;&nbsp;
+			  <span><a href="/journal/delete-post/blog_id/<?php echo $row->getId();?>" title="Delete blog post" onclick="return confirm('Are you sure? You want to delete this post?\r\nThis action will also delete all comments associated with this post.');"><b>Delete</b></a></span>&nbsp;&nbsp;&nbsp;
+			  <span><a href="/gapper/edit-blog/id/<?php echo $row->getId();?>" title="Edit full details"><b>Edit Journal</b></a></span>
+		  </div>
+		  </form>
+	 </div> 
+	 <div class="view-comment-div">
+		<div class="view-comment-div-like">
+			<span class="view-comment"> <a href="javascript://" onclick="showComments(<?php echo $row->getId();?>)" id="view_comment_link_<?php echo $row->getId();?>" style="font-weight:bold;">View Comment</a></span>
+			<span class="jurnal-like-dislike-l">
+			<?php
+			if($vot_obj->numVotes('blog', $row->getId()) > 0)
+			{
+				$total_like= $vot_obj->numVotes('blog', $row->getId());                        
+				$totalLikePrint	=	$this->language("like_singular");
+				if($total_like > 1)
+				{
+					$totalLikePrint	=	$this->language("like_plural");
+				}
+			?>
+			<span><img src="/images/like-icon-2.jpg"></span> 			
+			<span><a href="<?php echo $this->seoUrl('/journal/user-like-this/type/blog/item_id/'.$row->getId());?>"><?php echo $total_like." ".$totalLikePrint;?></a></span>
+			<?php }?>			
+			</span>
+                        <?php 
+                        $style='';
+                        if($tagStr==""){
+                            $style="style='display:none'";
+                        }
+                        ?>
+                        <span <?php echo $style?> id="tag_container_<?php echo $row->getId()?>"class="jurnal-like-dislike-r">Tags: <?php echo $tagStr;?></span>
+		</div>
+		<div id="delete_comment_response" style="display:none;"></div> 
+		<div id="comment_lisitng_<?php echo $row->getId();?>" style="display:none;"></div>
+	</div>
+</div>
+    <?php 
+	}//end of foreach
+?>
+</div>
+<span style="display: none;" id="loading">
+    <img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+</span>	
+<div class="view-link">
+	<a id="show-more-link" href="javascript: morePosts()">VIEW MORE POSTS</a>
+</div>
+<?php
+}
+else
+{
+?>
+<div class="my-journal-box">No journals found. Please add new journal.</div>
+<div class="clear"></div>
+</div>
+<?php
+}
+?>
+</div>
+<script language="javascript" type="text/javascript">
+var page=2;
+function morePosts()
+{
+    $("span#loading").show();
+    $("#show-more-link").hide();
+
+    var params='';
+    var searchname = $("#searchname").val();
+    params+="page="+page+"&mode=ajax&searchname="+searchname;
+    page = page+1;
+    $.ajax({
+               type: "POST",
+               url: "/journal/view-moreposts/",
+               data: params,
+               dataType: "html",
+               success: function(html)
+			   {
+					//alert("resp=>"+html);
+					$("span#loading").hide();
+					$("#show-more-link").show();
+
+					if(html=="nodata")
+					{
+						$("#show-more-link").hide();
+						$("#blogs_listings").append("<span style='color:#EF4733;'>No more blogs found.</span>");
+					}
+					else
+					{
+						$("#blogs_listings").append(html);
+					}
+               },
+               error: function (json, status, e)
+			   {
+                     alert(e+json+status);
+               }
+     });
+}
+</script>

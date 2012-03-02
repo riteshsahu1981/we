@@ -1,0 +1,614 @@
+<?php 
+$userNs	=	new Zend_Session_Namespace('members');
+$user		=	new Application_Model_User();
+		$user		=	$user->find($userNs->userId);
+		$this->loginUrl =	"";
+		$facebook	=	$this->facebook();
+		
+		if($user->getFacebookId()=="" || is_null($user->getFacebookId()))
+		{
+			//$return_url=Zend_Registry::get('siteurl')."/index/facebook-connect/";
+			$return_url=Zend_Registry::get('siteurl')."/index/do-fb-return/";
+		    $cancel_url=Zend_Registry::get('siteurl')."/index/cancel-facebook";
+    		$this->loginUrl=$loginUrl = $facebook->getLoginUrl(array("cancel_url"=>$cancel_url,"next"=>$return_url,"req_perms"=>"offline_access,publish_stream,read_stream,email,user_birthday,user_location","display"=>"popup"));
+		}
+?>
+
+<style type="text/css">
+label { width: 10em; float: left; }
+label.error { float: none; color: red; padding-left: .5em; vertical-align: top; }
+p { clear: both; }
+.submit { margin-left: 12em; }
+em { font-weight: bold; padding-right: 1em; vertical-align: top; }
+</style>
+<!-- Script for Autogrow expendable textarea-->
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/ext-core.js"></script>
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/elastic-textarea.js"></script>
+<script language="javascript" type="text/javascript">
+
+$(document).ready(function()
+{
+	$("#status").focus(function(){$("span#msg").hide();});
+    $("#commentForm").validate({
+	submitHandler: function(form) {
+	var params=$(form).serialize();
+	    	//alert(params);
+	$("span#loading").show();
+	$("span#msg").hide();
+	$("#share").hide();
+	$.ajax({
+		   type: "POST",
+		   url: "/gapper/my-travel-wall/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+					
+				$("span#loading").hide();
+				$("#share").show();
+				$("span#msg").show();
+				
+				if(json.error==0)
+				{
+					$("span#msg").html("Status updated successfully");
+					$("#status").val('');
+					$(reloadWall);
+					$(reloadWallMy);	    					
+				}
+				else
+				{
+					$("span#msg").html("Error");
+				}
+				$("#status").attr('style','');//reset style
+		   },
+		   error: function (json, status, e){
+				//alert("json="+json+", status="+status+", e="+e);
+				$("span#msg").show();
+				$("span#loading").hide();
+				$("#share").show();
+				$(reloadWall);
+				$("span#msg").html("Duplicate post on facebook");
+				$("#status").val("");
+				$("#status").attr('style','');//reset style
+			   //$("span#msg").html("There is some problem while posting on facebook. Please refresh the page.");	    					
+			}
+		 });
+ 	   }
+ 	});
+ 	
+ 	$(reloadWall);
+    
+});
+
+function reloadWall()
+{
+	$("span#loading-wall").show();
+	var params="mode=ajax";
+	$.ajax({
+		   type: "POST",
+		   url: "/gapper/reload-wall/wall_id/<?php echo $this->wall_id;?>",
+		   data: params,
+		   dataType: "html",
+		   success: function(html)
+		   {
+				$("span#loading-wall").hide();
+				$("div#wall").html(html);
+				
+		   },
+		   error: function (json, status, e){
+			
+			   $("span#wall").html("Exception : "+e+json);						
+					
+			}
+	 });
+}
+
+function reloadWallMy()
+{
+	$("span#loading-wall").show();
+	var wall_flag	=	$("input#wall_flag").val();
+
+	var params="mode=ajax";
+	$.ajax({
+		   type: "POST",
+		   url: "/gapper/reload-wall-my/wall_id/<?php echo $this->wall_id;?>",
+		   data: params,
+		   dataType: "html",
+		   success: function(html)
+		   {
+				$("span#loading-wall").hide();
+				//$("div#my-wall").html(html);
+				$("div#wall").html(html);
+
+				if(wall_flag != 'my-travel-wall')
+				{
+					//$("div#my-wall").hide();
+				}				
+		   },
+		   error: function (json, status, e){
+			
+			   $("span#wall").html("Exception : "+e+json);						
+					
+			}
+	 });
+}
+ 
+function removeWallPost(postId)
+{
+	var divId	=	"my-travel-wall-post-"+postId;
+	var response = confirm("Are you sure you want to delete this post?");
+
+	if (response == false)
+	{			
+		return false;
+	}
+	else
+	{
+		$.ajax({
+			type: "POST",
+			url: "/gapper/remove-travel-wall-post/",
+			data: "postId="+postId,
+			cache: false,
+			success: function(html){
+				$('#'+divId).slideUp("slow");
+			}
+			});
+	}		
+}
+
+function show_post_hide_block(postId, userId)
+{
+	var divId	=	"spam-box-"+postId;
+	
+	if ($("#"+divId).is(":visible"))
+	{
+		$("#"+divId).html("");
+		$("#"+divId).hide();
+	}
+	else
+	{
+		$(".spam-box").html('');
+		$(".spam-box").hide();
+		$("#"+divId).show();
+		$("#"+divId).html("<img src='/images/loading.gif' alt='' />&nbsp;&nbsp;&nbsp;&nbsp;wait...");
+
+		$.ajax({
+					type: "POST",
+					url: "/gapper/show-post-hide-block/",
+					data: "postId="+postId+'&userId='+userId,
+					cache: false,
+					success: function(html){
+							
+							$("#"+divId).html(html);
+					}
+				});
+	}
+}
+
+function hide_this_post(postId)
+{
+	var divId		=	"spam-box-"+postId;
+	var hideDivId	=	"my-travel-wall-post-"+postId;
+	
+	$.ajax({
+			type: "POST",
+			url: "/gapper/hide-this-post/",
+			data: "postId="+postId,
+			cache: false,
+			success: function(html){
+					$('#'+hideDivId).slideUp("slow");
+			}
+		});
+}
+
+function hide_all_post(posterId)
+{
+	$.ajax({
+		type: "POST",
+		url: "/gapper/hide-all-post/",
+		data: "posterId="+posterId,
+		cache: false,
+		success: function(html){
+				$('.'+posterId).slideUp("slow");
+			}
+	});
+}
+
+function hide_spam_box(span_box)
+{
+	$("#"+span_box).html('');
+	$("#"+span_box).hide();
+}
+
+function show_close_button(imgId)
+{
+	$("#"+imgId).show();
+}
+
+function hide_close_button(imgId)
+{
+	$("#"+imgId).hide();	
+}
+
+
+</script>
+<script type="text/javascript" src="<?echo $this->cdnUri()?>/js/custom-form-elements.js"></script>
+
+<?php if($this->section_to_display=="where-i-am"){ // this seciton is realted to where i am seciton?>
+<div id="center">
+		<?php 
+		//display view more link if not viewing particular wall information
+		if (!isset($this->wall_id) && $this->wall_id=="")
+		{
+		?>
+		<!-- <h2>MY TRAVEL WALL</h2> -->
+		<div class="location padb0">
+			
+			<a class="blue" href="javascript:void(0);" id="my-travel-feed"  onclick="$('#my-travel-feed').removeClass('grey'); $('#my-travel-feed').addClass('blue');$('#my-travel-wall').removeClass('blue'); $('#my-travel-wall').addClass('grey');">NEWS FEED</a>
+			
+			<a class="gray" href="javascript:void(0);" id="my-travel-wall"  onclick="$('#my-travel-feed').removeClass('blue'); $('#my-travel-feed').addClass('grey');$('#my-travel-wall').removeClass('grey'); $('#my-travel-wall').addClass('blue');">MY TRAVEL WALL</a>
+            <div class="f-right">
+				<?php if($this->loginUrl==""){?>
+					
+				<?php }else{?>
+					<a  onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" href="javascript://" class="connect-log marr0"><img src="<?echo $this->cdnUri()?>/images/f_connect.gif" alt="" /></a>
+				<?php } ?>
+				</div>
+		</div>		
+		<!--<p>Keep up to date with the latest updates from your friends, family and travel mates</p>-->
+		<?php if($this->msg!=""){ ?>
+        	<ul class="errors"><li><?php echo $this->msg;?></li></ul>
+           <?php } ?>
+		<div class="status-update-sml where-i-am-now">
+			
+			<form class="cmxform" id="commentForm" method="post" action="">
+				<div class="what-doing">What are you doing now?</div>
+				<div class="updatedex-box"><textarea name='status' id='status' class="required update-txt" style="height:16px;" ></textarea></div><input type="submit" name="share" id="share" value="Share"/>
+                <input type="hidden" name="wall_flag" id="wall_flag" value="my-travel-feed" />
+                <div class="clear"></div>
+				<div class="f-left">
+				<?php if($this->loginUrl==""){?>
+					<em>Send my status update to Facebook</em> <input class="styled" type="checkbox" name="facebook" checked="checked" id='facebook' value="1"/>
+				<?php }else{?>
+
+				<?php } ?>
+				</div>
+                <span id="loading" style="display: none"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/> </span>
+				<span id="msg"></span>
+			</form>
+		</div>
+		<?php }//end of if?>
+			<br class='clear'>
+			<span id="loading-wall"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+			<div id="wall"></div>
+			
+	</div>
+<?php }else{ // this section is related to my travel wall?>
+<div id="center">
+		<?php 
+		//display view more link if not viewing particular wall information
+		if (!isset($this->wall_id) && $this->wall_id=="")
+		{
+		?>
+		<!-- <h2>MY TRAVEL WALL</h2> -->
+		<div class="location">
+			
+			<a class="blue" href="javascript:void(0);" id="my-travel-feed">MY TRAVEL FEED</a>
+			
+			<a class="red" href="javascript:void(0);" id="my-travel-wall">MY TRAVEL WALL</a>
+		</div>		
+		<p>Keep up to date with the latest updates from your friends, family and travel mates</p>
+		<?php if($this->msg!=""){ ?>
+        	<ul class="errors"><li><?php echo $this->msg;?></li></ul>
+           <?php } ?>
+		<div class="status-update-sml">
+			
+			<form class="cmxform" id="commentForm" method="post" action="">
+				<span>Travel Wall Update</span>
+				<div class="updatedex-box"><textarea name='status' id='status' class="required update-txt" style="height:16px;" ></textarea></div><input type="submit" name="share" id="share" value="Share"/>
+                <input type="hidden" name="wall_flag" id="wall_flag" value="my-travel-feed" />
+                <div class="clear"></div>
+				<div class="send-stat">
+				<?php if($this->loginUrl==""){?>
+					<em>Send my status update to Facebook</em> <input class="styled" type="checkbox" name="facebook" checked="checked" id='facebook' value="1"/>
+				<?php }else{?>
+					<a  onclick="fbLoginBox('<?php echo $this->loginUrl;?>')" href="javascript://" class="connect-log"><img src="<?echo $this->cdnUri()?>/images/f_connect.gif" alt="" /></a>
+				<?php } ?>
+				</div>
+                <span id="loading" style="display: none"> <img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+				<span id="msg"></span>
+			</form>
+		</div>
+		<?php }//end of if?>
+			<br class='clear'>
+			
+			<h2>STATUS FEEDS</h2>
+			
+			<span id="loading-wall"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+			<div id="wall"></div>
+			<!--<div id="my-wall"></div>-->
+	</div>
+	
+
+<?php } ?>
+
+
+
+<script type="text/javascript" language="javascript">
+elasticTextArea("status");
+function like(item_id,vote)
+{
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=status";
+	$("span#like_"+item_id).hide();
+    $("span#loading_"+item_id).show();
+	
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+				$("span#loading_"+item_id).hide();
+				$("#comment-main-"+item_id).show();
+			
+				if(vote==1)
+				{
+					$("span#unlike_"+item_id).show();
+					$("span#like_"+item_id).hide();
+					$("#you-like-this-"+item_id).show();
+					$("#you-like-this-thumb-"+item_id).show();
+				}
+				else
+				{
+					$("span#unlike_"+item_id).hide();
+					$("span#like_"+item_id).show();
+					$("#you-like-this-"+item_id).hide();
+					$("#you-like-this-thumb-"+item_id).hide();
+				}
+				
+				//display main DIV and other as per user vote and total likes
+				if(vote==1)
+				{
+					$("div#travel_tag_div_"+item_id).show();
+					//$("div#travel_tag_div_"+item_id).addClass('like-dislike-img');
+				}
+				else
+				{
+					if(json.total_up==0)
+					{
+						$("div#travel_tag_div_"+item_id).hide();
+					}
+				}
+				
+				if(json.total_up>1)
+				{
+					$("span#total_likes_" + item_id).html(json.total_up + " <?php echo $this->language("like_plural");?>");
+				}
+				else if(json.total_up==1)
+				{
+					$("span#total_likes_" + item_id).show();
+					$("span#total_likes_" + item_id).html(json.total_up + " <?php echo $this->language("like_singular");?>");
+				}
+				else
+				{
+					$("span#total_likes_" + item_id).hide();
+					$("span#total_likes_"+item_id).html(json.total_up);
+				}
+              }//end of else if
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+
+function showCommentBox(item_id)
+{
+    $("#comment-main-"+item_id).show();
+	$("#status-comment-"+item_id).focus();
+}
+
+function likeComment(item_id,vote)
+{
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=status_comment";
+	$("span#like_"+item_id).hide();
+	$("span#loading_comment_"+item_id).show();
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+				$("span#loading_comment_"+item_id).hide();
+				if(vote==1)
+				{
+					$("span#unlike_comment_"+item_id).show();
+					$("span#like_comment_"+item_id).hide();
+					$("#you-like-this-comment-"+item_id).show();
+					$("#you-like-comment-"+item_id).show();
+				}
+				else
+				{
+					$("span#unlike_comment_"+item_id).hide();
+					$("span#like_comment_"+item_id).show();
+					$("#you-like-this-comment-"+item_id).hide();
+					$("#you-like-comment-"+item_id).hide();
+				}
+				//$("span#total_likes_comment_"+item_id).html(json.total_up);
+				//$("span#total_likes_left_"+item_id).html(json.total_up);
+				
+				if(json.total_up>1)
+				{
+					$("span#total_likes_comment_"+item_id).html(json.total_up + " <?php echo $this->language("like_plural");?>");
+					
+				}
+				else if(json.total_up==1)
+				{
+					$("#you-like-this-comment-"+item_id).show();
+					$("span#total_likes_comment_"+item_id).show();
+					$("span#total_likes_comment_"+item_id).html(json.total_up + " <?php echo $this->language("like_singular");?>");
+				}
+				else
+				{
+					$("span#total_likes_comment_"+item_id).hide();
+					$("span#total_likes_comment_"+item_id).html(json.total_up);
+				}
+			}
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+
+function statusComment(item_id,commentedPersonId)
+{
+	var comment = $("#status-comment-"+item_id).val();
+	if(comment == "" || comment == "Comment...")
+	{
+	  alert("Please enter comment");
+	  $('#status-comment-'+item_id).focus();
+	  return false;	
+	}
+	  
+	var params='';
+	params+="comment="+escape($("#status-comment-"+item_id).val());
+	params+="&item_id="+item_id;
+	params+="&user_id="+commentedPersonId;
+	params+="&item_type=status";
+	
+	//$("span#like_"+item_id).hide();
+    $("span#comment_loading_"+item_id).show();
+    $("#saveComment_"+item_id).hide();
+	$.ajax({
+		   type: "POST",
+		   url: "/comment/save-comment/",
+		   data: params,
+		   dataType: "html",
+		   success: function(html){
+			
+                    $("#saveComment_"+item_id).show();
+                    $("span#comment_loading_"+item_id).hide();
+                    $("#comment-list-"+item_id).append(html);
+                    $("#status-comment-"+item_id).val('Comment...');
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+
+var page1 = 2; //paging for My Travel Feed
+function moreTravelWall()
+{
+    $("span#travel_wall_loading_img").show();
+    $("#show_more_travelwall_link").hide();
+
+    var params='';
+    params+="page="+page1+"&mode=ajax";
+    page1 = page1 + 1;
+    $.ajax({
+               type: "POST",
+               url: "/gapper/view-morewall/",
+               data: params,
+               dataType: "html",
+               success: function(html)
+			   {
+					$("span#travel_wall_loading_img").hide();
+					$("#show_more_travelwall_link").show();
+
+					if(html=="nodata")
+					{
+						$("#show_more_travelwall_link").hide();
+						//$("#my_travel_wall_wallupdates").append("<span style='color:#EF4733;'>No more walls found.</span>");
+						$("#travel_wall_showmore_div").append("<span style='color:#EF4733;'>No more updates found.</span>");
+					}else{
+						
+							$("#my_travel_wall_wallupdates").append(html);
+					}
+               },
+               error: function (json, status, e)
+			   {
+                     alert(e+json+status);
+               }
+     });
+}
+
+var page2 = 2; //paging for My travel Wall
+function moreTravelWallMy()
+{
+    $("span#travel_wall_loading_img_my").show();
+    $("#show_more_travelwall_link_my").hide();
+
+    var params='';
+    params+="page="+page2+"&mode=ajax";
+    page2 = page2 + 1;
+    $.ajax({
+               type: "POST",
+               url: "/gapper/view-morewall-my/",
+               data: params,
+               dataType: "html",
+               success: function(html)
+			   {
+					$("span#travel_wall_loading_img_my").hide();
+					$("#show_more_travelwall_link_my").show();
+
+					if(html=="nodata")
+					{
+						$("#show_more_travelwall_link_my").hide();
+						$("#travel_wall_showmore_div_my").append("<span style='color:#EF4733;'>No more updates found.</span>");
+					}
+					else
+					{
+							$("#my_travel_wall_wallupdates_my").append(html);
+					}
+               },
+               error: function (json, status, e)
+			   {
+                     alert(e+json+status);
+               }
+     });
+}//end function
+
+
+$(document).ready(function()
+{
+	$("a#my-travel-feed").click(function()
+	{
+		$('a#my-travel-wall').removeClass('blue').addClass('red');
+		$('a#my-travel-feed').removeClass('red').addClass('blue');
+		//$("div#my-wall").html("");
+		$("div#wall").html("");
+		$("input#wall_flag").val('my-travel-feed');
+		page1 = 2;//set page1 to 1
+		$(reloadWall);
+	});
+
+	$("a#my-travel-wall").click(function()
+	{
+		$('a#my-travel-feed').removeClass('blue').addClass('red');
+		$('a#my-travel-wall').removeClass('red').addClass('blue');
+		$("div#wall").html("");
+		$("input#wall_flag").val('my-travel-wall');
+		page2 = 2;//set page2 to 1
+		$(reloadWallMy);
+	});	
+});
+</script>

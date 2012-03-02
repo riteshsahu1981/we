@@ -1,0 +1,97 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<span style='float: right; margin: 0 15px 0 0;'>
+	<img src='/images/admin-images/newobject.gif' width='20px'>
+	<?php if($this->type=="module"){?>
+	<a class="add f-right" href='/admin/content/add/type/<?php echo $this->type;?>'>Add New Module</a>
+	<?php }?>
+	</span>
+	Contents - <span class='msg'>Total <?php echo $this->total?> content(s) found!</span>
+	</div>
+<div id="rightsidecontentpart">
+<?php
+if($this->total>0)
+{
+?>
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml');?>
+
+<span class='red'>
+<? echo $this->msg;  ?>
+</span>
+<br />
+<br />
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+    <th>Title</th>
+    <th>Alias</th>
+    <th>Status</th>
+	<th>Order</th>
+	<th>Added On</th>
+    <th>Action</th>
+  </tr>
+<?
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1)
+	{
+		$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+		$status_image='false.gif';
+		$status="1";
+		$status_popup='publish';
+		if($row['status']=="1")
+		{
+			$status_image='true.gif';
+			$status="0";
+			$status_popup='unpublish';
+		}
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+		?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+    		<td><?=$row['title']?></td>
+    		<td><?=$row['alias']?></td>
+    		<td>
+			<?php if(!in_array($row['alias'],$this->fixedTextMod)){?>
+			<a href='/admin/content/changestatus/id/<?=$row['id']?>/status/<?=$status?>' onclick='return confirm("Are sure you want to <?=$status_popup?> the content?")'><img src='/images/admin-images/<?=$status_image?>' border='0' title='<? echo "Click here to $status_popup the block."?> '/></a>
+			<?php }else{?>
+			N/A
+			<?php }?>
+			</td>			
+    		<td>
+			<?php if(!in_array($row['alias'],$this->fixedTextMod)){?>
+			<?=$row['weight']?>
+			<?php }else{?>
+			N/A
+			<?php }?>
+			</td>
+    		<td><?php echo date("M j, Y", $row['addedon']);?></td>
+			<td>
+			<a href='/admin/content/edit/id/<?=$row['id']?>/type/<?php echo $this->type;?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>&nbsp;&nbsp;&nbsp;
+			<?php if(!in_array($row['id'], $this->fixedModules)){?>
+			<a href='/admin/content/delete/id/<?=$row['id']?>/page/<?=$page?>' onclick="return confirm('Are you sure? You want to delete this module/content?');"><img src='/images/admin-images/delete.gif' border='0' title='Delete'/></a>
+			<?php }?>
+			</td>
+    	</tr>
+	<? 	
+	}
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination.phtml'); ?><br /><br />
+<?	
+}
+?>
+	</div>
+	</div>
+</div>

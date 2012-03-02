@@ -1,0 +1,111 @@
+<?php
+if($this->msg<>"s")
+{
+    ?><div class="error-msg"><?php echo $this->msg;?>
+	</div>
+
+    <?php
+    if(count($this->friends)>0)
+    {
+        ?>
+        <form id="frmFacebook" name ="frmFacebook" method="post">
+            <div class="checkall">
+                <strong>Search</strong>
+                <input type="text" name="searchFriend" id="searchFriend"  >
+        </div>
+        <div class="facebook-contacts" id="contacts-container">
+
+        <div class="checkall"><input type="checkbox" name="contacts_all" id="contacts_all" value="contacts_all" style="width: 20px;" onchange="toggleAll(this)">
+    <strong>Check All</strong></div>
+    <br class="clear">
+    <div id ="sarchResult">
+        <?
+        if(count($this->friends)>0){
+            foreach($this->friends as $_friend)
+            {
+            ?>
+                <div id="chk_<?php echo $_friend['id']?>" class="fb-box-gry"><input  name="facebook_contacts[]" type="checkbox" value="<?php echo $_friend['id']?>"><img src="https://graph.facebook.com/<?php echo $_friend['id']?>/picture"/><?php echo $_friend['name']?></div>
+            <?
+            }
+        }
+        ?>
+    </div>
+    </div>
+    <div class="absolute"><input type="submit" value="send invitation" name="submit" class="f-left"></div>
+    </form>
+<?
+}
+else
+{
+    echo "It seems that you have no friends in your facebook account.<br> Click <a href='/index/facebook-invite'>here</a> to <a href='/index/facebook-invite'>try again</a>.";
+}
+}
+else
+{
+
+echo "Thanks for inviting your friends to Gap Daemon!";
+
+}
+?>
+
+<div id="res"></div>
+<div class="absolute2"><a class="button-link f-right" href="javascript://" onclick="window.close();">Close This Window</a></div>
+<script language="javascript">
+
+function toggleAll(element)
+{
+	var form = document.forms.frmFacebook, z = 0;
+	for(z=0; z<form.length;z++)
+	{
+		if(form[z].type == 'checkbox')
+			form[z].checked = element.checked;
+	}
+}
+
+$('#searchFriend').keyup(buildResult);
+
+function buildResult()
+{
+
+    var searchText=$('#searchFriend').val();
+    searchText=searchText.toLowerCase();
+    var tempText="";
+
+    for(var m=0; m<friendsArray.length; m++)
+    {
+         tempText=friendsArray[m][1];
+         tempText=tempText.toLowerCase();
+        //$("#sarchResult").append(friendsArray[m][2])
+        if(tempText.match(searchText))
+        {
+            $("#chk_" + friendsArray[m][0]).show();
+        }
+        else
+        {
+            $("#chk_" + friendsArray[m][0]).hide();
+        }
+    }
+
+
+}
+var friendsArray = new Array();	//Create an new 1D array
+
+var i=0;
+<?
+if(count($this->friends)>0){
+foreach($this->friends as $_friend)
+{
+?>
+    friendsArray[i]=new Array();
+    friendsArray[i][0]='<?php echo $_friend['id']?>';
+    friendsArray[i][1]='<?php echo addslashes($_friend['name'])?>';
+    //friendsArray[i][2]='<div id="chk_'+friendsArray[i][0]+'" class="fb-box-gry"><input  name="facebook_contacts[]" type="checkbox" value="'+friendsArray[i][0]+'"><img src="https://graph.facebook.com/'+friendsArray[i][0]+'/picture"/>'+ friendsArray[i][1] +'</div>';
+    i++;
+<?
+}
+?>
+
+<?
+}
+?>
+</script>

@@ -1,0 +1,50 @@
+<?php
+if(count($this->data)>0)
+{
+	foreach($this->data as $row)
+	{
+		$_friend  = new Application_Model_Friend();
+		$_friend  = $_friend->find($row->id);
+
+		$userid=$_friend->getUserId();
+		$friendid=$_friend->getFriendId();
+		$conntype = $_friend->getConnectionType();
+
+		$_friend->getId();
+		$friendO = $_friend->getFriendObj();
+		if(!is_null($friendO))
+		{
+			$thumb = "";
+			$thumb = $_friend->getThumbnail($friendO->image, $friendO->facebook_id, $friendO->sex);		 
+?>
+   <div class="friends-box">
+   		<div class="friends-box-img">
+			<a href ="/<?php echo $friendO->username?>">
+			<img src="/image?src=<?php echo $thumb;?>&size=friends" style="float:left;margin:0 10px 5px 0;" border="0" />
+			</a>
+		</div>  
+    <div class="friend-box-center"> 
+		<a href ="/<?php echo $friendO->username?>"><span class="connect-name"><?php echo $friendO->first_name.' '.$friendO->last_name; ?></span></a>
+		<span id="hideRes-<?php echo  $_friend->getId()?>" class="connect-type"><?php echo ucfirst($_friend->getConnectionType()); ?></span>
+                <span id="showRes-<?php echo  $_friend->getId()?>" class="connect-type"></span>
+	 	<span  class="connect-action">
+			<a href ="/<?php echo $friendO->username?>"><b>View Profile</b></a> | <a href ="/index/delete-profile/id/<?php echo $_friend->getId();?>" onclick="return confirm('Are you sure?\r\n Do you really want to remove <?php echo $friendO->first_name.' '.$friendO->last_name; ?> from your friend connection?');">Remove</a> </span></div>
+  	 
+        
+        <div class="friend-box-right">
+		<div class="connection-you f-left">Connection to you</div>
+  	    <div id="resp">
+  	         <select name="st" onchange="changeConnection(this.value,'<?php echo  $_friend->getId()?>','<?php echo $userid ?>','<?php echo $friendid ?>')" >
+                 <option value="friend" <?php echo $conntype=='friend'?'selected':''; ?>>Friends</option>
+                 <option value="family" <?php echo $conntype=='family'?'selected':''; ?>>Family </option>
+                 <!--<option value="travelmate" <?php echo $conntype=='travelmate'?'selected':''; ?>>Travel Mates </option>-->  
+             </select>
+		</div>
+		<div id="response-<?php echo $_friend->getId();?>"></div>   
+        </div>     
+        </div>
+<?php 
+	 }//end of if
+  }//end of foreach
+}
+?>

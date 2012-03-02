@@ -1,0 +1,101 @@
+<?php
+$actual_url= $this->url();
+$arrUrl=explode("/",$actual_url);
+if(count($arrUrl)>0)
+{		   
+	$actual_url="";
+	$ctr=0;
+	foreach($arrUrl as $k=>$v)
+	{
+		if($ctr==2)
+		$ctr=0;
+
+		if($ctr==1)
+		$ctr++;
+
+		if($v=="page")
+		$ctr++;
+
+		if($ctr==0)
+		$actual_url=$actual_url.$v."/";
+	}
+	$actual_url=rtrim($actual_url,"/");
+	//echo $actual_url;
+}
+
+$arrayLink=array();
+if(is_array($this->linkArray))
+{
+	$arrayLink = $this->linkArray;
+}	
+
+if(count($arrayLink) > 0)
+{
+	foreach ($arrayLink as $key=>$lnk)
+	{
+		if(strstr($actual_url, "/".$key))unset($arrayLink[$key]);
+	}
+}
+//echo "actual_url=".$actual_url;
+//print_r($arrayLink);
+?>
+<div class="pagination">
+    <div>
+        <!-- First page link -->
+        <?php if (isset($this->previous)): ?>
+              <a href="<?=$this->seoUrl($actual_url,array_merge(array('page' => $this->first),$arrayLink)) ?>">First</a> |
+        <?php else: ?>
+                <span class="disabled">First</span> |
+        <?php endif; ?>
+    
+        <!-- Previous page link -->
+    
+        <?php if (isset($this->previous)): ?>
+              <a href="<?= $this->seoUrl($actual_url,array_merge(array('page' => $this->previous),$arrayLink)) ; ?>" class="prev-page">&lt; Previous</a> |
+        <?php else: ?>
+            <span class="disabled">&lt; Previous</span> |
+        <?php endif; ?>
+        <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php 
+			if ($page != $this->current): ?>
+                <a href="<?= $this->seoUrl($actual_url,array_merge(array('page' => $page),$arrayLink)) ; ?>" class="page-dact"><?= $page; ?></a>
+            <?php else: ?>
+                <?= $page; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+              | <a href="<?= $this->seoUrl($actual_url,array_merge(array('page' => $this->next),$arrayLink)); ?>">Next &gt;</a> |
+        <?php else: ?>
+            | <span class="disabled">Next &gt;</span> |
+        <?php endif; ?>
+        <!-- Last page link -->
+        <?php if (isset($this->next)): ?>
+              <a href="<?= $this->seoUrl($actual_url,array_merge(array('page' => $this->last),$arrayLink)); ?>">Last</a>
+        <?php else: ?>
+            <span class="disabled">Last</span>
+        <?php endif; ?>
+        &nbsp; Page <?= $this->current; ?> of <?= $this->last;?>
+		
+		<div style="float:right;">Record display per page:
+
+                    <select name="page_size" id="page_size" onchange="openCurrentWindow(this.value);">
+		<option value="10">10</option>
+		<option value="25">25</option>
+		<option value="50">50</option>
+		<option value="75">75</option>
+		<option value="100">100</option>
+		</select>
+		<script language="javascript" type="text/javascript">
+		function openCurrentWindow(limit)
+		{
+			var url = window.location;
+			//var url = <?php echo $this->url;?>;
+			//alert("Url="+url+" limit="+limit);
+			//window.location.href =url+"/limit/"+limit;
+		}
+		</script>
+		</div>
+    </div>
+ </div>

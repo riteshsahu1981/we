@@ -1,0 +1,46 @@
+<div class="pagination">
+    <div>
+        <!-- First page link -->
+        <?php
+       $arrayLink=array();
+
+       if(is_array($this->linkArray))
+       		$arrayLink=$this->linkArray;
+        ?>
+        <?php if (isset($this->previous)): ?>
+              <a title="First Page"  href="<?= $this->url(array_merge(array('page' => $this->first),$arrayLink)); ?>">« First</a> 
+        <?php else: ?>
+                <a title="First Page"  href="#">« First</a> 
+        <?php endif; ?>
+
+        <!-- Previous page link -->
+
+        <?php if (isset($this->previous)): ?>
+              <a title="Previous Page"  href="<?= $this->url(array_merge(array('page' => $this->previous),$arrayLink)); ?>">« Previous</a> 
+        <?php else: ?>
+            <a title="Previous Page"  href="#">« Previous</a> 
+        <?php endif; ?>
+        <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+                <a title="<?= $page; ?>" class="number" href="<?= $this->url(array_merge(array('page' => $page),$arrayLink)); ?>"><?= $page; ?></a>
+            <?php else: ?>
+                <a title="<?= $page; ?>" class="number current" href="<?= $this->url(array_merge(array('page' => $page),$arrayLink)); ?>"><?= $page; ?></a>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+               <a title="Next Page"  href="<?= $this->url(array_merge(array('page' => $this->next),$arrayLink)); ?>">Next »</a> 
+        <?php else: ?>
+             <a title="Next Page"  href="#">Next »</a>
+        <?php endif; ?>
+        <!-- Last page link -->
+        <?php if (isset($this->next)): ?>
+              <a title="Last Page" href="<?= $this->url(array_merge(array('page' => $this->last),$arrayLink)); ?>">Last »</a>
+        <?php else: ?>
+           <a title="Last Page" href="#">Last »</a>
+        <?php endif; ?>
+           
+        &nbsp; Page <?= $this->current; ?> of <?= $this->last; ?>
+    </div>
+ </div>

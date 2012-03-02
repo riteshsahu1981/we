@@ -1,0 +1,25 @@
+<?php 
+$categoryM=new Application_Model_Advice();
+$adviceCategory=$categoryM->getAdviceCategory();
+?>
+
+<div class="right-box-wide search-dest">
+	<h2 class="box-heading">SEARCH ADVICE</h2>
+	<form name="" method="post" action="/advice/">
+		<input type="text" name="search-strg" class="search-strg" value="<?php echo $this->searchstr!=''?$this->searchstr:'Search by Keyword'; ?>" onfocus="if(this.value=='Search by Keyword'){this.value=''}" onblur="if(this.value==''){this.value='Search by Keyword'}"  />
+		
+
+		<span class="in">IN</span> <select class="search-filtr2" name="search-filtr">
+				<option selected="selected" value=''>All Categories</option>
+				<?php if(count($adviceCategory)>0){?>
+					<?php foreach($adviceCategory as $id=> $_category){?>
+					<option value="<?php echo $id?>"><?php echo $_category?></option>
+					<?php }?>
+				<?php }?>
+		</select>
+		<div class="clear"></div>
+		<input type="submit" name="" value="SEARCH"  class="submit-btn"  />
+		<input type="reset" name="" value="Reset"  class="submit-btn"  />
+	</form>
+	
+</div>

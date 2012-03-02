@@ -1,0 +1,53 @@
+<div id="main-left">
+<div class="advice-detials">
+<h2 class="main-heading"><span>work/study/volunteer</span> &gt; <?php echo $this->title?></h2>
+
+<div class="work-sdudy-home">
+<p>
+
+<?php 
+ switch ($this->title)
+ {
+ 	case 'volunteer':
+ 	echo "Volunteering is not as straightforward as you may think; it can cost a lot of money for starters. But there's very little out there that's so rewarding and the scope of projects to get involved with is mind-boggling.";
+ 	break;
+ 		
+ 	case 'work':
+ 	echo "Gap years cost money, and there's many a backpacker who relies on casual work to keep their bank managers happy when travelling. From pulling pints to teaching English abroad, we've got working on your gap year covered.";
+ 	break;
+ 	
+ 	case 'study':
+ 	echo "Ever thought of heading to a foreign university during your gap year? It's a guaranteed way to immerse yourself in a new culture, learn a new language and gain a degree for your efforts. Gap Daemon is here to show you how...";
+ 	break;
+ 	
+ 	
+ }
+?>
+</p>
+</div>
+<br />
+<?php if(count($this->cats)>0){?>
+<h2 class="work-study-heading">Categories</h2>
+<?php 
+foreach($this->cats as $_cat)
+{
+	$seo_url = "/work-study-volunteer/detail/id/".$_cat->getId();
+	?>
+<div class="work-stydy-cat">
+	<?php if($_cat->getImage()!=''){ ?>
+	<div class="work-study-cat-img">
+		<img src="/media/picture/category/<?php echo $this->title?>/thumb_<?php echo $_cat->getImage(); ?>" alt="" />
+	</div>
+	<?php } ?>
+	<div class="work-study-cat-right">
+	   <h3><?php echo $_cat->getName(); ?></h3>
+		<p><?php echo $_cat->getDescription(); ?></p>
+		<a href="<?php echo $this->seoUrl($seo_url);?>" class="learn-more">Learn More</a>
+	</div>
+
+</div>
+<?php } }?>
+
+</div>
+</div>
+  

@@ -1,0 +1,23 @@
+<div class="wide-page">
+<h2 class="main-heading4">Oops!! </h2>
+<p class="oops-msg">We encountered some problem, our tech team has been informed of this, you can visit our <a href="/">Homepage</a> for further navigation.</p>
+<br class="clear">
+<?php if($this->error_flag=="1"){?>
+  <h2><?php echo $this->message ?></h2>
+
+  <?php if (isset($this->exception)): ?>
+
+  <h3>Exception information:</h3>
+  <p>
+      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+  </p>
+
+  <h3>Stack trace:</h3>
+  <pre><?php echo $this->exception->getTraceAsString() ?>
+  </pre>
+
+  <h3>Request Parameters:</h3>
+  <pre><?php echo var_export($this->request->getParams(), true) ?>
+  </pre>
+  <?php endif ?>
+<?php }?></div>

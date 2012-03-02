@@ -5,6 +5,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     public function _initCache()
     {
+//$a=new Application_Model_Advice();
 
     }
 

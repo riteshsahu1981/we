@@ -1,0 +1,41 @@
+<?php $total =count($this->appriciations);
+$height=$total*150;
+?>
+
+<?php
+if($this->align=="")
+    $this->align="left";
+?>
+<div class="content-box column-<?php echo  $this->align?> <?php echo  $this->box_status?> ">
+    <div class="content-box-header">
+     
+        <h3 style="cursor: s-resize;">Recent Appreciations</h3>
+    </div> <!-- End .content-box-header -->
+
+    <div class="content-box-content" style="display: block;  min-height:200px">
+    <div class="tab-content default-tab" style="display: block;">
+            <div class="div-table">
+                <?php 
+                if($total>0){
+                    foreach($this->appriciations as $app){?>
+                <div class="birthdaybox">
+                        <div class="profileImageB">
+                        <img  src="/image/thumb/size/medium/path/<?php echo base64_encode($app['image'])?>" />
+                       </div>
+                
+                       <div class="empinfoB" >
+                            <p><strong><?php echo $app['appriciation_type']?> [ <?php echo $app['display_date']?> ]</strong></p>
+                            <p><?php echo $app['name']?></p>
+                            <p><?php echo $app['emp_code']?> </p>
+                            <p><?php echo $app['department']?></p>
+                        </div>
+                </div>
+                    
+                    <?php }
+               
+                
+                }?>
+            </div>
+    </div> <!-- End #tab3 -->        
+    </div> <!-- End .content-box-content -->
+</div>

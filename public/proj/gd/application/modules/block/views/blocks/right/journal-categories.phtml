@@ -1,0 +1,21 @@
+<?php 
+$categoryM			=	new Application_Model_Category();
+$journalCategory	=	$categoryM->getJournalCategory();
+$blog_cat_seo_url	=	"";
+?>
+<div class="right-box-wide">
+	<h2 class="box-heading">JOURNAL CATEGORIES</h2>
+	<?php if(false!==$journalCategory){?>
+	<ul class="journal-cat-list-right">
+		<?php
+		foreach($journalCategory as $_category)
+		{
+			$blog_cat_seo_url 	=	$this->seoUrl("/journal/index/search-filtr/{$_category['id']}");
+		?>
+		<li><a href="<?php  echo $blog_cat_seo_url;?>"><?php echo $_category['category_name']?> (<?php echo $_category['total_blogs']?>)</a></li>
+		<?php }?>
+	</ul>
+	<?php }else{?>
+	Journal categories not found.
+	<?php }?>
+</div>

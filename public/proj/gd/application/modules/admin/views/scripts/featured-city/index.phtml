@@ -1,0 +1,20 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading">Manage Featured Places (Cities/Countries)</div>
+	<div id="rightsidecontentpart">
+	<span class='red'><?php echo $this->msg;?></span>
+	<?php
+		//$this->form->setAction($this->url(array('action' => 'index'))); 
+		//echo $this->form;
+	?>
+	<form method="post" action="" enctype="multipart/form-data">
+	<table align="center" cellspacing="5" cellpadding="5" border="0" width="100%">
+		<tr><td valign="top"><?php echo $this->form->featured_other->getLabel();?></td><td><?php echo $this->form->featured_other;?></td></tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr><td valign="top"><?php echo $this->form->featured_country->getLabel();?></td><td><?php echo $this->form->featured_country;?></td></tr>
+		<tr><td>&nbsp;</td><td><?php echo $this->form->cmdSubmit;?></td></tr>
+	</table>
+	</form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div id="profile-links">
+       Welcome <a href="<?php echo $this->seoUrl("/admin/user/my-profile")?>" title="Edit your profile"><?php echo $this->userFirstName?></a> | <a href="<?php echo $this->seoUrl("/admin/index/logout")?>" title="Sign Out">Sign Out</a>
+</div>
+
+ <!-- Accordion Menu -->
+ <?php //echo $this->pageElement('left-menu')?>
+ <!-- End #main-nav -->
+ 
+ 
+ 
+ <?php
+ 
+        $this->navigation()->menu()->setPartial(array('left-menu.phtml','default'));
+	echo $this->navigation()->menu()->render();
+ ?>

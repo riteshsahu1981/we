@@ -1,0 +1,86 @@
+<form method="post" action="<?php echo $this->seoUrl("/gallery/albums")?>">
+    <input type="text" name="search" id="search" class="text-input small-input" value="<?php echo $this->search?>" alt="Search" onfocus="if(this.value=='Search...') this.value='';" onblur="if(this.value=='') this.value='Search...';"/>
+    <input type="submit" value="Search" name="submit" class="button"/>
+</form>
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Cover Image</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created By</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            <?php $album=new Application_Model_Album();
+            $album->setCoverImage($item->cover_image);
+            ?>
+            <td><a href="<?php echo $this->seoUrl("/gallery/add-pictures/id/".$item->id)?>" ><img  src="/image/thumb/size/medium/path/<?php echo base64_encode($album->getCoverImageThumb())?>" /> <a/></td>
+            <td><?php echo $item->title; ?></td>
+            <td><?php echo ucfirst($item->status); ?></td>
+            <td><?php echo $item->first_name." ".$item->middle_name." ".$item->last_name; ?></td>
+            <td>
+                <!-- Icons -->
+                
+                <a href="<?php echo $this->seoUrl("/gallery/add-pictures/id/".$item->id)?>" >Add Pictures</a>
+                &nbsp;&nbsp;
+                <a title="Edit" href="<?php echo $this->seoUrl("/gallery/edit-album/id/".$item->id)?>"><img alt="Edit" src="/images/pencil.png"></a>
+                <?php if( $item->status=="publish") {
+                    $title="Click here to make album unpublish!";
+                    $image="/images/icons/tick_circle.png";
+                }else{
+                    $image="/images/icons/cross_circle.png";
+                    $title="Click here to make album publish!";
+                }?>
+                
+                &nbsp;&nbsp;
+                <a title="<?php echo $title?>" href="<?php echo $this->seoUrl("/gallery/change-album-status/id/".$item->id)?>"><img alt="<?php echo $title?>"  src="<?php echo $image?>"></a> 
+                 &nbsp;&nbsp;
+                <a title="Delete album" onclick='return confirm("Are you sure you want to delete the entire album and its pictures?")' href="<?php echo $this->seoUrl("/gallery/delete-album/id/".$item->id)?>">Delete</a> 
+                
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>

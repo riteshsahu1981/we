@@ -1,0 +1,60 @@
+<?php
+$date		=	new Base_Date();
+$blogM		=	new Application_Model_Blog();
+//$blogs	=	$blogM->fetchAll(null,"addedon desc",10);
+$blogs		=	$blogM->getRecentBlogs(10);
+?>
+<div class="right-box-wide" >
+	<h2 class="box-heading">RECENTLY ADDED JOURNALS</h2>
+	<div class="clear"></div>
+	<br />
+	<?php 
+	if(count($blogs)>0)
+	{
+		foreach($blogs as $_blog)
+		{
+			$userM			=	new Application_Model_User();
+			$userM			=	$userM->find($_blog->user_id);
+			$thumbNail		=	$userM->getThumbnail();
+			$username		=	$userM->getUsername();
+			$first_name		=	$userM->getFirstname();
+			$last_name		=	$userM->getLastname();
+			$strTime		=	$date->timeAgo($_blog->addedon);
+			
+			$voteM			=	new Application_Model_Vote();
+			$total_likes	=	$voteM->getTotalVotes($_blog->id,"blog", 1,null);
+            
+			$textPrint		=	$this->language("like_singular");
+			if($total_likes > 1)
+			{
+				$textPrint	=	$this->language("like_plural");
+			}
+			$blog_seo_url = $this->seoUrl("/journal/view-post/blog_id/{$_blog->id}");
+	?>
+	<div class="recently-added">
+		<div class="recently-added-img">
+		<a href="javascript://" onclick="commonUserLogin('/<?php echo $username;?>',<?php echo $_blog->user_id;?>);">
+		<img border="0" src="/image?src=<?php echo $thumbNail;?>&size=comment" alt="" />
+		</a>
+		</div>
+		<div class="recently-added-txt">
+			<div class="recently-mood"><a href="<?php echo $blog_seo_url;?>"><?php echo $_blog->title;?></a></div>
+			<div class="recently-posted">Posted by <a href="javascript://" onclick="commonUserLogin('/<?php echo $username;?>',<?php echo $_blog->user_id;?>);"><?php echo $first_name;?></a> | <?php echo $strTime;?> </div>
+			<div class="recently-like">
+			<?php if($total_likes > 0){?>
+			<a href="<?php echo $this->seoUrl('/journal/user-like-this/type/blog/item_id/'.$_blog->id);?>"><span id="total_likes_left_<?php echo $_blog->id;?>"><?php echo $total_likes." ". $textPrint;?></span></a>
+			<?php }?>
+			
+			
+			</div>
+		</div>
+	</div>
+	<?php 
+		}//end of foreach
+	}//end of if
+	else
+	{
+		echo "<div class='recently-added'>No journal posts available.</div>";
+	}
+	?>	
+</div>

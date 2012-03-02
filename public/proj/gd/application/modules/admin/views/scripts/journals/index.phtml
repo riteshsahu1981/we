@@ -1,0 +1,139 @@
+<div id="rightsidemain">
+  <div id="rightcontentpart">
+	<div id="rightsideheading" class="headingblack">
+	<img src="/images/admin-images/bl-tl.gif" align="left" /><img src="/images/admin-images/bl-tr.gif" align="right" />
+	<?php echo $this->title ?> - <span class='msg'>Total <?php echo $this->total?> journal(s) found! </span></div>	
+<div id="rightsidecontentpart">
+<form id="frmSearch" name="frmSearch"  method="get" action="/admin/journals/index/" class="admin-form-new">
+	<table align="center" cellspacing="2" cellpadding="3" border="0" class="admin-search-table">
+		<tr>
+			<td colspan="4" class="heading">Search Journals</td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->title->getLabel();?></td><td><?php echo $this->form->title;?></td>
+		<td><?php echo $this->form->category_id->getLabel();?></td><td><?php echo $this->form->category_id;?></td>
+		</tr>
+		<tr>
+		<td><?php echo $this->form->publish->getLabel();?></td><td><?php echo $this->form->publish;?></td>
+		<!--<td><?php //echo $this->form->status->getLabel();?></td><td><?php //echo $this->form->status;?></td>-->
+		<td><?php echo $this->form->featured->getLabel();?></td><td><?php echo $this->form->featured;?></td>
+		</tr>
+		<tr>
+		<!--<td><?php //echo $this->form->featured->getLabel();?></td><td><?php //echo $this->form->featured;?></td>-->
+		<td>&nbsp;</td><td>&nbsp;</td>
+		<td>&nbsp;</td><td><?php echo $this->form->submit;?></td>
+		</tr>
+	</table>
+    <input type="hidden" value="<?php echo $this->page_size?>" name ="page_size" id="page_size" >
+</form>
+<?php //echo $this->form;?>
+<?php
+if($this->total>0)
+{
+?>
+<br />
+<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+
+<span class='red'><? echo $this->msg;?></span>
+
+<?php if($this->errorMsg != ""){ ?>
+	<span class='red'><?php print $this->errorMsg;?></span>
+<?php }?>
+
+<table width='100%' border='0' class='dataTable' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>S. No.</th>
+	<th>Id</th>
+    <th>Journal Title</th>
+    <th>Status</th>
+    <th>Addedon</th>
+    <th>Posted By</th>
+    <th>Featured</th>
+     <th>Publish</th>
+    <th>Action</th>
+  </tr>
+  
+	<?php	
+	$sno=0;
+	$page=$this->paginator->getCurrentPageNumber();
+	$items_per_page=$this->paginator->getItemCountPerPage(); 
+	if($page>1){
+	$sno=$items_per_page*$page - $items_per_page ; 	
+	}
+	$rowClass='trbg1';
+	
+	foreach($this->paginator as $row)
+	{
+		$sno++;
+				
+		if($rowClass=="trbg1")
+			$rowClass='trbg';
+		else
+			$rowClass='trbg1';
+			
+			
+    		$Date	=	new Base_Date();
+    		$addedon=	$Date->getSysDate($row['addedon']);
+    		//$updatedon=$Date->getSysDate($row['updatedon']);
+			
+			//select Blog post Author
+			$Author = "";
+			$userM = new Application_Model_User();
+			$userM = $userM->find($row['user_id']);
+			if(false!==$userM)
+			{
+				$Author = $userM->getFirstName()." ".$userM->getLastName();
+			}
+            $featured="false.gif";
+    		$featured_title="Click here to mark as featured";
+    		if($row['featured']==1)
+    		{
+    			$featured="true.gif";
+    			$featured_title="Click here to mark as not featured";
+    		}
+	?>
+		<tr class='<?=$rowClass?>'>
+    		<td><?=$sno?></td>
+			<td><?=$row['id']?></td>
+    		<td><?php echo substr($row['title'],0,50);?>...</td>
+    		<td><?=ucfirst($row['status'])?></td>
+    		<td><?=$addedon?></td>
+    		<td><?=$Author?></td>
+            <td><a href="/admin/journals/feature/id/<? echo $row['id']?>">
+                    <img src='/images/admin-images/<?php echo $featured?>' border='0' title='<?php echo $featured_title?>'/>
+                    </a></td>
+    		<td>
+    		<?
+    		$published="false.gif";
+    		$published_title="Click here to publish";
+    		if($row['publish']=='published')
+    		{
+    			$published="true.gif";
+    			$published_title="Click here to unpublish";
+    		}
+        	?>
+    		<a href='/admin/journals/block/id/<?=$row['id']?>'><img src='/images/admin-images/<?php echo $published?>' border='0' title='<?php echo $published_title?>'/></a>&nbsp;&nbsp
+    		</td>
+			<td>
+    		<a href='/admin/journals/edit/id/<?=$row['id']?>'><img src='/images/admin-images/edit.gif' border='0' title='Edit'/></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="/admin/journals/delete/id/<?=$row['id']?>" onclick="return confirm('Are you sure to delete?');">
+				<img src='/images/admin-images/delete.gif' border='0' title='Delete'/>
+			</a>
+            </td>
+  		</tr>
+	<?php
+	}//foreach
+	?>
+	</table><br />
+	<?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?><br />
+<?	
+}
+else
+{
+	echo "<div class='orange'>No record found.</div>";
+}
+?>
+</div>
+</div>
+</div>

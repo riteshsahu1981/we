@@ -1,0 +1,137 @@
+<?php $date=new Base_Date();?>
+<?php 
+if(!is_null($this->bookUser)){
+    $user=new Application_Model_User();
+    $user->setProfilePicture($this->bookUser->profile_picture);
+    
+ }
+?>
+<div id="employee-info-content">
+<table>
+    <tbody>
+        <tr ><td width="30%">Book Title :</td><td><?php echo $this->book->getTitle()?></td></tr>
+        <tr ><td >Author :</td><td><?php echo $this->book->getAuthor()?></td></tr>
+        <tr ><td>ISBN : </td><td><?php echo $this->book->getIsbn() ?></td></tr>
+        <tr ><td>Description : </td><td><?php echo $this->book->getDescription() ?></td></tr>
+        <?php if(!is_null($this->bookUser)):?>
+        <tr ><td>Status : </td><td>Issued</td></tr>
+        <tr ><td>Issued to : </td><td> <img src="<?php echo $user->getThumbnail();?>"/><br><?php echo $this->bookUser->first_name ?> <?php echo $this->bookUser->last_name ?> (Code : <?php echo $this->bookUser->employee_code?>)</td></tr>
+        <tr ><td>Email: </td><td><?php echo $this->bookUser->email?> </td></tr>
+        <tr ><td>Issue Date : </td><td><?php echo $date->getSysDate(strtotime($this->bookUser->issue_date),false)?></td></tr>
+        <tr ><td>Estimated Return Date: </td><td><?php echo $date->getSysDate(strtotime($this->bookUser->estimated_return_date),false)?> </td></tr>
+
+        <?php else:?>
+        <tr ><td>Status : </td><td>Available</td></tr>
+        <?php endif ?>
+        </tbody>
+</table>
+</div>
+
+
+
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Name</th>
+            <th>Emp. Code</th>
+            <th>Issue Date</th>
+            <th>Return Date</th>
+            <th>Estimated Return Date</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->user_id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"><?php echo $item->first_name." ".$item->last_name; ?></a></td>
+            <td><a href="javascript:#" onclick="openD('<?php echo $item->user_id?>','<?php echo $item->first_name." ".$item->last_name; ?>')"><?php echo $item->employee_code; ?></a></td>
+             <td><?php echo $date->getSysDate(strtotime($item->issue_date),false)?></td>
+             <td><?php if(!is_null($item->return_date)){echo $date->getSysDate(strtotime($item->return_date),false);}else{ echo "Issued";}?></td>
+             <td><?php echo $date->getSysDate(strtotime($item->estimated_return_date),false)?></td>
+        </tr>
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="6">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+<script>
+    
+    function openD(user_id,user_full_name)
+    {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+        $("#userInfo").html("");
+        $( "#dialog-modal" ).dialog({
+                height: 460,
+                width: 420,
+                modal: true,
+                title: user_full_name
+        });
+        $("#imgLoading").show();
+        var params='id='+user_id;
+        $.ajax({
+                   type: "POST",
+                   url: "/employee/employee-info",
+                   data: params,
+                   dataType: "html",
+                   success: function(html)
+                   {
+                       $("#imgLoading").hide();
+                        $("#userInfo").html(html);
+                    
+                        
+                   },
+                   error: function (json, status, e)
+                   {
+                      $("#userInfo").html("Error");
+                       $("#imgLoading").hide();
+                   }
+               });
+
+
+       
+    }
+
+</script>
+
+<div id="dialog-modal" title="User Information" style="display:none">
+    <img style="display:none" id="imgLoading" src="/images/loading.gif"/>
+	<div id="userInfo"></div>
+        
+</div>

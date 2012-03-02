@@ -1,0 +1,176 @@
+<script language="javascript" type="text/javascript">
+//Accept or Decline friend request
+function acceptDeclineRequest(ctype, id, userid, friendid, status)
+{
+	$("span#req_response_"+id).html("<img src='/images/ajax-loader.gif'>");
+	var params = "mode=ajax&ctype="+ctype+"&id="+id+"&userid="+userid+"&friendid="+friendid+"&status="+status;
+	
+	$.ajax({
+		   type: "POST",
+		   url: "/index/change-request/",
+		   data: params,
+		   dataType: "html",
+		   success: function(responseData)
+		   {
+				$("span#req_response_"+id).html(responseData);
+				RAVIN_DelayedHide("req_response_"+id);
+				$("div#friendsProfile_"+id).hide();
+				
+				//hide right section request DIV
+				$("div#friendsProfile-"+id).hide();
+				//now descrease right block top counter
+				if(ctype=="friend")
+				{
+					var friend = parseInt($('#friend_counter').html());
+					friend = friend-1;
+					$('#friend_counter').html(friend);
+				}
+				else if(ctype=="family")
+				{
+					var family = parseInt($('#family_counter').html());
+					family = family-1;
+					$('#family_counter').html(family);
+				}
+				else
+				{
+					//var travel = parseInt($('#travel_counter').html());
+					//travel = travel-1;
+					//$('#travel_counter').html(family);
+				}
+		   },
+		   error: function (json, status, e)
+		   {
+			   $("div#resp").html("Exception : "+e+json);
+		   }
+	 });
+}
+//resend friend request
+function sendRequest(id, status)
+{
+	$("div#req_response_"+id).html("<img src='/images/ajax-loader.gif'>");
+	var params="mode=ajax&id="+id+"&status="+status;
+	$.ajax({
+		   type: "POST",
+		   url: "/gapper/resend-request/",
+		   data: params,
+		   dataType: "html",
+		   success: function(responseData)
+		   {
+				$("div#req_response_"+id).html(responseData);
+				$("div#req_status_"+id).html("<b>Status:</b> Pending");
+				RAVIN_DelayedHide("req_response_"+id);
+				$("span#resend_link_id_"+id).html('');
+		   },
+		   error: function (json, status, e)
+		   {
+			   $("div#resp").html("Exception : "+e+json);
+		   }
+	 });
+}
+</script>
+<div id="center">
+<h2><?php echo $this->puts("My Requests")?></h2>
+<p><?php echo $this->puts("This section lists all pending friend request received/sent.")?></p><br />
+<a href="<?php echo $this->seoUrl('/gapper/add-a-connection');?>" class="orange-big"><?php echo $this->puts("Add a friend")?></a><br/><br />
+
+<!-- Friend request received START -->
+<h3><?php echo $this->puts("Friend Requests Received")?></h3>
+<p><?php echo $this->puts("This section lists all pending friend request received.")?></p><br />
+<?php echo $this->partial('gapper/request-received.phtml', array('reqReceived'=>$this->reqReceived)); ?>
+<div class="clear"><br /></div>
+<span style="display: none;" id="loading_img_received">
+    <img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+</span>
+<?if(count($this->reqReceived) >0){?>
+<a id="show-more-link-received" href="javascript: moreRequestsReceived()" class="button-link">Show More</a>
+<?}?>
+<!-- Friend request received END -->
+
+<br /><br /><br />
+<!-- Friend request sent START -->
+<h3><?php echo $this->puts("Friend Requests Sent")?></h3>
+<p><?php echo $this->puts("Here are your pending friend requests.")?></p>
+<?php echo $this->partial('gapper/request-sent.phtml', array('reqSent'=>$this->reqSent)); ?>
+<div class="clear"><br /></div>
+<span style="display: none;" id="loading_img_sent">
+    <img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+</span>
+<?if(count($this->reqSent) >0){?>
+<a id="show-more-link-sent" href="javascript: moreRequestsSent()" class="button-link">Show More</a>
+<?}?>
+<!-- Friend request sent END -->
+
+</div>
+<script language="javascript" type="text/javascript">
+//show more requests received
+var page1 = 2;
+function moreRequestsReceived()
+{
+    $("span#loading_img_received").show();
+    $("#show-more-link-received").hide();
+
+    var params='';
+    params+="page1="+page1+"&mode=ajax";
+    page1 = page1+1;
+    $.ajax({
+               type: "POST",
+               url: "/gapper/request-received/",
+               data: params,
+               dataType: "html",
+               success: function(html){
+
+                $("span#loading_img_received").hide();
+                $("#show-more-link-received").show();
+
+				if(html=="nodata")
+				{
+					$("#show-more-link-received").hide();
+					$("#friend_request_received").append("No more requests found.");
+				}
+				else
+				{
+					$("#friend_request_received").append(html);
+				}
+               },
+               error: function (json, status, e){
+                            alert(e+json+status);
+                    }
+     });
+}
+
+//show more requests sent
+var page2 = 2;
+function moreRequestsSent()
+{
+    $("span#loading_img_sent").show();
+    $("#show-more-link-sent").hide();
+
+    var params='';
+    params+="page2="+page2+"&mode=ajax";
+    page2 = page2+2;
+    $.ajax({
+               type: "POST",
+               url: "/gapper/request-sent/",
+               data: params,
+               dataType: "html",
+               success: function(html){
+
+                $("span#loading_img_sent").hide();
+                $("#show-more-link-sent").show();
+
+				if(html=="nodata")
+				{
+					$("#show-more-link-sent").hide();
+					$("#friend_request_sent").append("No more requests found.");
+				}
+				else
+				{
+					$("#friend_request_sent").append(html);
+				}
+               },
+               error: function (json, status, e){
+                            alert(e+json+status);
+                    }
+     });
+}
+</script>

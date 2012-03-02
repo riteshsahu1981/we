@@ -1,0 +1,42 @@
+<div id="main-left">
+	<div class="advice-detials">
+		<h2 class="main-heading"><span>Advice</span> &gt; <?php echo $this->name;?></h2>
+		<p><?php echo $this->description;?></p>
+	</div>
+<div>
+<br />
+<h3 class="work-study-heading">Articles</h3>
+<?php 
+if($this->total>0)
+{ 
+	foreach($this->advices as $row)
+	{
+		$seo_url='/advice/detail/id/'.$row->id;
+		$image = "/media/picture/city/no-image.jpg";
+		if($row->name!="" && file_exists("images/advice/thumb_".$row->name))
+		{
+			$image = "/images/advice/thumb_".$row->name;
+		}
+?>
+<div class="work-stydy-cat">
+	<div class="work-study-cat-img">
+	<a href="<?php echo $this->seoUrl($seo_url);?>" title="Learn More"><img alt="<?php echo $row->title;?>" src="<?php echo $image;?>" width="128" height="77" border="0"></a>
+	</div>
+	<div class="work-study-cat-right"> 
+	<a href="<?php echo $this->seoUrl($seo_url);?>" title="Learn More"><h3><?php echo $row->title;?></h3></a>
+	<p><?php echo stripslashes($row->synopsis);?>...</p>
+	<br />
+	<a href="<?php echo $this->seoUrl($seo_url);?>" class="learn-more" title="Learn More">Learn More</a>
+	</div>
+</div>
+<?php 	
+	}//end foreach
+echo  "<div class='clear'></div>".$this->paginationControl($this->advices, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param));
+}
+else
+{
+	echo "<h3>No articles are available for this category.</h3>";
+}
+?>
+</div>
+</div>

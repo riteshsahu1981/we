@@ -1,0 +1,90 @@
+<div class="pagination">
+    <div>
+        <!-- First page link -->
+        <?php
+       $arrayLink=array();
+
+
+       if(is_array($this->linkArray))
+       		$arrayLink=$this->linkArray;
+        ?>
+        <?php if (isset($this->previous)): ?>
+              <a href="<?= $this->url(array_merge(array('page' => $this->first),$arrayLink)); ?>">First</a> |
+        <?php else: ?>
+                <span class="disabled">First</span> |
+        <?php endif; ?>
+
+        <!-- Previous page link -->
+
+        <?php if (isset($this->previous)): ?>
+              <a href="<?= $this->url(array_merge(array('page' => $this->previous),$arrayLink)); ?>">&lt; Previous</a> |
+        <?php else: ?>
+            <span class="disabled">&lt; Previous</span> |
+        <?php endif; ?>
+        <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+                <a href="<?= $this->url(array_merge(array('page' => $page),$arrayLink)); ?>"><?= $page; ?></a>
+            <?php else: ?>
+                <?= $page; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+              | <a href="<?= $this->url(array_merge(array('page' => $this->next),$arrayLink)); ?>">Next &gt;</a> |
+        <?php else: ?>
+            | <span class="disabled">Next &gt;</span> |
+        <?php endif; ?>
+        <!-- Last page link -->
+        <?php if (isset($this->next)): ?>
+              <a href="<?= $this->url(array_merge(array('page' => $this->last),$arrayLink)); ?>">Last</a>
+        <?php else: ?>
+            <span class="disabled">Last</span>
+        <?php endif; ?>
+        &nbsp; Page <?= $this->current; ?> of <?= $this->last; ?>
+
+
+        <?php
+         $ctrl  = Zend_Controller_Front::getInstance();
+         $request=$ctrl->getRequest();
+         $url="/";
+        // print_r($request->getParams() );
+         $params=$request->getParams();
+         foreach($params as $k=>$v)
+         {
+             if($k<>"page_size" && $k<>"page" )
+             {
+                 if($k=="module" ||  $k=="controller" || $k=="action")
+                    $url.="$v/";
+                 else
+                     $url.="$k/$v/";
+             }
+         }
+
+        $arrPageSize=array("10"=>"10", "25"=>"25", "50"=>"50", "75"=>"75", "100"=>"100");
+        if(!isset($params['page_size']))
+            $params['page_size']=25;
+        ?>
+        <div style="float:right;">
+            <form id="frmPageSize" name="frmPageSize" method="post">
+            Record display per page:    <select name="page_size" id="page_size" onchange="openCurrentWindow(this.value);">
+                    <?php foreach($arrPageSize as $k=>$v){?>
+                    <option <?php if($params['page_size'] == $v ){echo "selected='selected'";}?> value="<?php echo $k?>"><?php echo $v?></option>
+                    <?php } ?>
+                    
+		</select>
+            </form>
+		<script language="javascript" type="text/javascript">
+		function openCurrentWindow(page_size)
+		{
+                    
+			var url = window.location;
+			//var url = <?php echo $this->url;?>;
+			//alert("<?php echo $url?>"+"page_size/"+page_size);
+			window.location.href ="<?php echo $url?>"+"page_size/"+page_size;
+		}
+		</script>
+		</div>
+
+    </div>
+ </div>

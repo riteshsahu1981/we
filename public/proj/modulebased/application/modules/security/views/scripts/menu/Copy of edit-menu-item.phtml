@@ -1,0 +1,56 @@
+<!--<table>
+    <tbody>
+        <tr>
+            <td><img src="<?php echo $this->profile_image?>" /></td>
+           
+        </tr>
+    </tbody>
+</table>
+-->
+
+<span id="profile-image" ><img src="<?php echo $this->profile_image?>" /></span>
+<div id="profile-div">
+<?php echo $this->form;?>
+</div>
+<script type="text/javascript">
+$(function() {
+    $("#dob").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+    $("#doj").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+    $("#marriageAnniversary").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+});
+
+
+
+function getSubGroups()
+{
+    $.post(
+            "/security/privilege/ajax-get-sub-group", 
+            { 
+               "group_id" : $("#groupId").val()
+            }, 
+            function (data) {
+                $("#subGroupId").html("");
+                $.each(data, function(i, item){
+                    $("#subGroupId").append('<option value="' + i + '">' + item + '</option>');
+                });
+                    
+            },"json"
+    );
+}
+function getRoles()
+{
+    $.post(
+            "/security/privilege/ajax-get-role", 
+            { 
+               "sub_group_id" : $("#subGroupId").val()
+            }, 
+            function (data) {
+                $("#roleId").html("");
+                $.each(data, function(i, item){
+                    $("#roleId").append('<option value="' + i + '">' + item + '</option>');
+                });
+                    
+            },"json"
+    );
+}
+</script>

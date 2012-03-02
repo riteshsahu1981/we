@@ -1,0 +1,16 @@
+<?php print $this->numVotes;?> people like this <a href="javascript:void(0);" onclick="return albumCommentUnlike(<?php print $this->commentId;?>);">Unlike</a>
+<script>
+function albumCommentUnlike(commentId)
+{
+	var requesturl	=	"/album/my-photos/unlike-album-comment";
+	var item_type1	=	$("#item_type1").val();
+	var spanId		=	'com_'+commentId;
+
+		$.post(requesturl, {commentId:commentId,item_type:item_type1},
+				   function(html){					
+					$("#"+spanId).html(html);
+						
+				});	
+	
+}
+</script>

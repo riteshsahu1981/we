@@ -1,0 +1,60 @@
+<script>
+function uploadComplete()
+{
+	var permision =	$("#permision").val();
+	var uploadedCount = $("#uploadedCount").val();
+	var albumId = $("#albumId").val();
+        var review_edit = $("#review_edit").val();
+alert(review_edit);
+	var requesturl	=	"/album/my-photos/process-image-complete";	
+
+	$("#systemWorking").show();
+	
+	$.post(requesturl, {permision:permision,uploadedCount:uploadedCount},
+			   function(html){
+					$("#systemWorking").hide();					
+					//window.location="/album/my-photos/album-photos/id/2";
+                                        if(review_edit == 'review'){
+                                            $(window.location).attr('href', '/album/my-photos/review-edit-image/id/'+albumId);
+                                        }else{
+                                            $(window.location).attr('href', '/album/my-photos/album-photos/id/'+albumId);
+                                        }
+			});
+		
+}
+
+</script>
+<div style="position:absolute;top:60px;left:150px;z-index:1000;display:none;background:#FFFFFF;border:1px #CCCCCC solid;width:150px;height:30px;padding:5px;text-align:center;" id="systemWorking">
+<table cellspacing="0" style="background-color:#FFFFFF;" align="center" valign="middle" cellpadding="0" width="150" border="0">
+<td><img src="/images/facebox/loading.gif"></td>
+<td>Processing...</td>
+</table>
+</div>
+
+<div class="upload">
+<h2 class="heading">Upload completed</h2>
+<div class="blank"></div><a class="button" id="cancel" >CANCEL</a>
+<p>100% completed</p><br />
+<p>Your photo has been successfully uploaded.</p>
+<p>Please select the permissions of the photo(s)</p>
+<label><select name="permision" id="permision" class="nomrgn">
+<?php foreach ($this->arrFriendGroup as $key=>$val){?>
+<option value="<?php print $key;?>"><?php print $val;?></option>
+<?php }?>
+</select></label>
+<input type="hidden" name="uploadedCount" id="uploadedCount" value="<?php print $this->uploadedCount;?>" />
+<input type="hidden" name="albumId" id="albumId" value="<?php print $this->album;?>" />
+<input type="hidden" name="review_edit" id="review_edit" value="<?php print $this->review_edit;?>" />
+
+<?php if($this->uploading_type == 'album' && $this->review_edit == 'review'){?>
+<p>Please review and edit your images by clicking the link below</p>
+<p><a href="javascript:void(0);" onclick="return uploadComplete();">Review and edit images</a></p>
+<?php }else if($this->uploading_type == 'album' && $this->review_edit == ''){?>
+<p>To view your photo(s) click the link below</p>
+<p><a href="javascript:void(0);" onclick="return uploadComplete();"><?php echo Zend_Registry::get('siteurl')?>/album/my-photos/album-photos/id/<?php print $this->album;?></a></p>
+
+<?php }else{?>
+<p>It is now safe to close the window</p>
+<p><a href="javascript:void(0);" onclick="return uploadComplete();">Save and View Album</a></p>
+<?php }?>
+</div>

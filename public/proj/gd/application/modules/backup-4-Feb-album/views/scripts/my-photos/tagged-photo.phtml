@@ -1,0 +1,206 @@
+<link rel="stylesheet" type="text/css" href="/style/facebook-tag.css" media="all">
+<script src="/js/facebook-tag.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/ext-core.js"></script>
+<script type="text/javascript" src="/js/elastic-textarea.js"></script>
+<style type="text/css">
+.comment{
+	width: 480px;
+	height: 22px;
+	border: 3px solid #FFFFFF;
+}
+</style>
+<div class="my-photo" id="center">
+<h2>MY PHOTOS</h2>
+<h2 class="subheading"><?php print $this->albumName;?></h2>
+<div id="album-photo">
+<!-- Start Heading -->
+<span class="page_number">Back To Photos of <a href="/album/my-photos/"><?php print $this->userFullName;?></a>  |
+<a href="/album/my-photos/photo-download/name/<?php print $this->photo;?>">Download Photo</a></span>
+<span class="pages">Photo <?php print $this->photoPosition;?> of <?php print $this->numPhotoAlbum;?> 
+	<span> <a href="javascript:void(0);" onclick="slideImage(<?php print $this->prevId;?>);">&lt;</a> <a href="javascript:void(0);" onclick="slideImage(<?php print $this->nextId;?>);">&gt;</a> </span>
+</span>
+<!-- End Heading -->
+
+<!-- Start Tagged Images -->
+
+<div class="viewallmyphoto" id="viewallmyphoto">
+<a href="javascript:void(0);">
+<img width="591" src="/images/album/custom/<?php print $this->photo;?>" id="crop-image" alt="" onclick="slideImage(<?php print $this->nextId;?>);">
+</a>
+</div>
+
+<!-- End Tagged Images -->
+
+<!-- Start Btns Area -->
+<div class="untags">
+<span id="like-photo-container">
+<?php if($this->numVote == 0){?>
+<a href="javascript:void(0);" id="like-photo">
+<img src="/images/fb.jpg" alt="" width="51" height="23" class="f-left">
+</a>
+<?php }else{?>
+<a href="javascript:void(0);" id="unlike-photo">
+<img src="/images/fb-unlike.jpg" alt="" class="f-left">
+</a>
+<?php }?>
+</span>
+<div class="description"><?php print $this->description;?></div>
+
+<a href="javascript: reportAbuse(<?php print $this->photoId;?>, 'photo');" class="button">REPORT</a>
+<a href="#" class="button">UN-TAG IMAGE</a>
+
+
+
+</div>
+<!-- End Btns Area -->
+</div>
+
+
+<!-- Start Comment Area -->
+<div class="comment-area">
+<ul>
+	<li>Location: <a href="#">London</a>   Tags: <a href="#">China Town, Party, Kevin G, Karen C</a></li>
+</ul>
+<ul id="album-comment-container">
+<span id="loading-wall"><img src="<?php echo $this->cdnUri()?>/images/loading.gif" alt=""/></span>
+</ul>
+<ul>
+<li>
+<textarea id="comment" id="comment" class="comment" >Write a comment...</textarea>
+<input name="submit" id="submit-album-comment" type="button" class="button" value="Comment" />
+</li>
+</ul>
+</div>
+<!-- End Comment Area -->
+</div>
+
+
+<div style="position:absolute;top:450px;left:360px;z-index:100000;display:none;background:#FFFFFF;border:1px #CCCCCC solid;width:130px;height:17px; padding:4px; text-align:center;" id="photo-loading">
+<table cellspacing="0" style="background-color:#FFFFFF;" align="center" valign="middle" cellpadding="0" width="130" border="0">
+<td><img src="/images/loading.gif" alt=""></td>
+<td align="left">loading...</td>
+</table></div>
+
+<input type="hidden" name="photo_id" id="photo_id" value="<?php print $this->photoId;?>" />
+<input type="hidden" name="item_id" id="item_id" value="<?php print $this->photoId;?>" />
+<input type="hidden" name="item_type" id="item_type" value="photo" />
+<input type="hidden" name="item_type1" id="item_type1" value="photo_comment" />
+<input type="hidden" name="tag-image-flag" id="tag-image-flag" value="0">
+
+<script>
+
+
+elasticTextArea("comment");		
+
+function slideImage(photoId)
+{
+	var tagImageFlag	=	$("#tag-image-flag").val();
+	var requesturl		=	"/album/my-photos/photo-slide-tagged";
+
+	if(tagImageFlag == 0)
+	{
+		$("#photo-loading").show();
+		
+		$.post(requesturl, {photoId:photoId },
+				   function(html){
+			   		$("#photo_id").val(photoId);
+			   		$("#item_id").val(photoId);
+					$("#album-photo").html(html);
+					$("#photo-loading").hide();		
+					loadImageByComment(photoId);	
+	
+	
+									
+				});	
+	}
+}
+
+$(document).ready(function(){
+	$("a#like-photo").click(function(){
+		var photo_id	=	$("#photo_id").val();
+		var item_type	=	'album_photo';
+		var requesturl	=	"/album/my-photos/like-photo";
+
+			$.post(requesturl, {photo_id:photo_id,item_type:item_type },
+					   function(html){					
+						$("#like-photo-container").html(html);
+							
+					});	
+		
+	});
+});
+
+$(document).ready(function(){
+	$("a#unlike-photo").click(function(){
+		var photo_id	=	$("#photo_id").val();
+		var item_type	=	'album_photo';
+		var requesturl	=	"/album/my-photos/unlike-photo";
+
+			$.post(requesturl, {photo_id:photo_id,item_type:item_type },
+					   function(html){					
+						$("#like-photo-container").html(html);
+							
+					});	
+		
+	});
+});
+
+$(document).ready(function(){
+	var photo_id	=	$("#photo_id").val();
+	var item_type	=	$("#item_type").val();
+	var item_type1	=	$("#item_type1").val();
+	var requesturl	=	"/album/my-photos/load-album-comment";
+	
+		$.post(requesturl, {album_id:photo_id,item_type:item_type1,item_type1:item_type1 },
+				   function(html){
+					$("#album-comment-container").html(html);		
+						
+				});	
+	
+});
+
+function loadImageByComment(photo_id)
+{
+	var item_type	=	$("#item_type").val();
+	var item_type1	=	$("#item_type1").val();
+	var requesturl	=	"/album/my-photos/load-album-comment";
+
+	$("#album-comment-container").html("<span id='loading-wall'><img src='/images/loading.gif' alt=''/></span>");
+	
+	$.post(requesturl, {album_id:photo_id,item_type:item_type,item_type1:item_type1 },
+			   function(html){
+				$("#album-comment-container").html("");
+				$("#album-comment-container").html(html);	
+										
+			});	
+}
+
+$(document).ready(function(){
+	$("input#submit-album-comment").click(function(){
+		var comment		=	$("#comment").val();
+		var item_id		=	$("#item_id").val();
+		var item_type	=	$("#item_type").val();
+		var item_type1	=	$("#item_type1").val();
+		var requesturl	=	"/album/my-photos/album-photo-comment";
+		if(comment == "" || comment == "Comment..." )
+		{
+			alert("Please enter comment!");
+			return false;
+		}else{
+				$.post(requesturl, {item_id:item_id,comment:comment,item_type:item_type1 },
+						   function(html){					
+							$("#album-comment-container").prepend(html).hide().slideDown("slow");
+							$("#comment").val('Write a comment...');	
+							$("#comment").attr('style','');			 		
+								
+						});	
+		}
+	});
+	
+});
+
+
+
+</script>
+
+

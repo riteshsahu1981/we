@@ -1,0 +1,42 @@
+<?php
+echo $this->form;
+?>
+<script type="text/javascript">
+$(function() {
+    $("#dob").datepicker({dateFormat: 'yy-mm-dd' , changeMonth: true, changeYear: true});
+   
+});
+
+function getSubGroups()
+{
+    $.post(
+            "/security/privilege/ajax-get-sub-group", 
+            { 
+               "group_id" : $("#groupId").val()
+            }, 
+            function (data) {
+                $("#subGroupId").html("");
+                $.each(data, function(i, item){
+                    $("#subGroupId").append('<option value="' + i + '">' + item + '</option>');
+                });
+                    
+            },"json"
+    );
+}
+function getRoles()
+{
+    $.post(
+            "/security/privilege/ajax-get-role", 
+            { 
+               "sub_group_id" : $("#subGroupId").val()
+            }, 
+            function (data) {
+                $("#roleId").html("");
+                $.each(data, function(i, item){
+                    $("#roleId").append('<option value="' + i + '">' + item + '</option>');
+                });
+                    
+            },"json"
+    );
+}
+</script>

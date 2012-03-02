@@ -1,0 +1,241 @@
+<script language="javascript">
+    function showCommentBox(item_id)
+    {
+         $("#comment-main-"+item_id).show();
+    }
+
+   function like(item_id,vote)
+   {
+	var params='';
+	params+="vote="+vote;
+	params+="&item_id="+item_id;
+	params+="&item_type=blog";
+	$("span#like_"+item_id).hide();
+        $("span#loading_"+item_id).show();
+	$.ajax({
+		   type: "POST",
+		   url: "/vote/do-vote/",
+		   data: params,
+		   dataType: "json",
+		   success: function(json){
+			if(json.error==1)
+			{
+				alert(json.msg);
+			}
+			else if(json.error==2)
+			{
+                            $("span#loading_"+item_id).hide();
+                             $("#comment-main-"+item_id).show();
+                            if(vote==1){
+                                $("span#unlike_"+item_id).show();
+                                $("span#like_"+item_id).hide();
+                                $("#you-like-this-"+item_id).show();
+                                $("#you-like-this-thumb-"+item_id).show();
+
+
+                            }else{
+                                $("span#unlike_"+item_id).hide();
+                                $("span#like_"+item_id).show();
+                                $("#you-like-this-"+item_id).hide();
+                                $("#you-like-this-thumb-"+item_id).hide();
+                            }
+
+
+                            $("span#total_likes_"+item_id).html(json.total_up);
+                            $("span#total_likes_left_"+item_id).html(json.total_up);
+                        }
+		   },
+		   error: function (json, status, e){
+
+			}
+	 });
+}
+</script>
+<?php
+    $blogM		= new Application_Model_Blog();
+    $where		= "publish='published' and status='public' and featured=1";
+    $featurePosts	= $blogM->fetchAll($where, "weight asc");
+     
+	$date		= new Base_Date();
+    $date->setSysDateFormat("dS F Y");
+	 
+    $userNs		= new Zend_Session_Namespace('members');
+	$isLoggedIn = $userNs->userId;
+?>
+<div class="featured-journal-box-home f-right">
+    <h2>OUR FAVOURITE JOURNAL POST</h2>
+    <?php 
+	if(count($featurePosts)> 0)
+	{
+	?>
+	<ul id="slides1">
+	
+	<?php
+	foreach($featurePosts as $featurePost)
+	{ 
+		//now select blog Journal settings to appear in featured journal
+		$journalM	= new Application_Model_Journal();
+		$journalM	= $journalM->find($featurePost->getJournalId());
+		$jStatus	= $journalM->getStatus();
+		$jPublish	= $journalM->getPublish();
+		//check journal status
+		if($jStatus=="public" && $jPublish=="published")
+		{
+			$userM = new Application_Model_User();
+			$user = $userM->find($featurePost->getUserId());
+
+			$voteM = new Application_Model_Vote();
+			$total_likes = $voteM->getTotalVotes($featurePost->getId(),"blog", 1, null);
+			$userVote = $voteM->getTotalVotes($featurePost->getId(),"blog", 1, $isLoggedIn);
+
+			$tagsM = new Application_Model_Tags();
+			$tagStr = $tagsM->getBlogTags($featurePost->getId());
+			$likeStyle = "";
+			$unlikeStyle = "display:none";
+			
+							if($total_likes > 1){
+								$textPrint	=	"Members";
+							}else{
+								$textPrint	=	"Member";
+							}
+	?>        
+      <li>
+        <div class="featured-journal-box-home-left"><img src="<?php echo $user->getThumbnail()."?".rand(1,100000);?>" alt="" width="61" /></div>
+        <div class="featured-journal-box-home-right">
+          <h3 class="main-heading2"><a href="/journal/view-post/blog_id/<?php echo $featurePost->getId();?>"><?php echo $featurePost->getTitle();?></a></h3>
+          <div class="post-by">
+              Posted by <b>
+                  <a href="<?php echo $this->seoUrl('/'.$user->getUsername()); ?>"><?php echo $user->getFirstName().' '.$user->getLastName();?></a>
+              </b> | <span>
+                  <?php echo $date->timeAgo($featurePost->getAddedon());?>
+              </span> | <a href="/journal/view-post/blog_id/<?php echo $featurePost->getId();?>#blog_comments_list">Comment</a>
+              | <?php if($isLoggedIn == ""){ ?>
+                  <a href="javascript: loginPopUp('Please login to like');">Like</a>
+                <?php }else{
+
+                            if($userVote > 0){
+                               $likeStyle = "display:none";
+                               $unlikeStyle = "";
+                             }else{
+                                 $likeStyle="";
+                                 $unlikeStyle="display:none";
+                             }
+                           ?>
+
+                        <span style="display: none;" id="loading_<?php echo $featurePost->getId();?>">
+                            <img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif">
+                        </span>
+                        <span style="<?php echo $unlikeStyle?>" id="unlike_<?php echo $featurePost->getId();?>">
+                            <a href="javascript: like('<?php echo $featurePost->getId();?>', -1);">Unlike</a>
+                        </span>
+
+                        <span style="<?php echo $likeStyle?>"  id="like_<?php echo $featurePost->getId();?>">
+                                <a href="javascript: like('<?php echo $featurePost->getId();?>', 1);">Like</a>
+                        </span>
+                   <?php } ?>
+          </div>
+        <div class="post-by-txt"><?php echo substr($featurePost->getContent(),0,300);?>... <a href="/journal/view-post/blog_id/<?php echo $featurePost->getId();?>" title="Read more">Read more</a></div>
+		<div class="like-dislike">
+			  <span class="like-dislike-l f-left" id="you-like-this-thumb-<?php echo $featurePost->getId();?>" style="<?php //echo $unlikeStyle?>">
+			  <?php if($total_likes > 0){ ?>
+			  <img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like" class="f-left" />				
+					<span id="you-like-this-<?php echo $featurePost->getId();?>" style="<?php echo $unlikeStyle?>">You liked this</span>
+					
+					<a href="/journal/user-like-this/blog_id/<?php echo $featurePost->getId()?>" class="f-left">
+					(<span id="total_likes_<?php echo $featurePost->getId();?>"><?php echo $total_likes ?></span> <?php print $textPrint;?> liked this)</a>
+					<?php }?>
+					
+					
+			  </span>
+			  <span class="like-dislike-r f-left" style="float:right;">Tags: <?php echo $tagStr?></span>
+		</div>
+        <div class="clear"></div>
+        <a href="/journal/<?php echo $user->getUsername();?>" class="orange-sml">VIEW JOURNAL</a> &nbsp;&nbsp;
+		<?php
+			$shareLink = Zend_Registry::get('siteurl')."/journal/view-post/blog_id/".$featurePost->getId();
+		?>
+		<span class="share-id-option">
+			<a href="javascript://" id="share-link-dd-<?php echo $featurePost->getId();?>" class="share-link-dd">Share It</a>
+			<span id="share-link-dd_menu-<?php echo $featurePost->getId();?>"  class="share-link-dd_menu" >
+			<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=facebook&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $featurePost->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Facebook"><img src="/images/facebook-icon-sml.png" alt="" /></a>
+			<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=twitter&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $featurePost->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Twitter"><img src="/images/twitter-icon-sml.png" alt="" /></a>
+			<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=delicious&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $featurePost->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Social"><img src="/images/social_03.png" alt="" /></a>
+			<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=digg&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $featurePost->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Digg This"><img src="/images/digg-icon-sml.png" alt="" /></a>
+			<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=google&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $featurePost->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Google"><img src="/images/gmail-icon-sml.png" alt="" /></a>
+			<a href="//www.addthis.com/bookmark.php?pub=jhuskisson&amp;v=250&amp;source=tbx-250&amp;tt=0&amp;s=stumbleupon&amp;url=<?php echo $shareLink;?>&amp;title=<?php echo $featurePost->getTitle();?>&amp;content=&amp;lng=en" target="_blank" title="Send to Stumbleupon"><img src="/images/stumbleupon-icon-sml.png" alt="" /></a>
+		</span>
+		<script language="javascript" type="text/javascript">
+		
+		$(document).ready(function(){
+			//set share journal drop-down menu here
+			$("#share-link-dd_menu-<?php echo $featurePost->getId();?>").hide();
+			$("#share-link-dd-<?php echo $featurePost->getId();?>").click(function(e) {          
+				e.preventDefault();
+				$("#share-link-dd_menu-<?php echo $featurePost->getId();?>").toggle("slow");
+				$("#share-link-dd-<?php echo $featurePost->getId();?>").toggleClass("menu-open");
+			});
+			
+			$("#share-link-dd_menu-<?php echo $featurePost->getId();?>").mouseup(function() {
+				return false;
+			});
+		});
+		</script>
+
+		</div>
+    </li>
+<?php 
+	  }//end of if
+  }//end of foreach
+?>
+</ul>
+<script language="javascript">
+//http://bxslider.com/
+$(document).ready(function(){
+	$('#slides1').bxSlider({
+		prev_text: 'Prev',
+		next_text: 'Next',
+		wrapper_class: 'slides1_wrap',
+        pager: false,
+		auto: false,
+		auto_controls: false
+	});
+});
+</script>
+<?php  
+}//end of if
+else
+{
+?>
+<div class="featured-journal-box-home-right" style="width:424px; height:50px; text-align:center; color:#FF2400; font: 14px bold;">No featured journals are available.</div>
+<?php	
+}
+?>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

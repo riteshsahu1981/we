@@ -1,0 +1,11 @@
+<div id="main-right">
+  	<?php 
+   	$blockM=new Base_View_Block();
+   	$blocks=$blockM->getBlock('advice');
+   	foreach($blocks as $block)	
+   	{
+   		echo $this->pageElement($block['name'],$block['path']);
+   	}	
+   	?>
+
+</div>

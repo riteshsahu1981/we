@@ -1,0 +1,103 @@
+<?php //echo $this->totalItemCount; ?>
+
+<?php if (count($this->paginator)): ?>
+
+
+<?php
+$sno=0;
+$page=$this->paginator->getCurrentPageNumber();
+$items_per_page=$this->paginator->getItemCountPerPage(); 
+if($page>1)
+{
+        $sno=$items_per_page*$page - $items_per_page ; 	
+}
+?>
+
+
+<table>
+    <thead>
+        <?php if($this->paginator->count()>1):?>
+        
+            <tr>
+                <td colspan="7">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        
+        <?php endif?>
+        <tr>
+            <th>S.No.</th>
+            <th>Menu Id</th>
+            <th>Menu Title</th>
+            <th>Menu Path</th>
+            <th>Parent Id</th>
+            <th>Is Active?</th>
+            <th>Is Child?</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+        foreach ($this->paginator as $item): ?>
+        <?php $sno++?>
+        <?php
+            $menu=new Base_Security_Menu();
+           
+        ?>
+        <tr>
+            <td><?php echo $item['menu_sno']; ?>.</td>
+            <td> <?php echo $item['menu_id']; ?></td>
+            <td><?php echo $item['menu_title']; ?></td>
+            <td><?php echo $item['menu_path']; ?></td>
+            
+            <td><?php echo $item['menu_parent_id']; ?></td>
+             <?php if( $item['menu_is_active']=="1") {
+                    $title="Click here to make menu item inactive!";
+                    $image="/images/icons/tick_circle.png";
+                }else{
+                    $image="/images/icons/cross_circle.png";
+                    $title="Click here to make menu item active!";
+                }?>
+            <td><a href="<?php echo $this->seoUrl("/security/menu/change-status/id/{$item['menu_id']}/status/{$item['menu_is_active']}")?>" title="<?php echo $title?>" ><img alt="<?php echo $title?>" src="<?php echo $image?>"/></a></td>
+            
+            <?php if( $item['menu_is_child']=="1") {
+                    
+                    $image="/images/icons/tick_circle.png";
+                }else{
+                    $image="/images/icons/cross_circle.png";
+                    
+                }?>
+            
+            <td>
+                <a href="<?php echo $this->seoUrl("/security/menu/change-child-status/id/{$item['menu_id']}/status/{$item['menu_is_child']}")?>" title="<?php echo $title?>" ><img alt="<?php echo $title?>" src="<?php echo $image?>"/></a>
+           </td>
+           <td>
+                <a title="Edit" href="<?php echo $this->seoUrl("/security/menu/edit-menu-item/id/{$item['menu_id']}")?>"><img alt="Edit" src="/images/pencil.png"></a>&nbsp;
+                <a title="Delete" href="<?php echo $this->seoUrl("/security/menu/delete-menu-item/id/{$item['menu_id']}")?>" onclick="return confirm('Delete this item?');"><img alt="Delete" src="/images/cross.png"></a>
+           </td>
+        </tr>
+        <?php 
+        
+      
+       // echo $menu->getChildGrid($item['menu_childs'], $sno);
+        ?>
+        
+        
+        
+        <?php endforeach; ?>
+        <?php if($this->paginator->count()>1):?>
+        <tfoot>
+            <tr>
+                <td colspan="8">
+                         <?=$this->paginationControl($this->paginator, 'Sliding', 'pagination-ext.phtml',array("linkArray"=>$this->linkArray));?>
+                        <div class="clear"></div>
+                </td>
+            </tr>
+        </tfoot>
+        <?php endif?>
+        
+    </tbody>
+</table>
+<?php endif; ?>
+

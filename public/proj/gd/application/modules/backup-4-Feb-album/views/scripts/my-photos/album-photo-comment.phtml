@@ -1,0 +1,28 @@
+<li id="<?php print "album_comment_".$this->commentId;?>">
+<div class="commnetor">
+<?php if($this->userImage != ""){?>
+	<img src="/media/picture/profile/<?php print $this->userImage;?>" width="35" height="41" />
+<?php }else{?>
+	<img src="/images/no-image.jpg" width="35" height="41" />
+<?php }?>
+</div>
+<div class="commnetarea"><span><?php print $this->userFullName;?></span> <?php print $this->comment;?>
+<div class="post">Posted 2 sec ago | 
+<span id="<?php print 'com_'.$this->commentId;?>"><a href="javascript:void(0);" onclick="return albumCommentLike(<?php print $this->commentId;?>);">Like</a></span>
+|  <a href="javascript:void(0);" onclick="removeAlbumComment(<?php print $this->commentId;?>);" >Remove</a></div></div>
+</li>
+<script>
+function albumCommentLike(commentId)
+{
+	var requesturl	=	"/album/my-photos/like-album-comment";
+	var item_type	=	'album_comment';
+	var spanId		=	'com_'+commentId;
+
+		$.post(requesturl, {commentId:commentId,item_type:item_type},
+				   function(html){					
+					$("#"+spanId).html(html);
+						
+				});	
+	
+}
+</script>

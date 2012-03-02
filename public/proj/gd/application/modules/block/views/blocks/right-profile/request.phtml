@@ -1,0 +1,73 @@
+<script>
+function changeRequest(val,id,userid,friendid, status)
+  {
+	$("div#response-"+id).html("<img src='/images/ajax-loader.gif'>");
+	var params="mode=ajax&ctype="+val+"&id="+id+"&userid="+userid+"&friendid="+friendid+"&status="+status;
+	//$("div#response").html("processing...");
+	$.ajax({
+		   type: "POST",
+		   url: "/index/change-request/",
+		   data: params,
+		   dataType: "html",
+		   success: function(responseData)
+		   {
+				$("div#friendsProfile"+id).hide();
+				//$("div#response-"+id).html("sucessfully updated");
+				$("div#response-"+id).html(responseData);
+                $("div#friendsProfile-"+id).hide();
+				//alert("function call sucessfully ="+responseData);
+		   },
+		   error: function (json, status, e)
+		   {
+			   $("div#resp").html("Exception : "+e+json);
+		   }
+	 });
+  }
+
+</script>
+
+<?php 
+	  $userNs       = new Zend_Session_Namespace("members");
+	  $friendM      = new Application_Model_Friend();
+	  $requestWhere = "friend_id='{$userNs->userId}' and status='pending'";
+	  $requests     = $friendM->fetchAll($requestWhere);
+          $dbObj	= new Base_Db();
+          $countFriend  = $dbObj->getTotalRecords('friend',"friend_id='{$userNs->userId}'".' and connection_type = \'friend\' and status=\'pending\'');
+          $countTravel  = $dbObj->getTotalRecords('friend',"friend_id='{$userNs->userId}'".' and connection_type = \'travelmate\' and status=\'pending\'');
+          $countFamily  = $dbObj->getTotalRecords('friend',"friend_id='{$userNs->userId}'".' and connection_type = \'family\' and status=\'pending\'');
+	  
+	
+	?>		
+		
+		<div class="right-box">
+			<h2 class="box-head">REQUESTS</h2>
+			<p>You have <?php echo $countFriend; ?> friends, <?php echo $countTravel; ?> Travel Mate, and <?php echo $countFamily; ?> family requests</p>
+			<ul class="requests">
+                        <?php foreach ($requests as $row) {
+                            
+                         $friendObj      = new Application_Model_Friend();
+  	                 $friendRow      = $friendObj->find($row->id);
+                         $userObj        = $friendRow->getUserObj();
+  	                 $conntype       = $friendRow->getConnectionType();
+  	           	 $friendObj      = $friendRow->getFriendObj();
+                         ?>
+			<li>
+                            <div id="friendsProfile-<?php echo  $row->id; ?>">
+                           <?php if(null != $userObj->image) { ?>
+                                <div class="request-img"><a href="/<?php echo $userObj->username?>"><img src="/media/picture/profile/thumb_<?php echo $userObj->image; ?>" alt=""  width="45" /></a></div>
+			   <?php } else { ?>
+                                <div class="request-img"><a href="/<?php echo $userObj->username?>"><img src="/images/noimage.jpg" width="45" /></a></div>
+                           <?php } ?>
+                                <div class="request-txt">
+                                    <div class="request-name"><a href="/<?php echo $userObj->username?>"><?php echo $userObj->first_name.' '.$userObj->last_name; ?></a></div>
+					<div class="request-group"><?php echo ucfirst($conntype); ?></div>
+					<div class="request-action"><a href="javascript://" onclick="changeRequest('<?php echo $conntype; ?>','<?=$row->id?>','<?=$userObj->id?>','<?=$friendObj->id?>', 'accept')">Accept</a>  |  <a href="javascript://" onclick="changeRequest('<?php echo $conntype; ?>','<?=$row->id?>','<?=$userObj->id?>','<?=$friendObj->id?>', 'decline')">Decline</a></div>
+			      </div>
+                            </div>
+                                <div id="response-<?php echo  $row->id; ?>"></div>
+			</li>
+                        <?php } ?>
+			</ul>
+                       <div class="view-all-link"><a href="#">View All</a></div>
+		</div>
+		

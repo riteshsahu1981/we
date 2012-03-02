@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>           
+<configdata>
+<weight>200</weight> 
+<nav>
+<admin_nav>
+  <label>My Account</label>
+    <module>admin</module>
+    <controller>dashboard</controller>       
+    <action>index</action>
+    <resource>admin:dashboard</resource>
+    <privilege>index</privilege>
+    <pages>  
+
+    <admin>
+
+        <label>My Account</label>
+        <module>admin</module>
+        <controller>dashboard</controller>       
+        <action>index</action>
+        <resource>admin:dashboard</resource>
+        <privilege>index</privilege>
+
+        <pages>
+            <dashboard>
+                <label>Dashboard</label>
+                <module>admin</module>
+                <controller>dashboard</controller>       
+                <action>index</action>
+                <resource>admin:dashboard</resource>
+                <privilege>dashboard</privilege>
+
+            </dashboard>
+            <myprofile>
+                <label>My Profile</label>
+                <module>security</module>
+                <controller>user</controller>       
+                <action>my-profile</action>
+                <resource>security:user</resource>
+                <privilege>my-profile</privilege>
+
+            </myprofile>
+            <changepassword>
+                <label>Change Password</label>
+                <module>security</module>
+                <controller>user</controller>       
+                <action>change-password</action>
+                <resource>security:user</resource>
+                <privilege>change-password</privilege>
+            </changepassword>
+
+        </pages>
+    </admin>
+</pages>
+
+ </admin_nav>  
+</nav>
+</configdata>
+
+            

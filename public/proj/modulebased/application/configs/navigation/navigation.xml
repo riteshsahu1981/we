@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configdata>
+	<nav>
+            <home>
+            <label>Home</label>
+            <module>admin</module>
+            <controller>dashboard</controller>       
+            <action>index</action>
+            <resource>admin:dashboard</resource>
+            <privilege>index</privilege>
+            
+            
+            
+            
+             </home>
+	</nav>
+</configdata>

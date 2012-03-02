@@ -1,0 +1,41 @@
+<?php $total =count($this->birthdayGuys);
+$height=$total*150;
+?>
+
+<?php
+if($this->align=="")
+    $this->align="left";
+?>
+<div class="content-box column-<?php echo  $this->align?> <?php echo  $this->box_status?> ">
+    <div class="content-box-header">
+     
+        <h3 style="cursor: s-resize;">Today's Birthday Alert</h3>
+    </div> <!-- End .content-box-header -->
+
+    <div class="content-box-content" style="display: block;  min-height:200px">
+    <div class="tab-content default-tab" style="display: block;">
+            <div class="div-table">
+                <?php 
+                if($total>0){
+                    
+                    foreach($this->birthdayGuys as $user){?>
+                <div class="birthdaybox">
+                        <div class="profileImageB">
+                        <img  src="/image/thumb/size/medium/path/<?php echo base64_encode($user['image'])?>" />
+                       </div>
+                
+                       <div class="empinfoB" >
+                            <p><?php echo $user['name']?></p>
+                            <p><?php echo $user['email']?> </p>
+                            <p><?php echo $user['department']?></p>
+                        </div>
+                </div>
+                    
+                    <?php }
+               
+                
+                }?>
+            </div>
+    </div> <!-- End #tab3 -->        
+    </div> <!-- End .content-box-content -->
+</div>

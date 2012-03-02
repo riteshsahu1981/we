@@ -1,0 +1,21 @@
+<div id="main-left">
+<?php 
+$advice = $this->advice;
+?>
+<div class="advice-detials"><h2 class="main-heading"><span>Advice</span> > <span><?php echo $this->cat_name;?></span> > <?php  echo $advice->getTitle()?></h2>
+<?php if($advice->getStatus()=='1' || $this->preview==true){?>
+        
+		<?php if($advice->getName()!=""){?>
+		<img src="/images/advice/<?php echo $advice->getName();?>" class="f-left"/>
+		<?php }?>
+        <?php echo $advice->getContent()?>
+		<div style="float:right;">
+		<b>Author:</b> <a href="javascript://<?php //echo $this->seoUrl('/profile/view/username/'.$this->author_username);?>"><?php echo $this->author;?></a>
+		</div>
+<?php } else {?>
+<h2 class="main-heading" style="text-transform:none;">
+<span>This article is not published.</span>
+</h2>
+<?php }?>		
+</div>
+</div> 

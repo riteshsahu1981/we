@@ -1,0 +1,85 @@
+<script src="/js/dolphin.js" type="text/javascript"></script>
+
+    <!-- left Content box --> 
+    <div id="bodyleftmain">
+    
+	<!-- General Info -->
+	
+	  <div class="leftheading">
+	  <img src="/images/admin-images/left-heading-l.jpg" alt="" align="left" />
+	  <img src="/images/admin-images/left-heading-r.jpg" alt="" align="right" />
+	  	General Info
+	  </div>
+	  <div class="leftsidelink">
+	  <div class="leftsidelink1">
+	    <ul class="leftlinklist">
+	    	<li><a href="<?php echo $this->seoUrl('/admin/index/dashboard')?>" id="<?php if($this->controllerName=='index'){echo "activeNav";} ?>">Dashboard</a> </li>
+		    <li><a href="<?php echo $this->seoUrl('/admin/user/change-password')?>"  id="<?php if($this->actionName=='change-password' && $this->controllerName=='user' ){echo "activeNav";} ?>" >Change Password</a></li>
+		    <li><a href="<?php echo $this->seoUrl('/admin/login/logout')?>">Logout</a></li>
+	     </ul> 
+		 </div>
+	  </div>
+	  <div class="btm-curve">
+	  <img src="/images/admin-images/left-btm-l.jpg" alt="" align="left" />
+	  <img src="/images/admin-images/left-btm-r.jpg" alt="" align="right" />
+	  </div>
+  	<!-- General Info -->
+  
+  	<!-- General Admin-->
+	  <div class="leftheading" >
+	  <img src="/images/admin-images/left-heading-l.jpg" alt="" align="left" />
+	  <img src="/images/admin-images/left-heading-r.jpg" alt="" align="right" />
+	  General Admin
+	  </div>
+	  <div class="leftsidelink">
+	  <div class="leftsidelink1">
+	    <ul class="leftlinklist">
+	      	<li><a href="<?php echo $this->seoUrl('/admin/page/')?>" id="<?php if($this->controllerName=='page' && $this->actionName<>'page'){echo "activeNav";} ?>">Manage Static Pages</a></li>
+	      	<li><a href="<?php echo $this->seoUrl('/admin/user/')?>" id="<?php if($this->controllerName=='user' && $this->actionName<>'change-password'){echo "activeNav";} ?>">Manage Users</a></li>
+	      	<li><a href="<?php echo $this->seoUrl('/admin/userlevel/view/')?>" id="<?php if($this->controllerName=='userlevel'){echo "activeNav";} ?>">User Level</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/email-template/')?>" id= "<?php if($this->controllerName=='email-template'){echo "activeNav";} ?>">Email Templates</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/global-settings/')?>" id= "<?php if($this->controllerName=='global-settings' && $this->actionName!="amazon" ){echo "activeNav";} ?>">Global Settings</a></li>
+			
+			<li><a href="<?php echo $this->seoUrl('/admin/language/index/type/movie')?>" id="<?php if($this->controllerName=='language' && $this->type=='movie'){echo "activeNav";} ?>">Manage Language</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/permission/index/')?>" id="<?php if($this->controllerName=='permission'){echo "activeNav";} ?>">Permission</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/friend-group/index/')?>" id="<?php if($this->controllerName=='friend-group'){echo "activeNav";} ?>">Friend Group</a></li>
+			
+	    </ul>
+		</div>
+	  </div>
+	  <div class="btm-curve">
+	  <img src="/images/admin-images/left-btm-l.jpg" alt="" align="left" />
+	  <img src="/images/admin-images/left-btm-r.jpg" alt="" align="right" />
+	  </div>
+	  
+  	<!-- General Admin-->
+  	
+  	 <!-- General Admin-->
+	  <div class="leftheading" >
+	  <img src="/images/admin-images/left-heading-l.jpg" alt="" align="left" />
+	  <img src="/images/admin-images/left-heading-r.jpg" alt="" align="right" />
+	  Location
+	  </div>
+	  <div class="leftsidelink">
+	  <div class="leftsidelink1">
+	    <ul class="leftlinklist">
+	      	
+			
+			<li><a href="<?php echo $this->seoUrl('/admin/continent/index/')?>" id="<?php if($this->controllerName=='continent'){echo "activeNav";} ?>">Continent</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/country/index/')?>" id= "<?php if($this->controllerName=='country'){echo "activeNav";} ?>">Country</a></li>
+			<li><a href="<?php echo $this->seoUrl('/admin/city/index/')?>" id= "<?php if($this->controllerName=='city'){echo "activeNav";} ?>">City</a></li>
+			
+	    </ul>
+		</div>
+	  </div>
+	  <div class="btm-curve">
+	  <img src="/images/admin-images/left-btm-l.jpg" alt="" align="left" />
+	  <img src="/images/admin-images/left-btm-r.jpg" alt="" align="right" />
+	  </div>
+	  
+  	<!-- General Admin-->
+  
+
+	
+  </div>
+     <!-- End left Content box -->

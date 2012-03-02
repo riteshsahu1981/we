@@ -1,0 +1,193 @@
+<script type="text/javascript">
+var params="mode=ajax";
+$(function()
+{
+	$("#searchname").autocomplete(
+	{ 
+		source: "/profile/auto-friend-name/",
+		minLength: 1,
+		select: function(event, ui)
+		{ 
+			$("#searchname").val(ui.item.id);
+		}
+	});
+});
+
+function mySubmit()
+{
+	$("#searchfrm").submit();
+}
+function addFriend(id)
+{
+	$("span#friend"+id).html("<img src='/images/ajax-loader.gif'>");
+	var ftype = "friend";
+	var params=	'';
+	params+="id="+id+"&ftype="+ftype;
+	//alert("params"+params);return false;
+	$.ajax({
+		   type: "POST",
+		   url: "/gapper/add-friend/",
+		   data: params,
+		   dataType: "json",
+		   success: function(res)
+		   {
+				if(res.error==1)
+				{
+					$("#friend"+id).html("");
+					loginPopUpExt(res.response, res.profileUrl);//open login Pop Up
+				}
+				else
+				{
+					$("span#friend"+id).html(res.response);
+				}
+				//$("span#friend"+id).html(res);
+		   },
+		   error: function (res, status, e)
+		   {
+			   $("span#friend"+id).html('error');
+			}
+	 });
+	return false;	
+}
+</script>
+
+<div id="journal-center">
+  <h2>MY FRIENDS</h2>
+  <p>Here's a list of all friends and family members connected to <b><?php echo $this->userObject->getFirstName().' '.$this->userObject->getLastName();?></b>.</p>
+  <br />
+  <h2>CURRENT FRIENDS AND FAMILY</h2>
+  <br />
+  <form action = "/profile/friends/username/<?= $this->userName ?>" method="post" name="searchfrm" id="searchfrm" style="display:inline">
+    <div class="filter-conection">Filter by:
+      <select name="searchkey" onchange="mySubmit();" id="searchkey">
+        <option value="">Family and Friend</option>
+        <option value="friend" <?php echo $this->ctype=='friend'?'selected':''; ?>>Friends</option>
+        <option value="family" <?php echo $this->ctype=='family'?'selected':''; ?>>Family </option>
+        <!--<option value="travelmate" <?php echo $this->ctype=='travelmate'?'selected':''; ?>>Travel Mates </option>-->
+      </select>
+    </div>
+    <div class="friend-results">
+	<?php if($this->totalFriends > 0){?>
+	<span class="friend-result-txt f-left"><?php echo $this->totalFriends;?> friend(s) found</span>
+	<?php }?>
+	<span class="search-results f-right">
+	<input type="text" id="searchname" name="searchname" value="<?php echo $this->searchname!=''?$this->searchname:'Search Names'; ?>" onfocus="if(this.value=='Search Names'){this.value='';}" onblur="if(this.value==''){this.value='Search Names';}">
+	<input class="search-btn" type="submit" value="Go" name="submit1" />
+	</span>
+	</div>
+  </form>
+<div class="friend-box-container" id="friends_listings">
+<?php
+//if($this->totalFriends>0)
+if(count($this->data)>0)
+{
+	 //foreach($this->paginator as $row)
+	 foreach($this->data as $row)
+	 {
+		 $_friend	= new Application_Model_Friend();
+		 $_friend	= $_friend->find($row->id);
+
+		 $userid	= $_friend->getUserId();
+		 $friendid	= $_friend->getFriendId();
+		 $conntype	= $_friend->getConnectionType();
+
+		 //$_friend->getId();
+		 $friendO	= $_friend->getFriendObj();
+		 if(!is_null($friendO))
+		 {
+			 $userM		= new Application_Model_User();
+			 $thumb		= '';
+			 if($friendObj = $userM->find($friendO->id))
+			 {
+				//$thumb	= $friendObj->getThumbnail();
+			 }
+			 if($friendO->status)
+			 {
+				$thumb		= $_friend->getThumbnail($friendO->image, $friendO->facebook_id, $friendO->sex);
+
+?>
+ 
+    <div class="friends-box">
+      <div class="friends-box-img">
+        <a href ="/<?php echo $friendO->username?>">
+		<!--<img src="<?php echo $thumb;?>" width="86" style="float:left;margin:0 10px 5px 0;" border="0" />-->
+		<img border="0" src="/image?src=<?php echo $thumb;?>&size=friends" style="float:left;margin:0 10px 5px 0;" alt="" />
+		</a>
+      </div>
+      <div class="friend-box-right">
+	  <span class="no-undrln"><a href ="/<?php echo $friendO->username?>"><span class="connect-name"><?php echo $friendO->first_name.' '.$friendO->last_name; ?></span></a></span> <span id="hideRes-<?php echo  $_friend->getId()?>" class="connect-type"><?php echo ucfirst($_friend->getConnectionType()); ?></span> 
+	  <span class="connect-action" id="friend<?php echo $friendO->id;?>"></span> 
+		<?php if($this->loggedInUser != $friendO->id){ // If loggedin user and friend Id is not same?>
+       <span class="alinks">
+	   <a href ="/profile/view/username/<?php echo $friendO->username?>"><b>View Profile</b></a> 
+	   <a href ="javascript://" onclick="addFriend(<?php echo $friendO->id;?>);"><b>Add To Friends</b></a> 
+	   <?php
+	   $userNs=new Zend_Session_Namespace('members');
+	   if($userNs->userId)
+	   {
+	   ?>
+	   <a href ="/profile/messages/username/<?php echo $friendO->username?>"><b>Send Message</b></a> </span>
+	   <?php }?>
+	   <?php }?>
+	   </div>
+    </div>
+  <?php
+                 }
+         }
+  }//end of foreach
+?>
+</div>
+<div class='clear'></div>
+<?php if($this->totalFriends > $this->page_size){?>
+<span style="display: none;" id="loading">
+    <img alt="" src="<?php echo $this->cdnUri()?>/images/ajax-loader.gif">
+</span>	
+<div class="view-link">
+	<a id="show-more-link" href="javascript: showMorefriends('<?php echo $this->userObject->getUsername()?>')">Show More</a>
+</div>
+<?php }?> 
+<?php
+}//end of if
+else
+{
+	echo "<span style='color:#ff0000;'>".$this->no_record."</span>";
+}
+?>
+</div>
+<script language="javascript" type="text/javascript">
+var page=2;
+function showMorefriends(username)
+{
+    $("span#loading").show();
+    $("#show-more-link").hide();
+    var postData		= '';
+    var searchname	= $("#searchname").val();
+	var searchkey	= $("#searchkey").val();
+    postData += "page="+page+"&mode=ajax&username="+username+"&searchname="+searchname+"&searchkey="+searchkey;
+    page = page+1;
+    $.ajax({
+               type: "POST",
+               url: "/profile/show-morefriends/",
+               data: postData,
+               dataType: "html",
+               success: function(html)
+			   {
+					$("span#loading").hide();
+					$("#show-more-link").show();
+					if(html=="nodata")
+					{
+						$("#show-more-link").hide();
+						$("#friends_listings").append("<span style='color:#EF4733;'>No more friends found.</span>");
+					}
+					else
+					{
+						$("#friends_listings").append(html);
+					}
+               },
+               error: function (json, status, e)
+			   {
+                     alert(e+json+status);
+               }
+     });
+}
+</script>

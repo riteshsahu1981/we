@@ -1,0 +1,86 @@
+<?php   
+    $date=new Base_Date();
+	
+	$userNs=new Zend_Session_Namespace('members');
+	$loggedInUserId	=	$userNs->userId;
+
+    $userM=new Application_Model_User();
+    $user=$userM->find($this->comment->getUserId());
+	$commentUserId	=	$this->comment->getUserId();
+    if(false!==$user)
+	{
+        $username=$user->getUsername();
+        $firstname=$user->getFirstName();
+        $lastname=$user->getLastName();
+        $image=$user->getThumbnail();
+    }
+    $voteM=new Application_Model_Vote();
+    $total_likes=$voteM->getTotalVotes($this->comment->getId(),$this->type, 1,null);
+?>
+
+<div class="act-comm-feed posrel" id="<?php echo "my-travel-wall-post-comment-".$this->comment->getId();?>">
+<?php if($loggedInUserId	==	$commentUserId){?>
+<span class="close-img-comnt f-right"><img src="/images/delete.png" alt="Remove Post" onclick="removeBlogComment(<?php print $this->comment->getId();?>, <?php print $this->item_id?>);" /></span>
+<?php }?>
+        <div class="act-comm-feed-img">
+		<a href="/<?php echo $username;?>">
+		<!--<img width="37px" height="43px" border="0" src="<?php //echo $image?>" alt="" />-->
+		<img border="0" src="/image?src=<?php echo $image;?>&size=comment" alt="" />
+		</a>
+		</div>
+        <div class="act-comm-feed-txt" style="text-align:justify;">
+                <div class="userntxt-sml">
+				<a href="/<?php echo $username;?>">
+				<b><?php echo $firstname;?> <?php echo $lastname;?></b>
+				</a> <?php echo $this->textModifier($this->comment->getComment());?>
+				</div>
+                <div class="feed-posted"><div class="feed-posted-post">Posted <?php echo $date->timeAgo($this->comment->getAddedon())?>    |
+
+
+                <?php if($this->userId==""){?>
+                 <a href="javascript: loginPopUp('Please login to like');">Like</a>
+                <?php }else{
+                    $userVote=$voteM->getTotalVotes($this->comment->getId(),$this->type, 1,$this->userId);
+                    if($userVote>0)
+					{
+                       $likeStyle="display:none";
+                       $unlikeStyle="";
+                    }
+                    else
+                    {
+                        $likeStyle="";
+                        $unlikeStyle="display:none";
+                    }
+					
+					if($total_likes > 1)
+					{
+						$textPrint	=	"members like this";
+					}
+					else
+					{
+						$textPrint	=	"member likes this";
+					}
+                    ?>
+                        <span style="display: none;" id="loading_comment_<?php echo $this->comment->getId();?>"><img alt="" src="<?php echo $this->cdnUri()?>/images/loading.gif"></span>
+                        <span style="<?php echo $unlikeStyle?>" id="unlike_comment_<?php echo $this->comment->getId();?>">
+                        <a href="javascript: likeComment('<?php echo $this->comment->getId();?>', -1);">Unlike</a>
+                        </span>
+
+                        <span style="<?php echo $likeStyle?>"  id="like_comment_<?php echo $this->comment->getId();?>">
+                        <a href="javascript: likeComment('<?php echo $this->comment->getId();?>', 1);">Like</a>
+                        </span>
+<?php $unlikeStyleComment="display:none"; if($total_likes > 0){ $unlikeStyleComment=""; }?></div>
+                        <div id="you-like-this-comment-<?php echo $this->comment->getId();?>" style="<?php echo $unlikeStyleComment?>"  class="like-unlike-feed">
+						
+						<span class="f-left"><img src="<?php echo $this->cdnUri()?>/images/like-icon-2.jpg" alt="Like"/></span>
+                            
+							<span class="f-left post-liked">
+							<span id="you-like-comment-<?php echo $this->comment->getId();?>" style="<?php echo $unlikeStyle?>">You liked this</span> <a href="javascript://"><span id="total_likes_comment_<?php echo $this->comment->getId();?>"><?php echo $total_likes." ".$textPrint ?></span></a></span>
+							
+                        </div>
+                    <?php
+
+                }?>
+                </div>
+        </div>
+</div>

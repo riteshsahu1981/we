@@ -1,0 +1,61 @@
+<div id="friend_request_received">
+<?php 
+//if($this->totalRequests>0)
+if(count($this->reqReceived)>0)
+{
+	//foreach($this->requests as $row)
+	foreach($this->reqReceived as $row)
+	{
+		//$_friend	= new Application_Model_Friend();
+		//$_friend	= $_friend->find($row->id);
+
+		$userid		= $row->getUserId();
+		$friendid	= $row->getFriendId();
+		$conntype	= $row->getConnectionType();
+		$status		= $row->getStatus();
+
+		$userObj    = $row->getUserObj();
+		if(!is_null($userObj))
+		{
+			$thumb = "";
+			//$thumb		= $_friend->getThumbnail();
+			$thumb		= $row->getThumbnail($userObj->image, $userObj->facebook_id, $userObj->sex);
+
+?>
+<div class="friends-box" id="friendsProfile_<?php echo $row->id;?>">
+   		<div class="friends-box-img">
+			<a href ="/<?php echo $userObj->username?>">
+			<img src="/image?src=<?php echo $thumb;?>&size=friends" border="0" />
+			</a>
+		</div>
+		<div class="friend-box-center"> 
+			<a href ="/<?php echo $userObj->username?>">
+			<span class="connect-name" style="width:300px;">
+			<?php echo $userObj->first_name.' '.$userObj->last_name;?>
+			</span>
+			</a>
+			<span class="connect-type"><?php echo ucfirst($conntype); ?></span>
+			<?php //echo "con=$conntype, id=$row->id, user=$userid, friend id=$friendid";?>
+			<span class="connect-action" id="req_response_<?php echo $row->id;?>" style="width:300px;">
+				<a href ="javascript://" onclick="acceptDeclineRequest('<?php echo $conntype;?>','<?php echo $row->id;?>','<?php echo $userid?>','<?php echo $friendid?>','accept');"><b>Accept</b></a> | <a href ="javascript://" onclick="acceptDeclineRequest('<?php echo $conntype;?>','<?php echo $row->id;?>','<?php echo $userid?>','<?php echo $friendid?>','decline');">Decline</a>
+			</span>
+			
+		</div>
+		<div class="friend-box-right">
+			<div class="connection-you f-left"></div>
+			<div><b>Status:</b> <?php echo ucwords($status);?></div>
+			<div id="resp" style="clear:both; float:right;"></div>
+		</div>   
+</div>
+<?php
+    }//end of if
+}//end of foreach
+//echo  "<div class='clear'>".$this->paginationControl($this->advices, 'Sliding', 'pagination.phtml', array("linkArray"=>$this->param))."</div>";
+}//end of if
+else
+{
+	echo "<span style='color:#ff0000;'>No friend requests received.</span>";
+}
+?>
+</div>
+

@@ -1,0 +1,7 @@
+<div class="right-box-wide search-dest">
+	<h2 class="box-heading">SEARCH DESTINATIONS</h2>
+	<form name="frmSearchDestination" id="frmSearchDestination" action="/destination/search" method="get">
+		<input type="text" class="country_destination_input" name="search" value="<?php echo $this->search!=''?$this->search:'Search by Keyword';?>" onblur="replaceText(this);" onfocus="clearText(this);" />
+		<input name="btnSearch" type="button" class="country_destination_button" onclick="document.frmSearchDestination.submit();" />
+	</form>
+</div>

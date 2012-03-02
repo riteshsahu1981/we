@@ -1,0 +1,52 @@
+<?php
+$id = $this->countryId;
+$lonelyPlanetCountry	= array();
+
+//select details from lonely_planet_country table
+$lonelyPlanetCountryM	=	new Application_Model_LonelyPlanetCountry();
+$lonelyPlanetCountryM	=	$lonelyPlanetCountryM->fetchRow("country_id={$id}");
+	
+if(false!==$lonelyPlanetCountryM)
+{
+	$lonelyPlanetCountry = $lonelyPlanetCountryM;
+}
+?>
+<?php
+$poiArr = $lonelyPlanetCountry->getPois();
+if(isset($poiArr))
+{
+	$pois = unserialize($poiArr);
+	if(count($pois)>0)
+	{
+	?>
+	<form name="frmPoi" id="frmPoi" enctype="multipart/form-data" method="post" action="/admin/featured-city/update-country-tab5-data">
+	<input type="hidden" name="lonelyPlanetCountryId" value="<?php echo $lonelyPlanetCountry->getId();?>">
+	<input type="hidden" name="countryId" value="<?php echo $id;?>">
+	<input type="hidden" name="page" value="<?php echo $this->page;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" id="table_poi">
+	<tr><td colspan="2"><div class="form-sub-head">Points Of Interest</div><span class="orange" id="tab5_msg"></span></td></tr>
+	<?php
+	for($poi=0; $poi<count($pois); $poi++)
+	{
+		$countPoi = $poi+1;	
+	?>
+	<tr><td valign="top">POI Name <?php //echo $countPoi;?></td><td valign="top"><input type="text" name="poiName[]" class="title-input-box" value="<?php echo $pois[$poi]['poi_name'];?>"></td></tr>
+	<tr><td valign="top">Review Summary <?php //echo $countPoi;?></td><td valign="top"><textarea cols="40" rows="50" name="reviewSummary[]" class="title-input-box" id="review_summary_<?php echo $countPoi;?>"><?php echo $pois[$poi]['review_summary'];?></textarea></td></tr>
+	<tr><td valign="top">Review Full <?php //echo $countPoi;?></td><td valign="top"><textarea cols="40" rows="50" name="reviewFull[]" class="title-input-box" id="review_full_<?php echo $countPoi;?>"><?php echo $pois[$poi]['review_full'];?></textarea></td></tr>
+	<tr><td colspan="2">&nbsp;</td></tr>
+	<?php
+	echo $this->setupEditor("review_summary_".$countPoi);
+	echo $this->setupEditor("review_full_".$countPoi);
+	}//end for
+}//end if
+}//end if
+?>
+	</table>
+	<table align="center" cellspacing="0" cellpadding="2" border="0" width="100%">
+		<tr>
+			<td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave"></td>
+			<td><!--<input type="button" value="Add New Item" onclick="addMoreRowsPOI();">--></td>
+			<td><!--<input type="button" value="Remove Item" onclick="removeMoreRowsPOI();" id="remove_button_tab5" style="display:block;">--></td>
+		</tr>
+	</table>
+</form>

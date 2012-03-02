@@ -1,0 +1,56 @@
+<form method="post" >
+<table>
+    <tbody>
+        <tr>
+            <td>Request Id:</td>
+            <td>#<?php echo $this->request->getId();?></td>
+        </tr>
+        <tr>
+            <td>Department:</td>
+            <td><?php echo $this->request->getDepartment();?></td>
+        </tr>
+        <tr>
+            <td>Request:</td>
+            <td><?php echo $this->request->getRequest();?></td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td><?php echo $this->request->getStatus();?></td>
+        </tr>
+        <tr>
+            <td>Requested On:</td>
+            <td>
+            <?php 
+            $date=new Base_Date();
+            echo $date->getSysDate($this->request->getAddedon());
+            
+            ?>
+        </tr>
+         <?php if($this->request->getStatus()=="close"){?>
+        <tr>
+            <td>Remarks:</td>
+            <td><?php echo $this->request->getRemarks();?></td>
+        </tr>
+        <tr>
+            <td>Closed on:</td>
+            <td><?php 
+            $date=new Base_Date();
+            echo $date->getSysDate($this->request->getUpdatedon());
+            
+            ?></td>
+        </tr>
+        <?php }else{?>
+        <tr>
+            <td>Remarks:</td>
+            <td><textarea class="text-input textarea address" name="remarks"></textarea></td>
+       </tr>
+       <tr>
+            <td></td>
+            <td><input type="submit" class="button" name="submit" value="Close Request"/> &nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" class="button" name="submit" value="Cancel"/>
+            </td>
+       </tr>
+       <?php }?>
+    </tbody>
+</table>
+</form> 

@@ -1,0 +1,40 @@
+
+<?php
+
+$date=new Base_Date();
+$blogM=new Application_Model_Blog();
+$blogs=$blogM->fetchAll(null,"addedon desc",10);
+
+?>
+
+<div class="right-box">
+        <h2 class="box-head">RECENT TRAVEL JOURNAL POSTS</h2>
+
+        <?php foreach($blogs as $_blog){
+	$user=$_blog->getUserObj();
+
+        $userM=new Application_Model_User();
+        $userM=$userM->find($user->id);
+        $thumbNail=$userM->getThumbnail();
+
+	$strTime=$date->timeAgo($_blog->getAddedon());
+        $voteM=new Application_Model_Vote();
+        $total_likes=$voteM->getTotalVotes($_blog->getId(),"blog", 1,null);
+		?>
+	
+
+          <div class="recently-added-narrow">
+              <div class="recently-added-img"><a href="#"><img src="<?echo $thumbNail?>" alt="" width="37px" height="43px" /></a></div>
+			  <div class="recently-added-txt">
+                <div class="recently-added-title"><a href="/journal/view-post/blog_id/<?php echo $_blog->getId()?>"><?php echo $_blog->getTitle();?></a></div>
+                <div class="recently-added-posted">Posted By <a href="/<?php echo $user->username?> "><?php echo $user->first_name?> <?php echo $user->last_name?></a>   <?php echo $strTime?></div>
+				<?php if($total_likes > 0){?>               
+			   <div class="recently-added-like"><a href="/journal/user-like-this/blog_id/<?php echo $_blog->getId()?>"><span id="total_likes_left_<?php echo $_blog->getId();?>"><?php echo $total_likes ?></span> Members Like This</a></div>
+			   <?php }?>
+        </div>
+		</div>
+	<?php } ?>
+
+
+        <div class="view-link"><a href="#">VIEW ALL</a></div>
+</div>

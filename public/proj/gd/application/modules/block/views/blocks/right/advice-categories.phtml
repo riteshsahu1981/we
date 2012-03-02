@@ -1,0 +1,25 @@
+<?php 
+$adviceM	=	new Application_Model_Advice();
+$where		=	"status='1'";
+
+//get particular category advices
+if(isset($this->category_id) && $this->category_id!=0)
+{
+	$where	.=	" AND category_id={$this->category_id}";
+}
+$order		=	"addedon DESC";
+$limit		=	15;
+$advices	=	$adviceM->fetchAll($where, $order, $limit);
+?>
+<div class="right-box-wide">
+	<h2 class="box-heading">Most Read Advice</h2>
+	<?php if(count($advices)>0){?>
+	<ul class="journal-cat-list-right">
+		<?php foreach($advices as $advice){?>
+		<li><a href="<?php echo $this->seoUrl("/advice/detail/id/{$advice->getId()}")?>"><?php echo $advice->getTitle()?></a></li>
+		<?php }?>
+	</ul>
+	<?php }else{?>
+	No advices found fot this section.
+	<?php }?>
+</div>

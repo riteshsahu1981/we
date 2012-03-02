@@ -1,0 +1,236 @@
+<!-- Start Main Menu -->
+<?php
+//set active class
+$homeActiveCls = "";
+$myGdActiveCls = "";
+$journalsActiveCls = "";
+$travelGuidesActiveCls = "";
+$wsvActiveCls = "";
+$adviceActiveCls = "";
+$travelShopActiveCls = "";
+$gdBlogActiveCls = "";
+//echo "controller=>".$this->controllerName;
+if($this->controllerName=='index')
+{
+	$homeActiveCls = "active";
+}
+else if($this->controllerName=='gapper')
+{
+	$myGdActiveCls = "active";
+}
+else if($this->controllerName=='journal')
+{
+	$journalsActiveCls = "active";
+}
+else if($this->controllerName=='destination')
+{
+	$travelGuidesActiveCls = "active";
+}
+else if($this->controllerName=='work-study-volunteer')
+{
+	$wsvActiveCls = "active";
+}
+else if($this->controllerName=='advice')
+{
+	$adviceActiveCls = "active";
+}
+else if($this->controllerName=='shop')
+{
+	$travelShopActiveCls = "active";
+}
+else
+{
+	$gdBlogActiveCls = "active";
+}
+?>
+<div class="navigation">
+<ul class="topnav">
+<li><a href="<?php echo $this->cdnUri()?>">HOME</a></li>
+<?php if (Zend_Auth::getInstance()->hasIdentity()){ ?>
+<li><a href="<?php echo $this->cdnUri()?>/where-i-am">MY &nbsp;GAP &nbsp;DAEMON</a></li>
+<?php }else{?>
+<li><a href="javascript://" onclick="loginPopUpExt('Please Login','<?php echo $this->seoUrl('/gapper/where-i-am')?>')">MY &nbsp;GAP &nbsp;DAEMON</a></li>
+<?php }?>
+<li><a href="<?php echo $this->cdnUri();?>/journals">JOURNALS</a></li>
+<li><a href="<?php echo $this->cdnUri()?>/travelguides">TRAVEL GUIDES</a>
+<!--<li class="nav"><a href="<?php echo $this->cdnUri()?>/travelguides">TRAVEL GUIDES</a>-->
+	<ul class="subnav" style="display: none;">
+		<li><a href="javascript://" class="sub f-left">eCommerce Development</a> <img src="/images/15x15_trans.gif" class="f-right showsub" />
+				<ul class="subnav1 col4" style="display: none;">
+				<ul class="submenu">
+				<div class="submenu-div" style="float:left;">
+				<li><a href="#">Sub Menu1</a></li>
+				<li><a href="#">Sub Menu2</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu4</a></li>
+				<li><a href="#">Sub Menu5</a></li>
+				<li><a href="#">Sub Menu6</a></li>
+				<li><a href="#">Sub Menu7</a></li>
+				<li><a href="#">Sub Menu8</a></li>
+				<li><a href="#">Sub Menu9</a></li>
+				<li><a href="#">Sub Menu10</a></li>
+				</div>
+				</ul>
+				
+				<ul class="submenu">
+				<div class="submenu-div" style="float:left;">
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				</div>
+				</ul>
+				
+				<ul class="submenu">
+				<div class="submenu-div" style="float:left;">
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				</div>
+			</ul></ul>
+		</li>
+        <li><a href="http://www.gapdaemon.com" class="f-left">Magento Development</a>  <img src="/images/15x15_trans.gif" class="f-right showsub" />
+			<ul class="subnav1" style="display: none;">
+				<ul class="submenu">
+				<li><a href="#">Sub Menu1</a></li>
+				<li><a href="#">Sub Menu2</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+			</ul></ul>
+		</li>
+		<li><a href="http://www.gapdaemon.com">CMS Website</a></li>
+		<li><a href="#">Joomla Development</a></li>
+		<li><a href="#">Social Networking</a></li>
+		<li><a href="#">Social Networking</a></li>
+		<li><a href="#">Social Networking</a></li>
+		<li><a href="#">Social Networking</a></li>
+		<li><a href="#">Social Networking</a></li>
+		<li><a href="#">Social Networking</a></li>
+		<li><a href="http://www.gapdaemon.com" class="f-left">Last Menu with long text testing width</a>  <img src="/images/15x15_trans.gif" class="f-right showsub" />
+			<ul class="subnav1" style="display: none;">
+				<ul class="submenu">
+				<li><a href="#">Sub Menu1</a></li>
+				<li><a href="#">Sub Menu2</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				<li><a href="#">Sub Menu4</a></li>
+				<li><a href="#">Sub Menu5</a></li>
+				<li><a href="#">Sub Menu6</a></li>
+				<li><a href="#">Sub Menu7</a></li>
+				<li><a href="#">Sub Menu8</a></li>
+				<li><a href="#">Sub Menu9</a></li>
+			</ul></ul>
+		</li>
+	</ul>
+	<?php //echo $this->pageElement('travelguides_navigations');?>
+	
+</li>
+<li><a href="<?php echo $this->cdnUri()?>/work-study-volunteer">WORK/STUDY/VOLUNTEER</a>
+	<ul class="subnav" style="display: none;">
+		<li><a href="javascript://" class="sub f-left">eCommerce Development</a> <img src="/images/15x15_trans.gif" class="f-right showsub" />
+			<ul class="subnav1" style="display: none;">
+				<ul class="submenu">
+				<li><a href="#">Sub Menu1568</a></li>
+				<li><a href="#">Sub Menu2</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				</ul>
+			</ul>
+		</li>
+        <li><a href="http://www.gapdaemon.com" class="f-left">Magento Development</a>  <img src="/images/15x15_trans.gif" class="f-right showsub" />
+			<ul class="subnav1" style="display: none;">
+				<ul class="submenu">
+				<li><a href="#">Sub Menu1568</a></li>
+				<li><a href="#">Sub Menu2</a></li>
+				<li><a href="#">Sub Menu3</a></li>
+				</ul>
+			</ul>
+		</li>
+		<li><a href="http://www.gapdaemon.com">CMS Website</a></li>
+		<li><a href="#">Joomla Development</a></li>
+		<li><a href="#">Social Networking</a></li>
+	</ul>
+</li>
+<li><a href="<?php echo $this->cdnUri()?>/advice">ADVICE</a></li>
+<li><a href="<?php echo $this->cdnUri()?>/shop/">TRAVEL SHOP</a></li>
+<li><a href="http://blog.gapdaemon.com/" target="_blank">GD BLOG</a></li>
+</ul></div>
+<script type="text/javascript"> 
+$(document).ready(function(){
+
+	$("ul.subnav").parent().append("<span></span>"); //Only shows drop down trigger when js is enabled - Adds empty span tag after ul.subnav
+	
+	$("ul.topnav li span").click(function() { //When trigger is clicked...
+		
+		//Following events are applied to the subnav itself (moving subnav up and down)
+		$(this).parent().find("ul.subnav").slideDown('fast').show(); //Drop down the subnav on click
+
+		$(this).parent().hover(function() {
+		}, function(){	
+			$(this).parent().find("ul.subnav").slideUp('slow'); //When the mouse hovers out of the subnav, move it back up
+			$("ul.subnav1").slideUp('slow').removeClass('show');
+		});
+
+		//Following events are applied to the trigger (Hover events for the trigger)
+		},
+		function(){
+				$(this).parent().find("ul.subnav").slideUp('slow'); //When the mouse hovers out of the subnav, move it back up
+			$("ul.subnav1").slideUp('slow').removeClass('show');
+			}
+		
+		).hover(function() { 
+			$(this).addClass("subhover"); //On hover over, add class "subhover"
+		}, function(){	//On Hover Out
+		
+			$(this).removeClass("subhover"); //On hover out, remove class "subhover"
+	});
+	
+	$("ul.subnav li img.showsub").click(function() { //When trigger is clicked...
+		
+		if($(this).parent().hasClass('subnav1')){
+			var href = $(this).children().attr('href')
+			if(href!='' && href!='undefined'){
+				window.location = href;
+			}
+			return false;
+		}
+
+		// jitu var ctrl = $(this).find("ul.subnav1");
+		var ctrl = $(this).parent().find("ul.subnav1");
+		$("ul.subnav1").not(ctrl).fadeOut('fast').removeClass('show');
+		// jitu if($(this).find("ul.subnav1").hasClass('show')){
+		if($(this).parent().find("ul.subnav1").hasClass('show')){
+			// jitu $(this).find("ul.subnav1").slideDown('fast').fadeOut('slow').removeClass('show');
+			$(this).parent().find("ul.subnav1").slideDown('fast').fadeOut('slow').removeClass('show');
+			
+			return false;
+		}
+		
+		// jitu $(this).find("ul.subnav1").slideDown('fast').show().addClass('show'); //Drop down the subnav on click
+		$(this).parent().find("ul.subnav1").slideDown('fast').show().addClass('show'); //Drop down the subnav on click
+
+		$(this).hover(function() {
+		}, function(){	
+			//$(this).find("ul.subnav1").slideUp('slow').removeClass('show'); //When the mouse hovers out of the subnav, move it back up
+		});
+
+		//Following events are applied to the trigger (Hover events for the trigger)
+		}).hover(function() { 
+			//$(this).addClass("subhover"); //On hover over, add class "subhover"
+		}, function(){	//On Hover Out
+			//$(this).find("ul.subnav1").slideUp('slow');
+			//$(this).removeClass("subhover"); //On hover out, remove class "subhover"
+	});
+
+});
+</script>

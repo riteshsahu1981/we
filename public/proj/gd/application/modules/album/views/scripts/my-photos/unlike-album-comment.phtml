@@ -1,0 +1,23 @@
+<?php
+if($this->numVotes == 1){
+    $strMemberLike = $this->numVotes.' '.$this->language("like_singular");
+}else{
+    $strMemberLike = $this->numVotes.' '.$this->language("like_plural");
+}
+?>
+<?php if($this->numVotes > 0){ print $strMemberLike; }?> <a href="javascript:void(0);" onclick="return albumCommentLike(<?php print $this->commentId;?>);">Like</a>
+<script>
+function albumCommentLike(commentId)
+{
+	var requesturl	=	"/album/my-photos/like-album-comment";
+	var item_type1	=	$("#item_type1").val();
+	var spanId		=	'com_'+commentId;
+
+		$.post(requesturl, {commentId:commentId,item_type:item_type1},
+				   function(html){					
+					$("#"+spanId).html(html);
+						
+				});	
+	
+}
+</script>

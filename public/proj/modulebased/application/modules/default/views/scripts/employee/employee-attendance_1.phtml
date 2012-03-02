@@ -1,0 +1,70 @@
+<?php
+if($this->align=="")
+    $this->align="right";
+?>
+<div class="content-box column-<?php echo  $this->align?>">
+    <div class="content-box-header">
+        <h3 style="cursor: s-resize;">Attendance</h3>
+    </div> <!-- End .content-box-header -->
+
+    <div class="content-box-content" style="display: block;  min-height:200px">
+    <div class="tab-content default-tab" style="display: block;">
+       
+   <div class="div-table"> 
+        
+        <form method="post">
+<?php echo $this->form->month?><?php echo $this->form->year?><?php echo $this->form->submit?>
+</form>
+
+
+<?php if (count($this->attendance)): ?>
+
+
+<?php
+$sno=0;
+?>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>S.No.</th>
+            <th>Date</th>
+            <th>Attendance</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->attendance as $_attendance): ?>
+        <?php $sno++?>
+        <tr>
+            <td><?php echo $sno?></td>
+            <td><?php 
+                $date=explode("-",$_attendance->getAttendanceDate()); 
+                $timestamp=mktime(null, null, null, $date[1], $date[2], $date[0]);
+                $date=new Base_Date();
+                $date->setSysDateFormat("D M jS Y");
+                echo $date->getSysDate($timestamp);
+               $weekday= date("N",$timestamp);
+            ?></td>
+            <td><?php 
+                    if($weekday=="6" || $weekday=="7" )
+                        echo "<span style='color:#990000;'>Weekly Off</span>";
+                    elseif($_attendance->getAttendance()=="1")
+                        echo "Present";
+                    elseif($_attendance->getAttendance()=="0")
+                        echo "<span style='color:#F74239;'>Absent</span>";
+                    elseif($_attendance->getAttendance()=="0.5")
+                        echo "<span style='color:#4eb305;'>Half Day</span>";
+                    
+            
+            ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>
+
+      </div>
+    </div> <!-- End #tab3 -->        
+    </div> <!-- End .content-box-content -->
+</div>

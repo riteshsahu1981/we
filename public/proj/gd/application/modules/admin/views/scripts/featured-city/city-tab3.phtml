@@ -1,0 +1,32 @@
+<?php
+$expriences = $this->expriences;
+?>
+<form name="frmDestinationExp" id="frmDestinationExp" enctype="multipart/form-data" method="post">
+<input type="hidden" name="update_action" value="exp">
+<input type="hidden" name="destinationId" value="<?php echo $this->destinationId;?>">
+	<table align="center" cellspacing="2" cellpadding="4" border="0" width="100%" id="table_exp">
+	<tr><td colspan="2"><div class="form-sub-head">Experiences</div><span class="orange" id="exp_msg"></span></td></tr>
+	<?php 
+	if(count($expriences)>0){
+	$expCount = 1;
+	foreach($expriences AS $expRow){?>
+	<input type="hidden" name="expId[]" value="<?php echo $expRow->getId();?>">
+	<tr><td valign="top">Title <? //echo $expCount?></td><td><input type="text" name="expTitle[]" value="<?php echo $expRow->getTitle();?>" class="title-input-box" maxlength="250"></td></tr>
+	<tr><td valign="top">Copy <? //echo $expCount?></td><td><textarea cols="40" rows="4" name="expCopy[]" class="title-input-box"><?php echo $expRow->getCopy();?></textarea></td></tr>
+	<tr><td colspan="2" class="button_right"><input type="button" value="Remove" onclick="deleteExpRow(this);"></td></tr>
+	<?php 
+		$expCount++;
+		}//end foreach
+	}//end if
+	?>
+	<!--<tr><td>&nbsp;</td><td><input type="submit" value="Save" name="btnSave"></td></tr>-->
+	</table>
+	<table align="center" cellspacing="0" cellpadding="2" border="0" width="100%">
+		<tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" value="Save" name="btnSave" id="btnSaveTab1"></td>
+			<td><input type="button" value="Add New Item" onclick="addMoreRowsExp();"></td>
+			<!--<td><input type="button" value="Remove Item" onclick="removeMoreRowsExp();" id="remove_button_tab3"></td>-->
+		</tr>
+	</table>
+</form>
