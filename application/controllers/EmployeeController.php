@@ -6,6 +6,78 @@ class EmployeeController extends Base_Controller_Action
         
     }
     
+    public function twitterCallbackAction()
+    {
+        $this->view->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $config = array(
+        'callbackUrl' => 'http://we.com/employee/twitter-callback',
+        'siteUrl' => 'http://twitter.com/oauth',
+        'consumerKey' => 'pVq8Yq0ZdsR7Zdzv4GoLA',
+        'consumerSecret' => 'cdP0KmoKAP9BeS4UTbFl9FX2cZ7F6qQ8va7HsljadY'
+        );
+        $consumer = new Zend_Oauth_Consumer($config);
+         
+        $token =$consumer->getAccessToken(
+                 $_GET,
+                 unserialize($_SESSION['TWITTER_REQUEST_TOKEN'])
+             );
+
+        $_SESSION['TWITTER_ACCESS_TOKEN'] = serialize($token);
+
+       // $twitter=new Zend_Service_Twitter($options, $consumer);
+
+        $this->_helper->_redirector->gotoUrl($this->view->seoUrl('/employee/twitter-post'));
+        
+    }
+
+    public function twitterPostAction()
+    {
+        $this->view->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+               // $twitter=new Zend_Service_Twitter($options, $consumer);
+
+        $token = unserialize($_SESSION['TWITTER_ACCESS_TOKEN']);
+
+        $twitter = new Zend_Service_Twitter(array(
+            //'username' => 'riteshsahu',
+            'accessToken' => $token
+            
+        ));
+
+        // verify user's credentials with Twitter
+        //$response = $twitter->account->verifyCredentials();
+        $response   = $twitter->status->update('Great post from php2code another ddd  <a href="http://yahoo.com">shello</a> '.time());
+        var_dump($response);
+    }
+
+    public function twitterAction()
+    {
+        $this->view->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+     
+       $config = array(
+        'callbackUrl' => 'http://we.com/employee/twitter-callback',
+        'siteUrl' => 'http://twitter.com/oauth',
+        'consumerKey' => 'pVq8Yq0ZdsR7Zdzv4GoLA',
+        'consumerSecret' => 'cdP0KmoKAP9BeS4UTbFl9FX2cZ7F6qQ8va7HsljadY'
+        );
+        $consumer = new Zend_Oauth_Consumer($config);
+        // fetch a request token
+        $token = $consumer->getRequestToken();
+        
+
+        // persist the token to storage
+        $_SESSION['TWITTER_REQUEST_TOKEN'] = serialize($token);
+
+        // redirect the user
+        $consumer->redirect();
+        //$twitter=new Zend_Service_Twitter($options, $consumer);
+      
+    }
+    
+    
+    
     public function dashboardAction()
     {    
 

@@ -1,0 +1,145 @@
+[Mon Mar 26 10:15:15 2012] [error] [client 127.0.0.1] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[28000] [1045] Access denied for user 'root'@'localhost' (using password: YES)' in D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php:129\nStack trace:\n#0 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php(129): PDO->__construct('mysql:host=loca...', 'root', 'g00dluck', Array)\n#1 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Mysql.php(96): Zend_Db_Adapter_Pdo_Abstract->_connect()\n#2 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Abstract.php(459): Zend_Db_Adapter_Pdo_Mysql->_connect()\n#3 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php(238): Zend_Db_Adapter_Abstract->query('DESCRIBE `globa...', Array)\n#4 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Mysql.php(156): Zend_Db_Adapter_Pdo_Abstract->query('DESCRIBE `globa...')\n#5 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Table\\Abstract.php(834): Zend_Db_Adapter_Pdo_Mysql->describeTable('global_settings', NULL)\n#6 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Table\\Abstract.php(873): Zend_Db_Ta in D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php on line 144
+[Mon Mar 26 10:15:15 2012] [error] [client 127.0.0.1] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[28000] [1045] Access denied for user 'root'@'localhost' (using password: YES)' in D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php:129\nStack trace:\n#0 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php(129): PDO->__construct('mysql:host=loca...', 'root', 'g00dluck', Array)\n#1 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Mysql.php(96): Zend_Db_Adapter_Pdo_Abstract->_connect()\n#2 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Abstract.php(459): Zend_Db_Adapter_Pdo_Mysql->_connect()\n#3 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php(238): Zend_Db_Adapter_Abstract->query('INSERT INTO `lo...', Array)\n#4 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Abstract.php(574): Zend_Db_Adapter_Pdo_Abstract->query('INSERT INTO `lo...', Array)\n#5 D:\\wamp\\www\\zend\\we\\library\\Zend\\Log\\Writer\\Db.php(143): Zend_Db_Adapter_Abstract->insert('logentries', Array)\n#6 D:\\wamp\\www\\zend\\we\\library\\Zend\\Log\\Writer\\Abstract.php(85): Zend_Log_Writer_Db- in D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php on line 144
+[Mon Mar 26 12:43:54 2012] [error] [client 127.0.0.1] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[42S02]: Base table or view not found: 1146 Table 'we.logentries' doesn't exist' in D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Statement\\Pdo.php:228\nStack trace:\n#0 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Statement\\Pdo.php(228): PDOStatement->execute(Array)\n#1 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Statement.php(300): Zend_Db_Statement_Pdo->_execute(Array)\n#2 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Abstract.php(479): Zend_Db_Statement->execute(Array)\n#3 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Pdo\\Abstract.php(238): Zend_Db_Adapter_Abstract->query('INSERT INTO `lo...', Array)\n#4 D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Adapter\\Abstract.php(574): Zend_Db_Adapter_Pdo_Abstract->query('INSERT INTO `lo...', Array)\n#5 D:\\wamp\\www\\zend\\we\\library\\Zend\\Log\\Writer\\Db.php(143): Zend_Db_Adapter_Abstract->insert('logentries', Array)\n#6 D:\\wamp\\www\\zend\\we\\library\\Zend\\Log\\Writer\\Abstract.php(85): Zend_Log_Writer_Db->_write(Array)\n#7 D:\\wamp\\www\\zend\\we\\library\\Zend\\Log.php(428) in D:\\wamp\\www\\zend\\we\\library\\Zend\\Db\\Statement\\Pdo.php on line 234
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP Warning:  rawurlencode() expects parameter 1 to be string, array given in D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php on line 213
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP Stack trace:
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   1. {main}() D:\\wamp\\www\\zend\\we\\public\\index.php:0
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   2. Zend_Application->run() D:\\wamp\\www\\zend\\we\\public\\index.php:74
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   3. Zend_Application_Bootstrap_Bootstrap->run() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application.php:366
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   4. Zend_Controller_Front->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application\\Bootstrap\\Bootstrap.php:97
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   5. Zend_Controller_Dispatcher_Standard->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Front.php:954
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   6. Zend_Controller_Action->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Dispatcher\\Standard.php:295
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   7. EmployeeController->twitterPostAction() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Action.php:513
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   8. Zend_Service_Twitter->update() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   9. Zend_Service_Twitter->__call() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  10. call_user_func_array() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  11. Zend_Service_Twitter->statusUpdate() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  12. Zend_Service_Twitter->_post() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:494
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  13. Zend_Service_Twitter->_performPost() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1027
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  14. Zend_Oauth_Client->request() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1049
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  15. Zend_Oauth_Client->prepareOauth() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:226
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  16. Zend_Oauth_Client->_getSignableParametersAsQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:249
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  17. Zend_Oauth_Token_Access->toQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:316
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  18. Zend_Oauth_Http_Utility->assembleParams() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Token\\Access.php:80
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  19. Zend_Oauth_Http_Utility->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:74
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  20. Zend_Oauth_Signature_Hmac->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:159
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  21. Zend_Oauth_Signature_SignatureAbstract->_getBaseSignatureString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\Hmac.php:49
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  22. Zend_Oauth_Http_Utility::urlEncode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\SignatureAbstract.php:140
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  23. rawurlencode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:213
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP Warning:  rawurlencode() expects parameter 1 to be string, array given in D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php on line 213
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP Stack trace:
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   1. {main}() D:\\wamp\\www\\zend\\we\\public\\index.php:0
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   2. Zend_Application->run() D:\\wamp\\www\\zend\\we\\public\\index.php:74
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   3. Zend_Application_Bootstrap_Bootstrap->run() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application.php:366
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   4. Zend_Controller_Front->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application\\Bootstrap\\Bootstrap.php:97
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   5. Zend_Controller_Dispatcher_Standard->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Front.php:954
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   6. Zend_Controller_Action->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Dispatcher\\Standard.php:295
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   7. EmployeeController->twitterPostAction() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Action.php:513
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   8. Zend_Service_Twitter->update() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   9. Zend_Service_Twitter->__call() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  10. call_user_func_array() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  11. Zend_Service_Twitter->statusUpdate() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  12. Zend_Service_Twitter->_post() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:494
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  13. Zend_Service_Twitter->_performPost() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1027
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  14. Zend_Oauth_Client->request() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1049
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  15. Zend_Oauth_Client->prepareOauth() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:226
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  16. Zend_Oauth_Client->_getSignableParametersAsQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:249
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  17. Zend_Oauth_Token_Access->toQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:316
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  18. Zend_Oauth_Http_Utility->toEncodedQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Token\\Access.php:81
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  19. Zend_Oauth_Http_Utility::urlEncode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:101
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  20. rawurlencode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:213
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP Warning:  rawurlencode() expects parameter 1 to be string, array given in D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php on line 213
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP Stack trace:
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   1. {main}() D:\\wamp\\www\\zend\\we\\public\\index.php:0
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   2. Zend_Application->run() D:\\wamp\\www\\zend\\we\\public\\index.php:74
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   3. Zend_Application_Bootstrap_Bootstrap->run() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application.php:366
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   4. Zend_Controller_Front->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application\\Bootstrap\\Bootstrap.php:97
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   5. Zend_Controller_Dispatcher_Standard->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Front.php:954
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   6. Zend_Controller_Action->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Dispatcher\\Standard.php:295
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   7. EmployeeController->twitterPostAction() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Action.php:513
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   8. Zend_Service_Twitter->update() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP   9. Zend_Service_Twitter->__call() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  10. call_user_func_array() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  11. Zend_Service_Twitter->statusUpdate() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  12. Zend_Service_Twitter->_post() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:494
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  13. Zend_Service_Twitter->_performPost() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1027
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  14. Zend_Oauth_Client->request() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1049
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  15. Zend_Oauth_Client->prepareOauth() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:226
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  16. Zend_Oauth_Token_Access->toHeader() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:250
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  17. Zend_Oauth_Http_Utility->assembleParams() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Token\\Access.php:60
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  18. Zend_Oauth_Http_Utility->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:74
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  19. Zend_Oauth_Signature_Hmac->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:159
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  20. Zend_Oauth_Signature_SignatureAbstract->_getBaseSignatureString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\Hmac.php:49
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  21. Zend_Oauth_Http_Utility::urlEncode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\SignatureAbstract.php:140
+[Tue Mar 27 13:35:23 2012] [error] [client 127.0.0.1] PHP  22. rawurlencode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:213
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP Warning:  rawurlencode() expects parameter 1 to be string, array given in D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php on line 213
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP Stack trace:
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   1. {main}() D:\\wamp\\www\\zend\\we\\public\\index.php:0
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   2. Zend_Application->run() D:\\wamp\\www\\zend\\we\\public\\index.php:74
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   3. Zend_Application_Bootstrap_Bootstrap->run() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application.php:366
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   4. Zend_Controller_Front->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application\\Bootstrap\\Bootstrap.php:97
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   5. Zend_Controller_Dispatcher_Standard->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Front.php:954
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   6. Zend_Controller_Action->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Dispatcher\\Standard.php:295
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   7. EmployeeController->twitterPostAction() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Action.php:513
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   8. Zend_Service_Twitter->update() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   9. Zend_Service_Twitter->__call() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  10. call_user_func_array() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  11. Zend_Service_Twitter->statusUpdate() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  12. Zend_Service_Twitter->_post() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:494
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  13. Zend_Service_Twitter->_performPost() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1027
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  14. Zend_Oauth_Client->request() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1049
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  15. Zend_Oauth_Client->prepareOauth() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:226
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  16. Zend_Oauth_Client->_getSignableParametersAsQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:249
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  17. Zend_Oauth_Token_Access->toQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:316
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  18. Zend_Oauth_Http_Utility->assembleParams() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Token\\Access.php:80
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  19. Zend_Oauth_Http_Utility->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:74
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  20. Zend_Oauth_Signature_Hmac->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:159
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  21. Zend_Oauth_Signature_SignatureAbstract->_getBaseSignatureString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\Hmac.php:49
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  22. Zend_Oauth_Http_Utility::urlEncode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\SignatureAbstract.php:140
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  23. rawurlencode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:213
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP Warning:  rawurlencode() expects parameter 1 to be string, array given in D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php on line 213
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP Stack trace:
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   1. {main}() D:\\wamp\\www\\zend\\we\\public\\index.php:0
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   2. Zend_Application->run() D:\\wamp\\www\\zend\\we\\public\\index.php:74
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   3. Zend_Application_Bootstrap_Bootstrap->run() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application.php:366
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   4. Zend_Controller_Front->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application\\Bootstrap\\Bootstrap.php:97
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   5. Zend_Controller_Dispatcher_Standard->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Front.php:954
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   6. Zend_Controller_Action->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Dispatcher\\Standard.php:295
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   7. EmployeeController->twitterPostAction() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Action.php:513
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   8. Zend_Service_Twitter->update() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   9. Zend_Service_Twitter->__call() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  10. call_user_func_array() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  11. Zend_Service_Twitter->statusUpdate() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  12. Zend_Service_Twitter->_post() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:494
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  13. Zend_Service_Twitter->_performPost() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1027
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  14. Zend_Oauth_Client->request() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1049
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  15. Zend_Oauth_Client->prepareOauth() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:226
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  16. Zend_Oauth_Client->_getSignableParametersAsQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:249
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  17. Zend_Oauth_Token_Access->toQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:316
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  18. Zend_Oauth_Http_Utility->toEncodedQueryString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Token\\Access.php:81
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  19. Zend_Oauth_Http_Utility::urlEncode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:101
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  20. rawurlencode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:213
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP Warning:  rawurlencode() expects parameter 1 to be string, array given in D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php on line 213
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP Stack trace:
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   1. {main}() D:\\wamp\\www\\zend\\we\\public\\index.php:0
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   2. Zend_Application->run() D:\\wamp\\www\\zend\\we\\public\\index.php:74
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   3. Zend_Application_Bootstrap_Bootstrap->run() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application.php:366
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   4. Zend_Controller_Front->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Application\\Bootstrap\\Bootstrap.php:97
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   5. Zend_Controller_Dispatcher_Standard->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Front.php:954
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   6. Zend_Controller_Action->dispatch() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Dispatcher\\Standard.php:295
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   7. EmployeeController->twitterPostAction() D:\\wamp\\www\\zend\\we\\library\\Zend\\Controller\\Action.php:513
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   8. Zend_Service_Twitter->update() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP   9. Zend_Service_Twitter->__call() D:\\wamp\\www\\zend\\we\\application\\controllers\\EmployeeController.php:50
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  10. call_user_func_array() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  11. Zend_Service_Twitter->statusUpdate() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:270
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  12. Zend_Service_Twitter->_post() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:494
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  13. Zend_Service_Twitter->_performPost() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1027
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  14. Zend_Oauth_Client->request() D:\\wamp\\www\\zend\\we\\library\\Zend\\Service\\Twitter.php:1049
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  15. Zend_Oauth_Client->prepareOauth() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:226
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  16. Zend_Oauth_Token_Access->toHeader() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Client.php:250
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  17. Zend_Oauth_Http_Utility->assembleParams() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Token\\Access.php:60
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  18. Zend_Oauth_Http_Utility->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:74
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  19. Zend_Oauth_Signature_Hmac->sign() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:159
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  20. Zend_Oauth_Signature_SignatureAbstract->_getBaseSignatureString() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\Hmac.php:49
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  21. Zend_Oauth_Http_Utility::urlEncode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Signature\\SignatureAbstract.php:140
+[Tue Mar 27 13:35:52 2012] [error] [client 127.0.0.1] PHP  22. rawurlencode() D:\\wamp\\www\\zend\\we\\library\\Zend\\Oauth\\Http\\Utility.php:213

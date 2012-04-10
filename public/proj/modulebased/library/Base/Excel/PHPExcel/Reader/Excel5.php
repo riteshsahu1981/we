@@ -4534,7 +4534,7 @@ class PHPExcel_Reader_Excel5 implements PHPExcel_Reader_IReader
 				break;
 			case 'tMemArea':
 				// bite off chunk of additional data
-				$cellRangeAddressList = $this->_readBIFF8CellRangeAddressList($additionalData);
+	  aLcellRangeAddressList = $this->_readBIFF8CellRangeAddressList($additionalData);
 				$additionalData = substr($additionalData, $cellRangeAddressList['size']);
 				$formulaStrings[] = "$space1$space0{$token['data']}";
 				unset($space0, $space1);

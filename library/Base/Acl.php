@@ -32,6 +32,7 @@ class Base_Acl  extends Zend_Acl{
               ->add(new Zend_Acl_Resource('default:gallery','default'))
               ->add(new Zend_Acl_Resource('default:library','default'))
                 ->add(new Zend_Acl_Resource('default:seo-url','default'))
+                ->add(new Zend_Acl_Resource('default:soap','default'))
               ->add(new Zend_Acl_Resource('default:index','default'));
         
         
@@ -49,7 +50,7 @@ class Base_Acl  extends Zend_Acl{
     public function setPrivilages()
     {
         /* guest */
-	$this->allow('guest',array('default:index', 'default:error', 'default:image'));
+	$this->allow('guest',array('default:index', 'default:error', 'default:image', 'default:soap'));
         
         /* employee */
 	$this->allow('employee',array('default:employee','default:job', "default:library"));
